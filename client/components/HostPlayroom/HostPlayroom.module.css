@@ -1,0 +1,509 @@
+.container {
+  min-height: 100vh;
+  background: #fefaf6;
+  font-family: 'Nunito', sans-serif;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  overflow-y: auto;
+}
+
+/* Preparation Modal */
+.preparationOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.preparationModal {
+  background: linear-gradient(145deg, #4ecdc4, #44a399);
+  border: 6px solid #000;
+  padding: 3rem;
+  text-align: center;
+  box-shadow: 8px 8px 0 #000;
+  border-radius: 20px;
+  min-width: 300px;
+}
+
+.preparationTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.preparationCounter {
+  font-size: 5rem;
+  font-weight: 800;
+  color: #000;
+  font-family: monospace;
+  margin-bottom: 1rem;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  animation: pulse 1s infinite;
+}
+
+.preparationSubtitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Header Row */
+.headerRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.gameInfoBox, .timerBox, .playersBox, .controlsBox {
+  background: #fffaf4;
+  border: 3px solid #000;
+  padding: 1rem;
+  box-shadow: 4px 4px 0 #000;
+  flex: 1;
+  min-width: 150px;
+}
+
+.gameInfoBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gameTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+  line-height: 1.2;
+  text-shadow: 2px 2px 0 #ff6b6b;
+}
+
+.roomInfo {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #666;
+}
+
+.timerBox {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.timer {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #000;
+  font-family: monospace;
+  line-height: 1;
+  text-shadow: 3px 3px 0 #ff6b6b;
+  transition: all 0.3s ease;
+}
+
+.timerActive {
+  animation: timerPulse 1s infinite;
+  text-shadow: 3px 3px 0 #4ecdc4, 6px 6px 0 rgba(0,0,0,0.2);
+}
+
+.timerWarning {
+  color: #ff6b6b;
+  animation: timerWarning 0.5s infinite;
+  text-shadow: 3px 3px 0 #ff6b6b, 6px 6px 0 rgba(255,107,107,0.3);
+}
+
+.timerLabel {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Players Box */
+.playersBox {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.playersCount {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #000;
+  font-family: monospace;
+  line-height: 1;
+  text-shadow: 3px 3px 0 #ffd166;
+  transition: all 0.3s ease;
+}
+
+.playersLabel {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.controlsBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controlsSplit {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.startButton, .endButton, .resultsButton, .nextButton {
+  border: 3px solid #000;
+  padding: 0.75rem 1.5rem;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+}
+
+.startButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.startButton:hover {
+  background: #000;
+  color: #4ecdc4;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.endButton {
+  background: #ff6b6b;
+  color: #000;
+}
+
+.endButton:hover {
+  background: #000;
+  color: #ff6b6b;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.nextButton {
+  background: #4d7cff;
+  color: #000;
+}
+
+.nextButton:hover {
+  background: #000;
+  color: #4d7cff;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.resultsButton {
+  background: #ffd166;
+  color: #000;
+}
+
+.resultsButton:hover {
+  background: #000;
+  color: #ffd166;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+/* Question Section */
+.questionSection {
+  background: #fffaf4;
+  border: 4px solid #000;
+  padding: 1.5rem;
+  box-shadow: 4px 4px 0 #000;
+  width: 100%;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #000;
+}
+
+.questionLabel {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.questionCounter {
+  background: #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.questionText {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.4;
+  text-align: center;
+  margin: 0;
+}
+
+/* Answers Section */
+.answersSection {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.answersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  flex: 1;
+}
+
+.answerCard {
+  background: #fff;
+  border: 3px solid #000;
+  padding: 1.5rem;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.answerCard:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.correctAnswer {
+  background: #d4edda;
+  border-color: #28a745;
+  animation: correctPulse 1s infinite;
+}
+
+.answerHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.shape {
+  background: #000;
+  color: #fff;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+  box-shadow: 2px 2px 0 #000;
+  flex-shrink: 0;
+}
+
+.answerLabel {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.answerText {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+  line-height: 1.3;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+.correctBadge {
+  background: #28a745;
+  color: #fff;
+  padding: 0.5rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-align: center;
+  box-shadow: 2px 2px 0 #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 1rem;
+}
+
+/* Join Info */
+.joinInfo {
+  background: #000;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  width: 100%;
+}
+
+/* Loading & Error */
+.loading, .error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Animations */
+@keyframes timerPulse {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 3px 3px 0 #4ecdc4, 6px 6px 0 rgba(0,0,0,0.2);
+  }
+  50% {
+    transform: scale(1.05);
+    text-shadow: 4px 4px 0 #4ecdc4, 8px 8px 0 rgba(0,0,0,0.2);
+  }
+}
+
+@keyframes timerWarning {
+  0%, 100% {
+    transform: scale(1);
+    text-shadow: 3px 3px 0 #ff6b6b, 6px 6px 0 rgba(255,107,107,0.3);
+  }
+  50% {
+    transform: scale(1.1);
+    text-shadow: 4px 4px 0 #ff6b6b, 8px 8px 0 rgba(255,107,107,0.4);
+  }
+}
+
+@keyframes correctPulse {
+  0%, 100% {
+    background: #d4edda;
+  }
+  50% {
+    background: #c3e6cb;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .headerRow {
+    flex-direction: column;
+  }
+
+  .gameInfoBox, .timerBox, .playersBox, .controlsBox {
+    min-width: auto;
+  }
+
+  .controlsSplit {
+    flex-direction: column;
+  }
+
+  .answersGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .questionText {
+    font-size: 1.2rem;
+  }
+
+  .answerText {
+    font-size: 1rem;
+  }
+
+  .timer, .playersCount {
+    font-size: 2rem;
+  }
+
+  .preparationModal {
+    padding: 2rem;
+    min-width: 250px;
+  }
+
+  .preparationTitle {
+    font-size: 2rem;
+  }
+
+  .preparationCounter {
+    font-size: 4rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: none;
+    padding: 1.5rem;
+  }
+  
+  .headerRow {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .questionSection,
+  .answersSection,
+  .joinInfo {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+}

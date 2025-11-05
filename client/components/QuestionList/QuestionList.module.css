@@ -1,0 +1,262 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%; /* Take full viewport height */
+  overflow: hidden; /* Prevent overall scrolling */
+  position: relative; /* Needed for fixed positioning context */
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-shrink: 0; /* Prevent input from shrinking */
+}
+
+.input {
+  width: 100%;
+  border: 3px solid #000;
+  border-radius: 0;
+  padding: 0.75rem 5rem 0.75rem 1rem;
+  background: #fffaf4;
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 500;
+  min-height: 3rem;
+  resize: none;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+}
+
+.input::placeholder {
+  color: #666;
+  font-weight: 500;
+}
+
+.input:focus {
+  box-shadow: 2px 2px 0px #000;
+  transform: translate(2px, 2px);
+}
+
+.addButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 2px solid #000;
+  border-radius: 0;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  box-shadow: 2px 2px 0px #000;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.addButton:hover {
+  background: #000;
+  color: #fff;
+  box-shadow: 1px 1px 0px #000;
+  transform: translateY(-50%) translate(1px, 1px);
+}
+
+.addButton.active {
+  background: #000;
+  color: #fff;
+}
+
+.addButton:active {
+  box-shadow: 0px 0px 0px #000;
+  transform: translateY(-50%) translate(2px, 2px);
+}
+
+/* List container - MAKE IT SCROLLABLE */
+.listContainer {
+  flex: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 0.5rem;
+  margin-bottom: 1rem; /* Reduced margin since button is fixed */
+  min-height: 0; /* Important for flex children */
+  padding-bottom: 6rem; /* Add padding at bottom to prevent content from being hidden behind fixed button */
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.listItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 3px solid #000;
+  border-radius: 0;
+  background: #fffaf4;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 4px 4px 0px #000;
+  min-height: 3.5rem;
+  flex-shrink: 0; /* Prevent items from shrinking */
+}
+
+.listItem:hover {
+  background: #000;
+  color: #7a6e67;
+  box-shadow: 2px 2px 0px #000;
+}
+
+.questionText {
+  flex: 1;
+  cursor: pointer;
+  font-weight: 600;
+  padding-right: 0.5rem;
+  transition: color 0.2s ease;
+  word-break: break-word;
+  line-height: 1.4;
+}
+
+.listItem:hover .questionText {
+  color: #fffaf7;
+}
+
+.deleteButton {
+  border: 2px solid #000;
+  background: #fff;
+  color: #e63946;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  box-shadow: 2px 2px 0px #000;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.deleteButton:hover {
+  background: #e63946;
+  color: #fff;
+  box-shadow: 1px 1px 0px #000;
+}
+
+.deleteButton:active {
+  box-shadow: 0px 0px 0px #000;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 2rem 0;
+  color: #666;
+  border: 3px dashed #000;
+  border-radius: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: #fffaf4;
+  box-shadow: 4px 4px 0px #000;
+  flex-shrink: 0;
+}
+
+/* Publish section - FIXED POSITION */
+.publishSection {
+  position: fixed;
+  bottom: 0.1rem;
+  left: 0rem;
+  width: calc(50% - 0.2rem);
+  background: #fefaf6;
+  padding: 1rem 0 0 0;
+  border-top: 3px solid #000;
+  z-index: 1000;
+}
+
+.publishButton {
+  width: 100%;
+  border: 3px solid #000;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.publishButton:hover:not(:disabled) {
+  background: #fff;
+  color: #000;
+  box-shadow: 2px 2px 0px #000;
+  margin: 2px 0 0 2px;
+}
+
+.publishButton:active:not(:disabled) {
+  box-shadow: 0px 0px 0px #000;
+  margin: 4px 0 0 4px;
+}
+
+.publishButton:disabled {
+  background: #ccc;
+  border-color: #666;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: 4px 4px 0px #666;
+  margin: 0;
+}
+
+.publishButton:disabled:hover {
+  margin: 0;
+  box-shadow: 4px 4px 0px #666;
+}
+
+/* Custom scrollbar styling */
+.listContainer::-webkit-scrollbar {
+  width: 8px;
+}
+
+.listContainer::-webkit-scrollbar-track {
+  background: #fffaf4;
+  border: 2px solid #000;
+}
+
+.listContainer::-webkit-scrollbar-thumb {
+  background: #000;
+  border: 1px solid #000;
+}
+
+.listContainer::-webkit-scrollbar-thumb:hover {
+  background: #333;
+}
+.incomplete {
+  border-color: #ff6b6b !important;
+  background: #fff0f0 !important;
+}
+
+.warningIcon {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
