@@ -260,3 +260,180 @@
   font-size: 0.8rem;
   margin-left: 0.5rem;
 }
+
+/* Add these to your existing CSS */
+
+/* Question Input Section */
+.questionInputSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.questionInputWrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+
+/* Time Selection Section */
+.timeSection {
+  animation: slideDown 0.2s ease-out;
+}
+
+.timeSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border: 2px solid #2d3748;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #2d3748;
+}
+
+.timeSelect {
+  padding: 0.4rem 0.6rem;
+  border: 2px solid #2d3748;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 2px 2px 0 #2d3748;
+  min-width: 100px;
+}
+
+.timeSelect:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 2px 2px 0 #4ecdc4;
+}
+
+.timeSelect:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #2d3748;
+}
+
+.customTimeInput {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  background: white;
+  border: 2px solid #2d3748;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #2d3748;
+}
+
+.customInput {
+  width: 80px;
+  padding: 0.3rem;
+  border: none;
+  outline: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: transparent;
+  text-align: center;
+}
+
+.customInput::placeholder {
+  color: #a0aec0;
+}
+
+.timeUnit {
+  font-weight: 600;
+  color: #4a5568;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.selectedTimeDisplay {
+  padding: 0.4rem 0.6rem;
+  background: #e6fffa;
+  border: 2px solid #4ecdc4;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2d3748;
+  box-shadow: 2px 2px 0 #4ecdc4;
+  white-space: nowrap;
+}
+
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .timeSelector {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .timeSelect {
+    min-width: auto;
+  }
+  
+  .customTimeInput {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeSelector {
+    padding: 0.4rem;
+  }
+  
+  .timeSelect {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .customInput {
+    width: 70px;
+    font-size: 0.8rem;
+  }
+  
+  .selectedTimeDisplay {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+  }
+}
+/* Make entire list item clickable */
+.listItem {
+  cursor: pointer; /* Add this line */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 3px solid #000;
+  border-radius: 0;
+  background: #fffaf4;
+  padding: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 4px 4px 0px #000;
+  min-height: 3.5rem;
+  flex-shrink: 0;
+}
+
+/* Remove the cursor pointer from just the text */
+.questionText {
+  flex: 1;
+  /* Remove cursor: pointer from here */
+  font-weight: 600;
+  padding-right: 0.5rem;
+  transition: color 0.2s ease;
+  word-break: break-word;
+  line-height: 1.4;
+}

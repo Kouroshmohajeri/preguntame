@@ -1,0 +1,406 @@
+/* RetroErrorModal.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  position: relative;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 3px solid #ff6b6b;
+  border-radius: 8px;
+  box-shadow: 
+    0 0 30px rgba(255, 107, 107, 0.4),
+    inset 0 0 20px rgba(255, 107, 107, 0.1);
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
+  font-family: 'Courier New', monospace;
+  animation: glitchAppear 0.5s ease-out;
+}
+
+/* CRT Monitor Effects */
+.crtEffect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  animation: scanline 2s linear infinite;
+}
+
+.flicker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  animation: flicker 0.15s infinite;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
+  color: #ff6b6b;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ff6b6b;
+  position: relative;
+}
+
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255, 107, 107, 0.3);
+}
+
+.errorIcon {
+  font-size: 2rem;
+  animation: pulse 2s infinite;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+  flex: 1;
+  text-align: center;
+}
+
+.closeButton {
+  background: transparent;
+  border: 1px solid #ff6b6b;
+  color: #ff6b6b;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 3px;
+}
+
+.closeButton:hover {
+  background: #ff6b6b;
+  color: #16213e;
+  box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+}
+
+.closeIcon {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Message Container */
+.messageContainer {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #ff6b6b;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.messageContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff6b6b, transparent);
+  animation: slide 3s linear infinite;
+}
+
+.messageText {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  text-align: center;
+  color: #ffeb3b;
+  text-shadow: 0 0 5px rgba(255, 235, 59, 0.3);
+}
+
+/* Error Details */
+.errorDetails {
+  background: rgba(255, 107, 107, 0.1);
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  border-left: 3px solid #ff6b6b;
+}
+
+.errorCode {
+  font-size: 0.9rem;
+  color: #4fc3f7;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.errorDescription {
+  font-size: 0.9rem;
+  color: #bdbdbd;
+  line-height: 1.4;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.retryButton {
+  position: relative;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff5252 100%);
+  border: 2px solid #ffeb3b;
+  color: #16213e;
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-family: 'Courier New', monospace;
+}
+
+.retryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 5px 15px rgba(255, 107, 107, 0.4),
+    0 0 20px rgba(255, 235, 59, 0.3);
+}
+
+.buttonGlow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.retryButton:hover .buttonGlow {
+  left: 100%;
+}
+
+.buttonText {
+  position: relative;
+  z-index: 1;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.footerText {
+  font-size: 0.8rem;
+  color: #81c784;
+  text-shadow: 0 0 5px rgba(129, 199, 132, 0.3);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes glitchAppear {
+  0% {
+    transform: scale(0.8) rotate(-2deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.02) rotate(1deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 0.97;
+  }
+  50% {
+    opacity: 0.99;
+  }
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .overlay {
+    padding: 15px;
+  }
+  
+  .modal {
+    max-width: 100%;
+    margin: 0 10px;
+  }
+  
+  .content {
+    padding: 20px;
+  }
+  
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 1.3rem;
+    order: -1;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+  }
+  
+  .messageText {
+    font-size: 1rem;
+  }
+  
+  .errorDetails {
+    padding: 12px;
+  }
+  
+  .errorCode,
+  .errorDescription {
+    font-size: 0.85rem;
+  }
+  
+  .retryButton {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 16px;
+  }
+  
+  .title {
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+  }
+  
+  .messageText {
+    font-size: 0.95rem;
+  }
+  
+  .errorIcon {
+    font-size: 1.5rem;
+  }
+  
+  .retryButton {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    width: 100%;
+  }
+  
+  .footerText {
+    font-size: 0.75rem;
+  }
+}
+
+/* Reduced motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .scanlines,
+  .flicker,
+  .buttonGlow,
+  .messageContainer::before {
+    animation: none;
+  }
+  
+  .retryButton:hover {
+    transform: none;
+  }
+}

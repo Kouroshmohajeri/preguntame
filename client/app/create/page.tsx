@@ -2,14 +2,16 @@
 import TypewriterTitle from "@/components/typewriter/TypewriterTitle";
 import QuestionList from "@/components/QuestionList/QuestionList";
 import AnswerEditor from "@/components/AnswerEditor/AnswerEditor";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createGame } from "../api/game/actions";
 import CelebrationModal from "@/components/CelebrationModal/CelebrationModal";
+import { useSession } from "next-auth/react";
 
 export type Question = {
   id: string;
   text: string;
   answers: Answer[];
+  time: number;
 };
 
 export type Answer = {
@@ -21,30 +23,32 @@ export type Answer = {
 export default function CreateGame() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
-
+  const { data: session, status } = useSession();
+  useEffect(() => {
+    console.log("SESSION DATA:", session);
+  }, [session]);
   // ✅ Hold the published data to pass to QuestionList
   const [publishedData, setPublishedData] = useState<{
     gameUrl: string;
     qrCode: string;
   } | null>(null);
 
-  const addQuestion = (questionText: string) => {
+  const addQuestion = (questionText: string, time: number = 20) => {
     const newQuestion: Question = {
       id: Date.now().toString(),
       text: questionText,
-      answers: []
+      answers: [],
+      time: time,
     };
-    setQuestions(prev => [...prev, newQuestion]);
+    setQuestions((prev) => [...prev, newQuestion]);
   };
 
   const updateQuestion = (index: number, text: string) => {
-    setQuestions(prev => prev.map((q, i) => 
-      i === index ? { ...q, text } : q
-    ));
+    setQuestions((prev) => prev.map((q, i) => (i === index ? { ...q, text } : q)));
   };
 
   const deleteQuestion = (index: number) => {
-    setQuestions(prev => prev.filter((_, i) => i !== index));
+    setQuestions((prev) => prev.filter((_, i) => i !== index));
     if (selectedQuestionIndex === index) {
       setSelectedQuestionIndex(null);
     } else if (selectedQuestionIndex !== null && selectedQuestionIndex > index) {
@@ -53,18 +57,20 @@ export default function CreateGame() {
   };
 
   const updateAnswers = (questionIndex: number, answers: Answer[]) => {
-    setQuestions(prev => prev.map((q, i) => 
-      i === questionIndex ? { ...q, answers } : q
-    ));
+    setQuestions((prev) => prev.map((q, i) => (i === questionIndex ? { ...q, answers } : q)));
   };
 
   const handlePublish = async (title: string) => {
     try {
+      if (!session?.user?.id) {
+        console.error("❌ No user ID found in session");
+        return;
+      }
 
-      const result = await createGame(title, questions);
+      const hostId = session.user.id; // 🔥 This is your ObjectId from the backend DB
 
+      const result = await createGame(title, questions, hostId);
 
-      // ✅ Save the published data
       if (result?.url && result?.qrCode) {
         setPublishedData({
           gameUrl: result.url,
@@ -83,17 +89,16 @@ export default function CreateGame() {
       {/* Left side – Questions */}
       <div className="w-1/2 border-r-4 border-black dark:border-white p-8 flex flex-col overflow-hidden">
         <TypewriterTitle text="Create a Game" />
-        
+
         <div className="flex-1 overflow-hidden">
-          <QuestionList 
-            questions={questions} 
+          <QuestionList
+            questions={questions}
             selectedQuestionIndex={selectedQuestionIndex}
             onAddQuestion={addQuestion}
             onUpdateQuestion={updateQuestion}
             onDeleteQuestion={deleteQuestion}
             onSelectQuestion={setSelectedQuestionIndex}
             onPublish={handlePublish}
-
             publishedData={publishedData}
           />
         </div>
@@ -102,7 +107,7 @@ export default function CreateGame() {
       {/* Right side – Answers */}
       <div className="w-1/2 p-8 flex flex-col overflow-hidden">
         <div className="flex-1 overflow-hidden">
-          <AnswerEditor 
+          <AnswerEditor
             selectedQuestion={selectedQuestion}
             questionIndex={selectedQuestionIndex}
             onAnswersChange={updateAnswers}
@@ -110,14 +115,13 @@ export default function CreateGame() {
         </div>
       </div>
       {publishedData && (
-  <CelebrationModal
-    isOpen={true}
-    onClose={() => setPublishedData(null)}
-    gameUrl={publishedData.gameUrl}
-    qrCode={publishedData.qrCode}
-  />
-)}
-
+        <CelebrationModal
+          isOpen={true}
+          onClose={() => setPublishedData(null)}
+          gameUrl={publishedData.gameUrl}
+          qrCode={publishedData.qrCode}
+        />
+      )}
     </div>
   );
 }

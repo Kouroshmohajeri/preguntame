@@ -7,6 +7,7 @@ export interface IUser extends Document {
   email: string;
   points: number;
   credits: number;
+  avatar?: string;
   gamesCreated: number;
   gamesPlayed: number;
   correctAnswers: number;
@@ -20,6 +21,7 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true },
     lastname: { type: String },
     phoneNumber: { type: String },
+    avatar: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     points: { type: Number, default: 0 },
     credits: { type: Number, default: 0 },

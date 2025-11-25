@@ -1,0 +1,332 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.modal {
+  background: #FFFAF7;
+  border: 3px solid #000;
+  box-shadow: 
+    6px 6px 0px #000,
+    0 0 0 3px #FFFAF7;
+  max-width: 380px;
+  width: 85%;
+  position: relative;
+  animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.loadingModal {
+  overflow: hidden;
+}
+
+.header {
+  background: #000;
+  color: #fff;
+  padding: 0.8rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #000;
+}
+
+.pixelTitle {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0px #FF6B6B;
+  animation: titlePulse 2s ease-in-out infinite;
+}
+
+.loadingSpinner {
+  animation: spin 1.2s linear infinite;
+  background: #FFFAF7 !important;
+  color: #000 !important;
+  border: 2px solid #000;
+  width: 28px;
+  height: 28px;
+  font-size: 1rem;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.loadingContent {
+  background: #FFFAF7;
+  color: #000;
+  text-align: center;
+  position: relative;
+}
+
+/* Main Loading Animation */
+.loadingAnimation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Simplified Loading Bar */
+.loadingBar {
+  width: 100%;
+  height: 12px;
+  background: #000;
+  border: 2px solid #000;
+  position: relative;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.loadingBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+  animation: loadingBar 1.8s ease-in-out infinite;
+  width: 40%;
+  position: absolute;
+  left: -40%;
+}
+
+/* Loading Text */
+.loadingText {
+  margin: 0.5rem 0;
+}
+
+.loadingMessage {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+}
+
+.loadingDots {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dot {
+  color: #FF6B6B;
+  font-weight: 800;
+  font-size: 1.2rem;
+  animation: dotBounce 1.4s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Progress Indicator */
+.progressContainer {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.progressText {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Game Status */
+.gameStatus {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: #000;
+  border: 2px solid #000;
+}
+
+.statusText {
+  color: #FFFAF7;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: statusPulse 3s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    backdrop-filter: blur(0px);
+  }
+  to { 
+    opacity: 1; 
+    backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes slideUp {
+  0% { 
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  100% { 
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes titlePulse {
+  0%, 100% { 
+    text-shadow: 2px 2px 0px #FF6B6B;
+    transform: scale(1);
+  }
+  50% { 
+    text-shadow: 3px 3px 0px #4ECDC4;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes loadingBar {
+  0% {
+    left: -40%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: -40%;
+  }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Retro Scan Effect */
+.scanLine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 107, 107, 0.6), transparent);
+  animation: scanLine 2s linear infinite;
+  z-index: 2;
+}
+
+@keyframes scanLine {
+  0% {
+    top: 0%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .modal {
+    width: 90%;
+    max-width: 320px;
+  }
+  
+  .header {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .pixelTitle {
+    font-size: 1.1rem;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .loadingMessage {
+    font-size: 1rem;
+  }
+  
+  .loadingBar {
+    height: 10px;
+  }
+  
+  .gameStatus {
+    padding: 0.6rem;
+  }
+  
+  .statusText {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .modal {
+    width: 95%;
+    max-width: 280px;
+  }
+  
+  .pixelTitle {
+    font-size: 1rem;
+  }
+  
+  .loadingMessage {
+    font-size: 0.9rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .modal {
+    animation: fadeIn 0.4s ease-out;
+  }
+  
+  .pixelTitle,
+  .loadingSpinner,
+  .loadingBarFill,
+  .dot,
+  .statusText,
+  .scanLine {
+    animation: none;
+  }
+  
+  .loadingSpinner {
+    animation: spin 2s linear infinite;
+  }
+}

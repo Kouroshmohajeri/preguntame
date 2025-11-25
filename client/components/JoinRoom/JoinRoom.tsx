@@ -75,7 +75,7 @@ const handleJoinGame = async () => {
   setScanError("");
   try {
     const { exists } = await checkGameCode(gameCode);
-    if (exists) router.push(`/play/${gameCode}`);
+    if (exists) router.push(`/play/guest/${gameCode}`);
     else setScanError("❌ Game not found. Please check your code.");
   } catch {
     setScanError("⚠️ Failed to verify game code. Try again.");

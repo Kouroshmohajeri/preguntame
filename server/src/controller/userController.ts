@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserRepository } from "../Repo/userRepo.js";
+import User from "../models/User.js";
 
 export const UserController = {
   // Register or login via Google (if user exists → return; if not → create)
@@ -67,6 +68,35 @@ export const UserController = {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Failed to delete user" });
+    }
+  },
+  // userController.ts
+  async updateStats(req: Request, res: Response) {
+    try {
+      const { email, score, correct, wrong } = req.body;
+
+      if (!email) return res.status(400).json({ error: "Email missing" });
+
+      const updatedUser = await User.findOneAndUpdate(
+        { email },
+        {
+          $inc: {
+            gamesPlayed: 1,
+            points: score,
+            correctAnswers: correct,
+            wrongAnswers: wrong,
+          },
+        },
+        { new: true }
+      );
+
+      if (!updatedUser)
+        return res.status(404).json({ error: "User not found" });
+
+      return res.status(200).json(updatedUser);
+    } catch (err) {
+      console.error("❌ updateStats error:", err);
+      return res.status(500).json({ error: "Server error" });
     }
   },
 };

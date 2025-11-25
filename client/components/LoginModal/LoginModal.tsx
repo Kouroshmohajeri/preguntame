@@ -8,6 +8,7 @@ import { googleAuth } from "@/app/api/users/actions";
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLoginSuccess: () => void;
 }
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
@@ -78,16 +79,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
           {/* Message */}
           <div className={styles.message}>
-            Join the PREGÚNTAME!<br />
+            Join the PREGÚNTAME!
+            <br />
             Save your games and track progress.
           </div>
 
           {/* Google Login Button */}
-          <button
-            onClick={handleGoogleLogin}
-            disabled={isLoading}
-            className={styles.googleButton}
-          >
+          <button onClick={handleGoogleLogin} disabled={isLoading} className={styles.googleButton}>
             {isLoading ? (
               <div className={styles.loadingSpinner}>
                 <div className={styles.spinnerPixel}></div>
@@ -115,9 +113,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </div>
 
           {/* Privacy Note */}
-          <div className={styles.privacyNote}>
-            We only access your email. No spam, just fun!
-          </div>
+          <div className={styles.privacyNote}>We only access your email. No spam, just fun!</div>
         </div>
       </div>
     </div>

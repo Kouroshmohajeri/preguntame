@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth from "next-auth/next";
 import GoogleProvider from "next-auth/providers/google";
 import axios from "axios";
 
@@ -17,23 +17,43 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async signIn({ user }) {
+    async signIn({ user }: { user: any }) {
       try {
         if (user?.email) {
-          // Call your backend to create or get the user
           await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/google`, {
             name: user.name?.split(" ")[0] || "",
             lastname: user.name?.split(" ")[1] || "",
             email: user.email,
-            
           });
         }
       } catch (err) {
         console.error("User creation failed:", err);
       }
 
-      // Always allow login
       return true;
+    },
+
+    async jwt({ token, user }: { token: any; user?: any }) {
+      if (user?.email) {
+        try {
+          const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/${user.email}`);
+
+          const dbUser = res.data;
+          token.id = dbUser._id;
+        } catch (err) {
+          console.error("Failed to fetch user ID:", err);
+        }
+      }
+
+      return token;
+    },
+
+    async session({ session, token }: { session: any; token: any }) {
+      if (token?.id) {
+        session.user.id = token.id;
+      }
+
+      return session;
     },
   },
 });

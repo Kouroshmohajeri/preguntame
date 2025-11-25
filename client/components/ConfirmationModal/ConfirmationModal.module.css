@@ -1,0 +1,213 @@
+/* components/ConfirmationModal/ConfirmationModal.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal {
+  background: #FFFAF7;
+  border: 4px solid #2D3748;
+  padding: 2rem;
+  max-width: 450px;
+  width: 90%;
+  position: relative;
+  box-shadow: 8px 8px 0 #2D3748;
+  animation: slideDown 0.3s ease-out;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #2D3748;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #2D3748;
+  color: #FFFAF7;
+  transform: scale(1.1);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-right: 2rem;
+}
+
+.title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  color: #2D3748;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.iconWarning {
+  color: #D69E2E;
+  animation: pulse 2s infinite;
+}
+
+.iconDanger {
+  color: #E53E3E;
+  animation: pulse 1.5s infinite;
+}
+
+.iconInfo {
+  color: #3182CE;
+  animation: pulse 2s infinite;
+}
+
+.modalBody {
+  margin-bottom: 2rem;
+}
+
+.message {
+  font-family: 'Nunito', sans-serif;
+  color: #4A5568;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 600;
+}
+
+.modalFooter {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancelButton {
+  background: #CBD5E0;
+  border: 2px solid #2D3748;
+  color: #2D3748;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 3px 3px 0 #2D3748;
+  transition: all 0.2s ease;
+}
+
+.cancelButton:hover {
+  background: #A0AEC0;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #2D3748;
+}
+
+.confirmButton {
+  border: 2px solid #2D3748;
+  color: #2D3748;
+  padding: 0.75rem 1.5rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 3px 3px 0 #2D3748;
+  transition: all 0.2s ease;
+}
+
+.confirmButtonWarning {
+  background: #F6E05E;
+}
+
+.confirmButtonWarning:hover {
+  background: #ECC94B;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #2D3748;
+}
+
+.confirmButtonDanger {
+  background: #FC8181;
+}
+
+.confirmButtonDanger:hover {
+  background: #F56565;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #2D3748;
+}
+
+.confirmButtonInfo {
+  background: #63B3ED;
+}
+
+.confirmButtonInfo:hover {
+  background: #4299E1;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 #2D3748;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .modal {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  .modalHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .modalFooter {
+    flex-direction: column;
+  }
+  
+  .cancelButton,
+  .confirmButton {
+    width: 100%;
+  }
+}

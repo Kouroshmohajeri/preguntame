@@ -29,3 +29,13 @@ export const deleteUser = async (email: string) => {
   const response = await API.delete(`/users/${email}`);
   return response.data;
 };
+// Update user data
+export const updateUserStats = async (payload: {
+  email: string;
+  score: number;
+  correct: number;
+  wrong: number;
+}) => {
+  const res = await API.post("/users/update-stats", payload);
+  return res.data;
+};

@@ -1,14 +1,35 @@
 import { API } from "../Server";
 
 // Create a new game
-export const createGame = async (title: string, questions: any[]) => {
-  const response = await API.post("/games", { title, questions });
+export const createGame = async (title: string, questions: any[], hostId: string) => {
+  const response = await API.post("/games", { title, questions, hostId });
   return response.data;
 };
 
 // Get a game by code
 export const getGame = async (code: string) => {
   const response = await API.get(`/games/${code}`);
+  return response.data;
+};
+// Get games by host ID
+export const getGamesByHost = async (hostId: string) => {
+  const response = await API.get(`/games/host/${hostId}`);
+  return response.data;
+};
+//Update game
+// Update game
+export const updateGame = async (
+  gameCode: string,
+  title: string,
+  questions: any[],
+  hostId: string
+) => {
+  const response = await API.put(`/games/${gameCode}`, {
+    title,
+    questions,
+    hostId,
+  });
+
   return response.data;
 };
 
