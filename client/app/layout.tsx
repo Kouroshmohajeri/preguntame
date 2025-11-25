@@ -6,7 +6,7 @@ import { SocketProvider } from "@/context/SocketContext/SocketContext";
 
 // Load Nunito from local file
 const nunito = localFont({
-  src: "../public/fonts/Nunito-Medium.ttf",
+  src: "../public/Fonts/Nunito-Medium.ttf",
   variable: "--font-nunito",
   weight: "500",
   style: "normal",
