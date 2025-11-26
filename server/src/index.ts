@@ -20,7 +20,7 @@ app.use(express.json());
 const server = http.createServer(app);
 setupSocket(server);
 
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 4000;
 
 // Connect MongoDB & Redis
 await mongoose.connect(process.env.MONGO_URI!);
@@ -34,4 +34,6 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/gameResults", gameResultRoutes);
 
-server.listen(PORT, () => console.log(`✅ Server running on :${PORT}`));
+server.listen(PORT, "0.0.0.0", () =>
+  console.log(`✅ Server running on :${PORT}`)
+);
