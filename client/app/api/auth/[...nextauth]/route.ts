@@ -98,7 +98,7 @@ const handler = NextAuth({
     },
 
     async jwt({ token, user }) {
-      // Only run this once — when user signs in
+      // When user signs in
       if (user?.id) {
         token.id = user.id;
       }
