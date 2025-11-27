@@ -90,7 +90,7 @@ const handler = NextAuth({
           });
           console.log(user, token, account);
           // Save ID in token
-          token.id = res.data._id;
+          token.id = res.data.user._id;
         } catch (err) {
           console.error("Failed to sync user:", err);
         }
