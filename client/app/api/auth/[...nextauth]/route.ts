@@ -88,7 +88,7 @@ const handler = NextAuth({
             lastname: user.name?.split(" ")[1] || "",
             email: user.email,
           });
-
+          console.log(`user:${user}`, `token:${token}`, `account:${account}`);
           // Save ID in token
           token.id = res.data._id;
         } catch (err) {
