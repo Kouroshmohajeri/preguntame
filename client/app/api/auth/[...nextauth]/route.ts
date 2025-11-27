@@ -78,37 +78,29 @@ const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async signIn({ user }) {
-      try {
-        if (user?.email) {
+    async jwt({ token, account, user }) {
+      // Runs ONLY when user signs in the first time
+      if (account && user) {
+        try {
+          // Create user (or update) in your backend
           const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users/google`, {
             name: user.name?.split(" ")[0] || "",
             lastname: user.name?.split(" ")[1] || "",
             email: user.email,
           });
 
-          // Attach DB user ID directly to the user object
-          user.id = res.data._id;
+          // Save ID in token
+          token.id = res.data._id;
+        } catch (err) {
+          console.error("Failed to sync user:", err);
         }
-      } catch (err) {
-        console.error("User creation failed:", err);
       }
 
-      return true;
-    },
-
-    async jwt({ token, user }) {
-      // When user signs in
-      if (user?.id) {
-        token.id = user.id;
-      }
       return token;
     },
 
     async session({ session, token }) {
-      if (token?.id) {
-        session.user.id = token.id;
-      }
+      session.user.id = token.id;
       return session;
     },
   },
