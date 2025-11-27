@@ -4,10 +4,13 @@ import { useState } from "react";
 import JoinRoom from "@/components/JoinRoom/JoinRoom";
 import { useRouter } from "next/navigation";
 import LoginModal from "@/components/LoginModal/LoginModal";
+import { useSession } from "next-auth/react";
 
 export default function Home() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { data: session } = useSession();
+
   const router = useRouter();
 
   return (
@@ -42,12 +45,21 @@ export default function Home() {
               Create Game
             </button>
 
-            <button
-              onClick={() => setShowLoginModal(true)}
-              className="cursor-pointer w-full py-4 bg-[#fffaf4] text-black text-lg font-bold border-t-4 border-black rounded-xl hover:-translate-y-1 hover:shadow-[4px_4px_0_#000] hover:bg-[#f5ebdf] transition-all duration-200"
-            >
-              Login / Register
-            </button>
+            {session ? (
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="cursor-pointer w-full py-4 bg-[#fffaf4] text-black text-lg font-bold border-t-4 border-black rounded-xl hover:-translate-y-1 hover:shadow-[4px_4px_0_#000] hover:bg-[#f5ebdf] transition-all duration-200"
+              >
+                Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowLoginModal(true)}
+                className="cursor-pointer w-full py-4 bg-[#fffaf4] text-black text-lg font-bold border-t-4 border-black rounded-xl hover:-translate-y-1 hover:shadow-[4px_4px_0_#000] hover:bg-[#f5ebdf] transition-all duration-200"
+              >
+                Login / Register
+              </button>
+            )}
           </div>
         </div>
       </div>

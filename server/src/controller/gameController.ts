@@ -96,7 +96,7 @@ export const GameController = {
           .json({ error: "Game not found or update failed" });
       }
 
-      const gameUrl = `${process.env.CLIENT_URL}/play/${updatedGame.gameCode}`;
+      const gameUrl = `${process.env.CLIENT_URL}/play/guest/${updatedGame.gameCode}`;
       const qrCode = await QRCode.toDataURL(gameUrl);
 
       return res.status(200).json({ game: updatedGame, qrCode, url: gameUrl });

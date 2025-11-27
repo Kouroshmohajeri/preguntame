@@ -351,6 +351,7 @@ export default function HostPlayroom() {
     if (!socket || !session) return;
     console.log("🛑 Host ending game");
     socket.emit("endGame", { gameCode });
+    router.push(`/leaderboard/${gameCode}`);
   };
 
   useEffect(() => {
@@ -359,7 +360,7 @@ export default function HostPlayroom() {
     const handleGameEnded = ({ leaderboard }: { leaderboard: Player[] }) => {
       console.log("🏁 Final leaderboard received:", leaderboard);
       setLeaderboard(leaderboard);
-      // router.push(`/leaderboard/${gameCode}`);
+      router.push(`/leaderboard/${gameCode}`);
     };
 
     socket.on("gameEnded", handleGameEnded);
