@@ -1,0 +1,224 @@
+/* components/LoadingLeaderboard/LoadingLeaderboard.module.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #FFFAF7;
+  font-family: "Nunito", sans-serif;
+  gap: 40px;
+}
+
+.loaderWrapper {
+  position: relative;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  width: 150px;
+  height: 50px;
+}
+
+.loaderWrapper .packman::before {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  background-color: #EFF107;
+  border-radius: 100px 100px 0 0;
+  transform: translate(-50%, -50%);
+  animation: pacTop 0.5s linear infinite;
+  transform-origin: center bottom;
+  z-index: 2;
+}
+
+.loaderWrapper .packman::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 25px;
+  background-color: #EFF107;
+  border-radius: 0 0 100px 100px;
+  transform: translate(-50%, 50%);
+  animation: pacBot 0.5s linear infinite;
+  transform-origin: center top;
+  z-index: 2;
+}
+
+.dots .dot {
+  position: absolute;
+  z-index: 1;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1E88E5;
+}
+
+.dots .dot:nth-child(1) {
+  left: 90px;
+  animation: dotStage1 0.5s infinite;
+}
+
+.dots .dot:nth-child(2) {
+  left: 60px;
+  animation: dotStage1 0.5s infinite;
+}
+
+.dots .dot:nth-child(3) {
+  left: 30px;
+  animation: dotStage1 0.5s infinite;
+}
+
+.dots .dot:nth-child(4) {
+  left: 10px;
+  animation: dotStage2 0.5s infinite;
+}
+
+.loadingText {
+  font-size: 20px;
+  color: #2D3748;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 40px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pacTop {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) rotate(-30deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+}
+
+@keyframes pacBot {
+  0% {
+    transform: translate(-50%, 50%) rotate(0);
+  }
+
+  50% {
+    transform: translate(-50%, 50%) rotate(30deg);
+  }
+
+  100% {
+    transform: translate(-50%, 50%) rotate(0);
+  }
+}
+
+@keyframes dotStage1 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-24px, 0);
+  }
+}
+
+@keyframes dotStage2 {
+  0% {
+    transform: scale(1);
+  }
+
+  5%, 100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .loaderWrapper {
+    width: 120px;
+    height: 40px;
+  }
+  
+  .loaderWrapper .packman::before,
+  .loaderWrapper .packman::after {
+    width: 40px;
+    height: 20px;
+  }
+  
+  .dots .dot {
+    width: 8px;
+    height: 8px;
+    top: 6px;
+  }
+  
+  .dots .dot:nth-child(1) {
+    left: 70px;
+  }
+  
+  .dots .dot:nth-child(2) {
+    left: 48px;
+  }
+  
+  .dots .dot:nth-child(3) {
+    left: 24px;
+  }
+  
+  .dots .dot:nth-child(4) {
+    left: 8px;
+  }
+  
+  .loadingText {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loaderWrapper {
+    width: 100px;
+    height: 35px;
+  }
+  
+  .loaderWrapper .packman::before,
+  .loaderWrapper .packman::after {
+    width: 35px;
+    height: 17.5px;
+  }
+  
+  .dots .dot {
+    width: 7px;
+    height: 7px;
+    top: 5px;
+  }
+  
+  .dots .dot:nth-child(1) {
+    left: 60px;
+  }
+  
+  .dots .dot:nth-child(2) {
+    left: 40px;
+  }
+  
+  .dots .dot:nth-child(3) {
+    left: 20px;
+  }
+  
+  .dots .dot:nth-child(4) {
+    left: 6px;
+  }
+  
+  .loadingText {
+    font-size: 14px;
+  }
+}

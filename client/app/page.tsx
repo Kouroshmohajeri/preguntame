@@ -1,16 +1,18 @@
+// app/page.tsx (or wherever your home page is)
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import JoinRoom from "@/components/JoinRoom/JoinRoom";
+
 import { useRouter } from "next/navigation";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import { useSession } from "next-auth/react";
+import GameCodeModal from "@/components/JoinRoom/GameCodeModal";
 
 export default function Home() {
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { data: session } = useSession();
-
   const router = useRouter();
 
   return (
@@ -44,7 +46,6 @@ export default function Home() {
             >
               Create Game
             </button>
-
             {session ? (
               <button
                 onClick={() => router.push("/dashboard")}
@@ -71,8 +72,8 @@ export default function Home() {
         </b>
       </footer>
 
-      {/* Join Room Modal */}
-      <JoinRoom isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} />
+      {/* Modals */}
+      <GameCodeModal isOpen={showJoinModal} onClose={() => setShowJoinModal(false)} type="join" />
       <LoginModal
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}

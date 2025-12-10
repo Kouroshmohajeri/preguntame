@@ -4,28 +4,42 @@ import React, { useState, useEffect } from "react";
 import { X, User, Copy, Check } from "@phosphor-icons/react";
 import QRCode from "qrcode";
 import styles from "./ShareModal.module.css";
+import { searchUsers } from "@/app/api/users/actions";
+import { sendNotification } from "@/app/api/notifications/actions";
+import { useToast } from "@/context/ToastContext/ToastContext";
 
 interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
   gameCode: string;
   gameTitle: string;
+  email: string;
+  userId: string;
 }
 
 interface User {
+  lastname: string;
   _id: string;
   name: string;
   email: string;
   avatar: string;
 }
 
-export default function ShareModal({ isOpen, onClose, gameCode, gameTitle }: ShareModalProps) {
+export default function ShareModal({
+  isOpen,
+  onClose,
+  gameCode,
+  gameTitle,
+  email,
+  userId,
+}: ShareModalProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User[]>([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
+  const { showToast } = useToast();
 
   const gameUrl = `${process.env.NEXT_PUBLIC_API_URL}/play/guest/${gameCode}`;
 
@@ -52,8 +66,7 @@ export default function ShareModal({ isOpen, onClose, gameCode, gameTitle }: Sha
     }
   }, [isOpen, gameUrl]);
 
-  // Mock search function - replace with actual API call
-  const searchUsers = async (query: string) => {
+  const searchUsersHandler = async (query: string) => {
     if (!query.trim()) {
       setSearchResults([]);
       return;
@@ -61,39 +74,18 @@ export default function ShareModal({ isOpen, onClose, gameCode, gameTitle }: Sha
 
     setLoading(true);
     try {
-      // Mock data for demonstration
-      setTimeout(() => {
-        setSearchResults([
-          {
-            _id: "1",
-            name: "John Doe",
-            email: "john@example.com",
-            avatar: "/images/default-avatar.png",
-          },
-          {
-            _id: "2",
-            name: "Jane Smith",
-            email: "jane@example.com",
-            avatar: "/images/default-avatar.png",
-          },
-          {
-            _id: "3",
-            name: "Bob Johnson",
-            email: "bob@example.com",
-            avatar: "/images/default-avatar.png",
-          },
-        ]);
-        setLoading(false);
-      }, 500);
+      const results = await searchUsers(query, email);
+      setSearchResults(results);
     } catch (error) {
       console.error("Error searching users:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
-      searchUsers(searchTerm);
+      searchUsersHandler(searchTerm);
     }, 300);
 
     return () => clearTimeout(delaySearch);
@@ -121,10 +113,32 @@ export default function ShareModal({ isOpen, onClose, gameCode, gameTitle }: Sha
     }
   };
 
-  const handleShare = () => {
-    console.log("Sharing with:", selectedUsers);
-    alert(`Game "${gameTitle}" shared with ${selectedUsers.length} users!`);
-    onClose();
+  const handleShare = async () => {
+    try {
+      if (selectedUsers.length === 0) return;
+
+      // Send notifications to each selected user
+      for (const user of selectedUsers) {
+        await sendNotification({
+          userId: user._id, // receiver
+          senderId: userId, // OR userId if you store it in context
+          type: "game",
+          title: "Game Invitation",
+          message: `${email} shared the game "${gameTitle}" with you.`,
+          data: {
+            gameCode,
+            gameTitle,
+          },
+        });
+      }
+
+      showToast(`Game shared with ${selectedUsers.length} player(s)!`, "success");
+
+      onClose();
+    } catch (err) {
+      console.error("Error sharing game:", err);
+      showToast("Failed to share game.", "error");
+    }
   };
 
   if (!isOpen) return null;
@@ -233,10 +247,16 @@ export default function ShareModal({ isOpen, onClose, gameCode, gameTitle }: Sha
                       onClick={() => handleUserSelect(user)}
                     >
                       <div className={styles.userAvatar}>
-                        <User size={20} weight="fill" />
+                        <img
+                          src={user.avatar}
+                          alt={user.name}
+                          style={{ width: "100%", height: "100%", borderRadius: "50%" }}
+                        />
                       </div>
                       <div className={styles.userInfo}>
-                        <span className={styles.userName}>{user.name}</span>
+                        <span className={styles.userName}>
+                          {user.name} {user.lastname}
+                        </span>
                         <span className={styles.userEmail}>{user.email}</span>
                       </div>
                     </div>

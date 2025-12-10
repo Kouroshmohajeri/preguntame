@@ -7,6 +7,10 @@ import { useSocket } from "@/context/SocketContext/SocketContext";
 import { useSession } from "next-auth/react";
 import LoginModal from "../LoginModal/LoginModal";
 import RetroErrorModal from "../RetroErrorModal/RetroErrorModal";
+import AudioToggle from "../AudioToggle/AudioToggle";
+import { getGlobalAudio } from "@/utils/globalAudio";
+import { createGameResult, deleteGameResult, getGameResult } from "@/app/api/gameResult/actions";
+
 // import { createGameResult } from "@/app/api/gameResult/actions";
 
 interface Answer {
@@ -31,6 +35,7 @@ interface Game {
 }
 
 interface Player {
+  isAssigned: any;
   id: string;
   name: string;
   avatar: string;
@@ -69,25 +74,116 @@ export default function HostPlayroom() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [playerUUID, setPlayerUUID] = useState<string | null>(null);
   const [resultsSaved, setResultsSaved] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [selectedGameTrack, setSelectedGameTrack] = useState<string | null>(null);
 
+  const gameMusicStartedRef = useRef(false);
   const { data: session, status } = useSession();
   const router = useRouter();
   const socket = useSocket();
 
   const prevPlayerCountRef = useRef(0);
   const prevPlayersRef = useRef<Player[]>([]);
+  const audioInitializedRef = useRef(false);
 
   const currentQuestion = game?.questions[currentQuestionIndex];
   const isLastQuestion = game && currentQuestionIndex === game.questions.length - 1;
   const gameStarted = timerActive || showCorrectAnswer || showQuestionContent;
+  // Simplify the user interaction useEffect - just track interaction:
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      if (!hasUserInteracted) {
+        setHasUserInteracted(true);
+      }
+    };
+
+    window.addEventListener("click", handleUserInteraction, { once: true });
+    window.addEventListener("keydown", handleUserInteraction, { once: true });
+    window.addEventListener("touchstart", handleUserInteraction, { once: true });
+
+    return () => {
+      window.removeEventListener("click", handleUserInteraction);
+      window.removeEventListener("keydown", handleUserInteraction);
+      window.removeEventListener("touchstart", handleUserInteraction);
+    };
+  }, [hasUserInteracted]);
+
+  // Initialize all audio tracks - start them muted/silently
+
+  useEffect(() => {
+    if (audioInitializedRef.current) return;
+
+    const audio = getGlobalAudio();
+
+    // Clear any previous game selection
+    audio.clearGameSelection();
+
+    // Register waiting room music
+    audio.register({
+      id: "waitingRoom",
+      url: "/sounds/waitingRoom.mp3",
+      loop: true,
+      fadeDuration: 500,
+    });
+    setTimeout(() => {
+      audio.fadeIn("waitingRoom", 1);
+    }, 100);
+    // Register countdown
+    audio.register({
+      id: "countdown",
+      url: "/sounds/countDown.mp3",
+      fadeDuration: 200,
+    });
+
+    // Register game music tracks
+    for (let i = 1; i <= 4; i++) {
+      audio.register({
+        id: `play${i}`,
+        url: `/sounds/play/play${i}.mp3`,
+        loop: true,
+        fadeDuration: 800,
+      });
+    }
+
+    // Register sound effects
+    audio.register({
+      id: "woosh",
+      url: "/sounds/whoosh.mp3",
+      fadeDuration: 0,
+    });
+
+    audioInitializedRef.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (showPreparation && preparationTime === 3 && hasUserInteracted) {
+      getGlobalAudio().play("countdown");
+    }
+  }, [showPreparation, preparationTime, hasUserInteracted]);
+
+  // Control waiting room music based on game state
+
+  useEffect(() => {
+    const audio = getGlobalAudio();
+
+    if (!gameStarted) {
+      // Make sure waiting room is playing
+      const waitingRoomEntry = audio["tracks"].get("waitingRoom");
+      if (waitingRoomEntry && waitingRoomEntry.audio.volume === 0) {
+        audio.fadeIn("waitingRoom", 1);
+      }
+    } else {
+      // Fade out waiting room when game starts
+      audio.fadeOut("waitingRoom");
+    }
+  }, [gameStarted]);
 
   useEffect(() => {
     loadGame();
   }, [gameCode]);
 
   useEffect(() => {
-    if (status === "loading") return; // still checking session
-
+    if (status === "loading") return;
     if (!session) {
       setShowLoginModal(true);
     } else {
@@ -107,7 +203,7 @@ export default function HostPlayroom() {
     };
   }, [socket]);
 
-  // Timer effects (keep these the same)
+  // Timer effects
   useEffect(() => {
     let timer: NodeJS.Timeout;
 
@@ -143,6 +239,7 @@ export default function HostPlayroom() {
       setShowAccessDenied(false);
     }
   }, [game, session]);
+
   useEffect(() => {
     if (!socket || !session || !playerUUID) return;
 
@@ -159,11 +256,12 @@ export default function HostPlayroom() {
     };
 
     const handlePlayersUpdate = ({ players }: { players: Player[] }) => {
-      // Animation logic
-      const newPlayerCount = players.filter((p) => !p.isHost).length;
+      // Filter out host more reliably
+      const nonHostPlayers = players.filter((p) => !p.isHost);
+      const newPlayerCount = nonHostPlayers.length;
       const oldPlayerCount = prevPlayerCountRef.current;
 
-      // Determine animation type
+      // Your existing animation logic...
       if (newPlayerCount > oldPlayerCount) {
         setAnimationClass("increasing");
         setPlayersBoxAnimation("updating");
@@ -171,30 +269,22 @@ export default function HostPlayroom() {
         setAnimationClass("decreasing");
         setPlayersBoxAnimation("flashing");
       } else {
-        // Check if any player became ready
-        const newReadyPlayers = players.filter((p) => p.isReady && !p.isHost);
+        const newReadyPlayers = nonHostPlayers.filter((p) => p.isReady);
         const oldReadyPlayers = prevPlayersRef.current.filter((p) => p.isReady && !p.isHost);
 
         if (newReadyPlayers.length > oldReadyPlayers.length) {
           setAnimationClass("rolling");
           setPlayersBoxAnimation("updating");
         } else if (players.length !== prevPlayersRef.current.length) {
-          // General update with glitch effect
           setAnimationClass("glitching");
         }
       }
 
-      // Update state
+      // Update state with filtered players for display if needed
       setPlayers(players);
-      setPlayerCount(newPlayerCount);
+      setPlayerCount(newPlayerCount); // This now only counts non-host players
       prevPlayerCountRef.current = newPlayerCount;
       prevPlayersRef.current = players;
-
-      // Clear animations after they complete
-      setTimeout(() => {
-        setAnimationClass("");
-        setPlayersBoxAnimation("");
-      }, 600);
     };
 
     const handleConnectEvent = () => handleConnect(gameCode);
@@ -208,7 +298,7 @@ export default function HostPlayroom() {
       socket.off("connect", handleConnectEvent);
       socket.off("playersUpdate", handlePlayersUpdate);
     };
-  }, [socket, gameCode, session]); // Added session dependency
+  }, [socket, gameCode, session]);
 
   // Timer sync with guests
   useEffect(() => {
@@ -239,7 +329,55 @@ export default function HostPlayroom() {
       setLoading(false);
     }
   };
+  // Function to start game music (only once at the beginning of the game)
 
+  const startGameMusic = () => {
+    const audio = getGlobalAudio();
+
+    // Fade out waiting room music (don't stop completely)
+    audio.fadeOut("waitingRoom");
+
+    // Start game music with random track selection
+    audio.startGameMusic();
+
+    // Store the selected track
+    const selectedTrack = audio.getSelectedGameTrack();
+    setSelectedGameTrack(selectedTrack);
+    gameMusicStartedRef.current = true;
+  };
+
+  // Function to resume game music (for subsequent questions)
+
+  const resumeGameMusic = () => {
+    const audio = getGlobalAudio();
+
+    // Play transition SFX
+    audio.play("woosh");
+
+    // Slight delay for transition impact
+    setTimeout(() => {
+      // Stop countdown if playing (but don't reset its position)
+      const countdownEntry = audio["tracks"].get("countdown");
+      if (countdownEntry && countdownEntry.isPlaying) {
+        countdownEntry.audio.pause();
+        countdownEntry.audio.volume = 0;
+        countdownEntry.isPlaying = false;
+      }
+
+      // Resume the previously selected game music from where it left off
+      const selectedTrack = audio.getSelectedGameTrack();
+      if (selectedTrack) {
+        const trackEntry = audio["tracks"].get(selectedTrack);
+        if (trackEntry) {
+          // Don't reset currentTime, just resume playing
+          trackEntry.audio.play().catch(console.error);
+          trackEntry.isPlaying = true;
+          audio["currentlyPlaying"] = selectedTrack;
+          audio.fadeIn(selectedTrack, 1);
+        }
+      }
+    }, 200);
+  };
   const startQuestionAnimation = (questionIndex: number) => {
     setIsQuestionGrowing(true);
     setShowQuestionContent(true);
@@ -256,11 +394,17 @@ export default function HostPlayroom() {
     }, 3500); // Grow duration
   };
 
+  // Replace your current startQuestion function with this:
   const startQuestion = () => {
     if (!session) {
       setShowLoginModal(true);
       return;
     }
+
+    const audio = getGlobalAudio();
+
+    // Fade out waiting room (don't stop completely)
+    audio.fadeOut("waitingRoom");
 
     if ((game as any).hostId && session.user.id !== (game as any).hostId) {
       setShowAccessDenied(true);
@@ -269,7 +413,7 @@ export default function HostPlayroom() {
 
     setShowCorrectAnswer(false);
 
-    // ⬅ HERE: set timer from DB
+    // Set timer from DB
     setTimeLeft(currentQuestion?.time ?? 10);
 
     setShowQuestionContent(false);
@@ -280,14 +424,24 @@ export default function HostPlayroom() {
     setShowPreparation(true);
     setPreparationTime(3);
 
+    // Countdown will be handled by the useEffect above
     const prepInterval = setInterval(() => {
       setPreparationTime((prev) => {
         if (prev <= 1) {
           clearInterval(prepInterval);
           setShowPreparation(false);
+
+          // Start game music (only on first question) and start question animation
+          if (!gameMusicStartedRef.current) {
+            startGameMusic();
+          } else {
+            resumeGameMusic();
+          }
+
           startQuestionAnimation(currentQuestionIndex);
           return 0;
         }
+
         return prev - 1;
       });
     }, 1000);
@@ -297,12 +451,14 @@ export default function HostPlayroom() {
     setTimerActive(true);
   };
 
+  // Replace your current nextQuestion function with this:
   const nextQuestion = () => {
+    const audio = getGlobalAudio();
     const newIndex = currentQuestionIndex + 1;
     setCurrentQuestionIndex(newIndex);
     setShowCorrectAnswer(false);
 
-    // ⬅ use DB timer for next question
+    // use DB timer for next question
     setTimeLeft(game!.questions[newIndex].time ?? 10);
 
     setShowQuestionContent(false);
@@ -311,7 +467,25 @@ export default function HostPlayroom() {
       setShowAnswersButton(true);
     }
 
-    startQuestionAnimation(newIndex);
+    setShowPreparation(true);
+    setPreparationTime(3);
+
+    const prepInterval = setInterval(() => {
+      setPreparationTime((prev) => {
+        if (prev <= 1) {
+          clearInterval(prepInterval);
+          setShowPreparation(false);
+
+          // Resume game music for subsequent questions
+          resumeGameMusic();
+          startQuestionAnimation(newIndex);
+
+          return 0;
+        }
+
+        return prev - 1;
+      });
+    }, 1000);
   };
 
   const showResults = async () => {
@@ -320,13 +494,39 @@ export default function HostPlayroom() {
       return;
     }
 
+    let existing = null;
+
+    try {
+      existing = await getGameResult(gameCode);
+    } catch (err: any) {
+      // ⭐ Only ignore 404
+      if (err?.response?.status === 404) {
+        existing = null; // ok → continue normally
+      } else {
+        console.error("Unexpected error fetching game result:", err);
+        return; // stop only for real errors
+      }
+    }
+
+    // 2️⃣ If result exists, delete it
+    if (existing) {
+      try {
+        await deleteGameResult(gameCode);
+      } catch (err) {
+        console.error("Failed to delete existing game result:", err);
+        // DON’T STOP the flow — continue anyway
+      }
+    }
+
     try {
       // 1️⃣ End game for all players
       socket!.emit("endGame", { gameCode });
 
       // 2️⃣ Prepare results to save
+      const code = Array.isArray(gameCode) ? gameCode[0] : gameCode;
+
       const playersToSave = leaderboard.map((p) => ({
-        playerId: p.id, // 👈 use the real ObjectId coming from backend
+        playerId: p.id,
         name: p.name,
         avatar: p.avatar,
         score: p.score || 0,
@@ -335,21 +535,32 @@ export default function HostPlayroom() {
         answers: p.answers || [],
       }));
 
-      const code = Array.isArray(gameCode) ? gameCode[0] : gameCode;
-
-      // 3️⃣ Save to MongoDB
+      // 3️⃣ Let backend create gameResult
       // await createGameResult(code, session.user.id, playersToSave);
 
-      // 4️⃣ Go to results page
-      // router.push(`/leaderboard/${gameCode}`);
+      // 4️⃣ Go to leaderboard
+      // router.push(`/leaderboard/${code}`);
     } catch (err) {
-      console.error("Failed to save game result:", err);
+      console.error("Failed finishing results:", err);
     }
   };
 
   const endGame = () => {
     if (!socket || !session) return;
-    console.log("🛑 Host ending game");
+
+    const audio = getGlobalAudio();
+
+    // Stop all music
+    audio.stop("waitingRoom");
+    for (let i = 1; i <= 4; i++) {
+      audio.stop(`play${i}`);
+    }
+
+    // Clear game music selection for next game
+    audio.clearGameSelection();
+    gameMusicStartedRef.current = false;
+    setSelectedGameTrack(null);
+
     socket.emit("endGame", { gameCode });
     router.push(`/leaderboard/${gameCode}`);
   };
@@ -357,9 +568,23 @@ export default function HostPlayroom() {
   useEffect(() => {
     if (!socket || !session) return;
 
+    // Replace the handleGameEnded socket listener in your useEffect with this:
     const handleGameEnded = ({ leaderboard }: { leaderboard: Player[] }) => {
-      console.log("🏁 Final leaderboard received:", leaderboard);
       setLeaderboard(leaderboard);
+
+      const audio = getGlobalAudio();
+
+      // Stop all music
+      audio.stop("waitingRoom");
+      for (let i = 1; i <= 4; i++) {
+        audio.stop(`play${i}`);
+      }
+
+      // Clear game music selection for next game
+      audio.clearGameSelection();
+      gameMusicStartedRef.current = false;
+      setSelectedGameTrack(null);
+
       router.push(`/leaderboard/${gameCode}`);
     };
 
@@ -479,6 +704,23 @@ export default function HostPlayroom() {
               </button>
             </div>
           )}
+        </div>
+
+        {/* Audio Toggle Component */}
+        <div className={styles.audioToggleContainer}>
+          <AudioToggle
+            size={50}
+            colors={{
+              background: "rgb(39, 39, 39)",
+              hoverBackground: "rgb(61, 61, 61)",
+              icon: "#fff",
+            }}
+            position={{
+              bottom: "30px",
+              right: "30px",
+            }}
+            showHover={true}
+          />
         </div>
       </div>
 

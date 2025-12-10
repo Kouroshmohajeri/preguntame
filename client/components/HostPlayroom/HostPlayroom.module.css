@@ -1205,3 +1205,15 @@
   pointer-events: none;
   opacity: 0.5;
 }
+/* Add to HostPlayroom.module.css */
+.audioToggleContainer {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 1000;
+}
+
+/* Make sure the container doesn't interfere with other elements */
+.container {
+  position: relative;
+}

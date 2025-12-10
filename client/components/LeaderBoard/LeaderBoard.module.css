@@ -64,7 +64,7 @@
 .podiumSection {
   width: 100%;
   max-width: 1000px;
-  margin-bottom: 2rem;
+  margin-bottom: 7.8rem;
   position: relative;
   z-index: 2;
 }
@@ -417,6 +417,7 @@
   margin-right: 0.2rem;
   font-weight: 900;
 }
+
 
 /* Number Avatar Generator */
 .numberAvatar1 { background: #E53E3E !important; }
@@ -804,4 +805,729 @@
   .loginText span {
     font-size: 0.75rem;
   }
+}
+/* Performance Section - UPDATED */
+.performanceSection {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 2;
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.sectionIcon {
+  color: #D69E2E;
+  margin-bottom: 1rem;
+  animation: pulse 2s infinite;
+}
+
+.sectionTitle {
+  font-size: 1.5rem; /* Reduced from 1.8rem */
+  font-weight: 900;
+  color: #2D3748;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.5px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.sectionSubtitle {
+  font-size: 0.8rem; /* Reduced from 0.9rem */
+  color: #4A5568;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.performanceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Reduced from 300px */
+  gap: 1.2rem; /* Reduced from 1.5rem */
+  margin-bottom: 2rem;
+}
+
+.performanceCard {
+  background: #FFFFFF;
+  border: 2px solid #2D3748; /* Reduced from 3px */
+  border-radius: 0;
+  padding: 1rem; /* Reduced from 1.2rem */
+  box-shadow: 3px 3px 0 #2D3748; /* Reduced from 4px */
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  position: relative;
+  min-height: 320px; /* Fixed minimum height */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+.performanceCard:nth-child(1) { animation-delay: 0.1s; }
+.performanceCard:nth-child(2) { animation-delay: 0.2s; }
+.performanceCard:nth-child(3) { animation-delay: 0.3s; }
+.performanceCard:nth-child(4) { animation-delay: 0.4s; }
+.performanceCard:nth-child(5) { animation-delay: 0.5s; }
+.performanceCard:nth-child(6) { animation-delay: 0.6s; }
+.performanceCard:nth-child(7) { animation-delay: 0.7s; }
+.performanceCard:nth-child(8) { animation-delay: 0.8s; }
+
+.performanceCard:hover {
+  transform: translateY(-3px); /* Reduced from -4px */
+  box-shadow: 4px 4px 0 #2D3748; /* Reduced from 6px */
+  border-color: #D69E2E;
+}
+
+.performanceCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 49%, rgba(45, 55, 72, 0.03) 50%, transparent 51%);
+  background-size: 5px 5px; /* Reduced from 6px */
+  pointer-events: none;
+}
+
+.performanceCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem; /* Reduced from 1rem */
+  margin-bottom: 1rem; /* Reduced from 1.2rem */
+  padding-bottom: 0.8rem; /* Reduced from 1rem */
+  border-bottom: 1px solid #E2E8F0; /* Reduced from 2px */
+  flex-shrink: 0; /* Prevent header from growing */
+}
+
+.performanceRank {
+  width: 36px; /* Reduced from 40px */
+  height: 36px; /* Reduced from 40px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem; /* Reduced from 1.2rem */
+  font-weight: 900;
+  border: 2px solid #2D3748;
+  color: #FFFAF7;
+  box-shadow: 2px 2px 0 #2D3748;
+  font-family: 'Nunito', sans-serif;
+  flex-shrink: 0; /* Prevent rank from shrinking */
+}
+
+.rank1 {
+  background: #D69E2E;
+  border-color: #B7791F;
+}
+
+.rank2 {
+  background: #718096;
+  border-color: #4A5568;
+}
+
+.rank3 {
+  background: #ED8936;
+  border-color: #DD6B20;
+}
+
+.rank4, .rank5, .rank6, .rank7, .rank8 {
+  background: #4A5568;
+}
+
+.performancePlayer {
+  flex: 1;
+  min-width: 0; /* Allow text truncation */
+}
+
+.performanceName {
+  font-size: 1rem; /* Reduced from 1.1rem */
+  font-weight: 800;
+  color: #2D3748;
+  margin-bottom: 0.2rem; /* Reduced from 0.3rem */
+  display: flex;
+  align-items: center;
+  gap: 0.4rem; /* Reduced from 0.5rem */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.performanceName svg {
+  color: #4A5568;
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  width: 16px; /* Fixed width */
+  height: 16px; /* Fixed height */
+}
+
+.performanceYouTag {
+  color: #3182CE;
+  font-size: 0.7rem; /* Reduced from 0.8rem */
+  font-weight: 700;
+  margin-left: 0.2rem; /* Reduced from 0.3rem */
+  flex-shrink: 0; /* Prevent tag from shrinking */
+}
+
+.performanceScore {
+  font-size: 0.8rem; /* Reduced from 0.9rem */
+  color: #4A5568;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem; /* Reduced from 0.3rem */
+  white-space: nowrap;
+}
+
+.performanceScore svg {
+  color: #D69E2E;
+  width: 14px; /* Fixed width */
+  height: 14px; /* Fixed height */
+  flex-shrink: 0;
+}
+
+.performanceStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* Reduced from 1rem */
+  flex: 1; /* Take remaining space */
+  min-height: 0; /* Allow scrolling if needed */
+  overflow: hidden; /* Hide overflow */
+}
+
+.statRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem; /* Reduced from 1rem */
+}
+
+.statItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem; /* Reduced from 0.8rem */
+  min-width: 0; /* Allow text truncation */
+}
+
+.statIcon {
+  flex-shrink: 0;
+  width: 28px; /* Reduced from 32px */
+  height: 28px; /* Reduced from 32px */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F7FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 3px; /* Reduced from 4px */
+}
+
+.statIcon svg {
+  color: #4A5568;
+  width: 16px; /* Fixed width */
+  height: 16px; /* Fixed height */
+}
+
+.statContent {
+  flex: 1;
+  min-width: 0; /* Allow text truncation */
+  overflow: hidden;
+}
+
+.statLabel {
+  font-size: 0.65rem; /* Reduced from 0.7rem */
+  color: #718096;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px; /* Reduced from 0.5px */
+  margin-bottom: 0.1rem; /* Reduced from 0.2rem */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statValue {
+  font-size: 1rem; /* Reduced from 1.1rem */
+  font-weight: 900;
+  color: #2D3748;
+  margin-bottom: 0.2rem; /* Reduced from 0.3rem */
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: -0.3px; /* Reduced from -0.5px */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statSubtext {
+  font-size: 0.6rem; /* Reduced from 0.65rem */
+  color: #A0AEC0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statBar {
+  width: 100%;
+  height: 5px; /* Reduced from 6px */
+  background: #E2E8F0;
+  border-radius: 2px; /* Reduced from 3px */
+  overflow: hidden;
+  margin-top: 0.2rem; /* Reduced from 0.3rem */
+}
+
+.statBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, #38A169, #68D391);
+  border-radius: 2px; /* Reduced from 3px */
+  transition: width 1s ease-out;
+}
+
+/* Title Icon */
+.titleIcon {
+  vertical-align: middle;
+  margin-right: 0.4rem; /* Reduced from 0.5rem */
+  color: #D69E2E;
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+}
+
+/* Player Icons */
+.playerIcon {
+  vertical-align: middle;
+  margin-right: 0.2rem; /* Reduced from 0.3rem */
+  color: #4A5568;
+  width: 12px; /* Fixed width */
+  height: 12px; /* Fixed height */
+}
+
+.trophyIcon {
+  vertical-align: middle;
+  margin-right: 0.2rem; /* Reduced from 0.3rem */
+  color: #D69E2E;
+  width: 14px; /* Fixed width */
+  height: 14px; /* Fixed height */
+}
+
+/* Icons in Stats Grid */
+.statsGrid .statIcon {
+  background: none;
+  border: none;
+  width: auto;
+  height: auto;
+  margin-bottom: 0.3rem; /* Reduced from 0.5rem */
+}
+
+.statsGrid .statIcon svg {
+  color: #2D3748;
+  width: 20px; /* Fixed width */
+  height: 20px; /* Fixed height */
+}
+
+/* Make container more compact */
+.container {
+  width: 100vw;
+  min-height: 100vh;
+  background: #FFFAF7;
+  padding: 0.8rem; /* Reduced from 1rem */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Make players grid more compact */
+.playersGrid {
+  width: 100%;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); /* Reduced from 250px */
+  gap: 0.8rem; /* Reduced from 1rem */
+  margin-bottom: 1.5rem; /* Reduced from 2rem */
+  position: relative;
+  z-index: 2;
+}
+
+.playerCard {
+  background: #FFFFFF;
+  border: 2px solid #2D3748; /* Reduced from 3px */
+  border-radius: 0;
+  padding: 0.8rem; /* Reduced from 1rem */
+  display: flex;
+  align-items: center;
+  gap: 0.6rem; /* Reduced from 0.8rem */
+  box-shadow: 3px 3px 0 #2D3748; /* Reduced from 4px */
+  transition: all 0.2s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInUp 0.6s ease-out forwards;
+  position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .performanceGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Even smaller on mobile */
+  }
+  
+  .statRow {
+    grid-template-columns: 1fr;
+    gap: 0.6rem; /* Reduced from 0.8rem */
+  }
+  
+  .sectionTitle {
+    font-size: 1.2rem; /* Reduced from 1.4rem */
+  }
+  
+  .performanceCard {
+    padding: 0.8rem; /* Reduced from 1rem */
+    min-height: 300px; /* Smaller minimum height on mobile */
+  }
+  
+  .performanceCardHeader {
+    gap: 0.6rem; /* Reduced from 0.8rem */
+  }
+  
+  .performanceRank {
+    width: 32px; /* Reduced from 36px */
+    height: 32px; /* Reduced from 36px */
+    font-size: 0.9rem; /* Reduced from 1rem */
+  }
+  
+  .performanceName {
+    font-size: 0.9rem; /* Reduced from 1rem */
+  }
+  
+  .performanceName svg {
+    width: 14px; /* Smaller on mobile */
+    height: 14px;
+  }
+  
+  .statItem {
+    gap: 0.5rem; /* Reduced from 0.6rem */
+  }
+  
+  .statIcon {
+    width: 24px; /* Smaller on mobile */
+    height: 24px;
+  }
+  
+  .statIcon svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .statValue {
+    font-size: 0.9rem; /* Smaller on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .sectionTitle {
+    font-size: 1rem; /* Even smaller */
+  }
+  
+  .performanceGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .performanceCard {
+    padding: 0.6rem; /* Even more compact */
+    min-height: 280px; /* Even smaller */
+  }
+  
+  .performanceName svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statLabel {
+    font-size: 0.6rem; /* Even smaller */
+  }
+  
+  .statValue {
+    font-size: 0.85rem; /* Even smaller */
+  }
+}
+
+/* Keep existing animations and other styles */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); /* Reduced from 1.1 */
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px); /* Reduced from 20px */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Tooltip Styles */
+.tooltip {
+  position: fixed;
+  background: #2D3748;
+  border: 2px solid #FFD700;
+  color: #FFFAF7;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 #000;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -100%) translateY(-5px); /* Reduced from -10px */
+  transition: opacity 0.1s ease, transform 0.1s ease; /* Faster transition */
+  white-space: nowrap;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tooltipVisible {
+  opacity: 1;
+  transform: translate(-50%, -100%);
+  pointer-events: auto;
+}
+
+/* Make hovered elements more responsive */
+.performanceName,
+.statValue,
+.statSubtext,
+.podiumName,
+.playerName,
+.statsGrid .statValue {
+  cursor: help;
+  position: relative;
+  transition: background-color 0.1s ease;
+}
+
+.performanceName:hover,
+.statValue:hover,
+.statSubtext:hover {
+  background-color: rgba(255, 215, 0, 0.05);
+}
+.playerRow {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.35s ease forwards;
+  animation-delay: calc(var(--i) * 120ms);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Add these styles to your existing LeaderBoard.module.css */
+
+/* Avatar styles */
+.podiumAvatarContainer,
+.podiumAvatarContainerFirst {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.podiumAvatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #D69E2E;
+  background-color: #f0f0f0;
+}
+
+.podiumAvatarFirst {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #F6E05E;
+  background-color: #f0f0f0;
+}
+
+.playerAvatarContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playerAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #CBD5E0;
+  background-color: #f0f0f0;
+}
+
+.performanceAvatarContainer {
+  margin-right: 12px;
+}
+
+.performanceAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #2D3748;
+  background-color: #f0f0f0;
+}
+
+/* Rank badge styles */
+.podiumRankBadge,
+.podiumRankBadgeFirst {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: white;
+  border-radius: 50%;
+  padding: 3px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.podiumRankBadgeFirst {
+  bottom: 0;
+  right: 0;
+}
+
+.playerRankBadge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  min-height: 20px;
+}
+
+.performanceRankBadge {
+  margin-left: 8px;
+}
+
+.rankNumber {
+  font-size: 10px;
+  font-weight: bold;
+  color: #2D3748;
+  padding: 2px 4px;
+}
+
+.topTenRank {
+  color: #805AD5;
+  font-weight: 900;
+}
+
+.goldIcon {
+  color: #F6E05E;
+}
+
+.silverIcon {
+  color: #CBD5E0;
+}
+
+.bronzeIcon {
+  color: #ED8936;
+}
+
+.performanceScoreRank {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+}
+
+/* Podium player alignment */
+.podiumPlayer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Performance card header */
+.performanceCardHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.performancePlayer {
+  flex: 1;
+}
+/* Add to LeaderBoard.module.css */
+
+/* See Details Button in Performance Cards */
+.seeDetailsContainer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 2px solid #E2E8F0;
+  display: flex;
+  justify-content: center;
+}
+
+.seeDetailsButton {
+  background: #2D3748;
+  color: #FFFAF7;
+  border: 2px solid #2D3748;
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.seeDetailsButton:hover {
+  background: #FFFAF7;
+  color: #2D3748;
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 #2D3748;
+}
+
+/* Update performanceCard to use flex column */
+.performanceCard {
+  background: #FFFFFF;
+  border: 2px solid #2D3748;
+  border-radius: 0;
+  padding: 1rem;
+  box-shadow: 3px 3px 0 #2D3748;
+  transition: all 0.3s ease;
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  position: relative;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column; /* This ensures button stays at bottom */
+  overflow: hidden;
 }

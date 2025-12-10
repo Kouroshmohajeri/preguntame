@@ -97,6 +97,25 @@
   box-shadow: 2px 2px 0 #000;
 }
 
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatarContainer {
+  border: 3px solid #000;
+  border-radius: 50%;
+  padding: 2px;
+  background: #fff;
+  box-shadow: 3px 3px 0 #000;
+}
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 /* Main Content */
 .main {
   max-width: 1200px;
@@ -179,6 +198,10 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   border-right: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .tab:last-child {
@@ -193,6 +216,25 @@
 .tabActive {
   background: #000;
   color: #fff;
+}
+
+/* Notification Badge */
+.notificationBadge {
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.4rem;
+  border-radius: 10px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 /* Content Area */
@@ -316,7 +358,7 @@
   flex-wrap: wrap;
 }
 
-.playButton, .shareButton, .editButton, .deleteButton {
+.playButton, .shareButton, .editButton, .deleteButton, .exportButton {
   padding: 0.5rem 1rem;
   font-weight: 700;
   font-size: 0.8rem;
@@ -342,14 +384,39 @@
   color: #fff;
 }
 
+.exportButton {
+  background: #9d4edd;
+  color: #fff;
+}
+
 .deleteButton {
   background: #ff6b6b;
   color: #fff;
 }
 
-.playButton:hover, .shareButton:hover, .editButton:hover, .deleteButton:hover {
+.playButton:hover, .shareButton:hover, .editButton:hover, .exportButton:hover, .deleteButton:hover {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 #000;
+}
+
+.playButton:hover {
+  background: #38c2b7;
+}
+
+.shareButton:hover {
+  background: #ffc952;
+}
+
+.editButton:hover {
+  background: #0f7a9c;
+}
+
+.exportButton:hover {
+  background: #7b2cbf;
+}
+
+.deleteButton:hover {
+  background: #ff5252;
 }
 
 /* Empty State */
@@ -396,154 +463,387 @@
   box-shadow: 2px 2px 0 #000;
 }
 
-/* Analytics & Settings Placeholders */
-.analyticsSection, .settingsSection {
-  padding: 3rem 2rem;
+/* Notifications Section */
+.notificationsSection {
+  padding: 0;
 }
 
-.analyticsPlaceholder, .settingsPlaceholder {
+.notificationsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.notificationsHeader .sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.titleIcon {
+  margin-right: 0.5rem;
+}
+
+.unreadCount {
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  margin-left: 0.75rem;
+  vertical-align: middle;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.notificationsActions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.markAllButton, .clearAllButton {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #fff;
+  border: 2px solid #000;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.markAllButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.markAllButton:hover:not(:disabled) {
+  background: #38c2b7;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.clearAllButton {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.clearAllButton:hover:not(:disabled) {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.markAllButton:disabled, .clearAllButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 2px 2px 0 #000;
+}
+
+/* Notifications List */
+.notificationsList {
+  padding: 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.notificationCard {
+  background: #fff;
+  border: 3px solid #000;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.notificationCard:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.notificationCard.unread {
+  background: #f8f9ff;
+  border-left: 6px solid #4ecdc4;
+  animation: pulseUnread 2s infinite;
+}
+
+@keyframes pulseUnread {
+  0% { border-left-color: #4ecdc4; }
+  50% { border-left-color: #38c2b7; }
+  100% { border-left-color: #4ecdc4; }
+}
+
+.notificationIcon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.notificationTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+.notificationTime {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 600;
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.notificationMessage {
+  color: #333;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+.notificationType {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.typeBadge {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: white;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #000;
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* Game code badge */
+.gameCodeBadge {
+  background: #000;
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* Game invitation action buttons */
+.gameInvitationActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.acceptButton, .declineButton {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.acceptButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.acceptButton:hover {
+  background: #38c2b7;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.declineButton {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.declineButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.notificationActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.markReadButton, .deleteNotificationButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+}
+
+.markReadButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.markReadButton:hover {
+  background: #38c2b7;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.deleteNotificationButton {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.deleteNotificationButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* Empty Notifications */
+.emptyNotifications {
   text-align: center;
+  padding: 4rem 2rem;
+  background: #fff;
+  border: 3px solid #000;
+  margin: 1rem;
+  box-shadow: 4px 4px 0 #000;
 }
 
-.placeholderIcon {
+.emptyNotifications .emptyIcon {
   font-size: 4rem;
   margin-bottom: 1rem;
+  color: #ddd;
 }
 
-.placeholderTitle {
+.emptyNotifications .emptyTitle {
   font-size: 1.5rem;
   font-weight: 800;
   color: #000;
   margin-bottom: 0.5rem;
 }
 
-.placeholderText {
+.emptyNotifications .emptyText {
   color: #666;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.emptyTips {
+  background: #f8f9fa;
+  border: 2px solid #000;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: left;
   max-width: 400px;
   margin: 0 auto;
+  box-shadow: 2px 2px 0 #000;
 }
 
-/* Footer */
-.footer {
-  background: #fffaf4;
-  border-top: 4px solid #000;
-  padding: 1rem;
-  margin-top: 2rem;
-}
-
-.footerContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.footerText {
-  color: #666;
+.emptyTips p {
+  margin: 0.5rem 0;
+  color: #555;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
-.footerVersion {
-  color: #999;
+.emptyTips p:before {
+  content: "• ";
+  color: #4ecdc4;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+/* Notifications Stats */
+.notificationsStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #fffaf4;
+  border-top: 3px solid #000;
+  margin-top: 1rem;
+}
+
+.notificationsStats .statItem {
+  text-align: center;
+  padding: 1rem;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.notificationsStats .statNumber {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.notificationsStats .statLabel {
   font-size: 0.8rem;
+  color: #666;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .headerContent {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .logoSection {
-    justify-content: center;
-  }
-
-  .statsGrid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .tabContainer {
-    flex-direction: column;
-  }
-
-  .tab {
-    border-right: none;
-    border-bottom: 3px solid #000;
-  }
-
-  .tab:last-child {
-    border-bottom: none;
-  }
-
-  .sectionHeader {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .sectionActions {
-    justify-content: center;
-  }
-
-  .gameHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .gameStats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .gameActions {
-    justify-content: center;
-  }
-
-  .footerContent {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .statsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .main {
-    padding: 1rem 0.5rem;
-  }
-
-  .gamesList {
-    padding: 1rem;
-  }
-
-  .gameCard {
-    padding: 1rem;
-  }
-}
-
-/* Retro scan lines effect */
-.contentArea::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(0, 0, 0, 0.02) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.3;
-}
 /* Settings Section */
 .settingsSection {
   padding: 2rem;
@@ -590,6 +890,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
+  align-items: center;
 }
 
 .profileName {
@@ -609,10 +911,39 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: #666;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
   background: #f8f9fa;
   border: 2px solid #000;
   border-radius: 4px;
+  box-shadow: 2px 2px 0 #000;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Logout Button */
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #ff6b6b;
+  border: 2px solid #000;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.logoutButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
   box-shadow: 2px 2px 0 #000;
 }
 
@@ -736,8 +1067,120 @@ input:checked + .toggleSlider:before {
   transform: translateX(26px);
 }
 
+/* Footer */
+.footer {
+  background: #fffaf4;
+  border-top: 4px solid #000;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footerText {
+  color: #666;
+  font-weight: 600;
+}
+
+.footerVersion {
+  color: #999;
+  font-size: 0.8rem;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logoSection {
+    justify-content: center;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tabContainer {
+    flex-direction: column;
+  }
+
+  .tab {
+    border-right: none;
+    border-bottom: 3px solid #000;
+  }
+
+  .tab:last-child {
+    border-bottom: none;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sectionActions {
+    justify-content: center;
+  }
+
+  .gameHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .gameStats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .gameActions {
+    justify-content: center;
+  }
+
+  .footerContent {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .notificationsHeader {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .notificationsActions {
+    justify-content: center;
+  }
+  
+  .notificationCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .notificationHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .notificationActions {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+  
+  .notificationsStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .settingsGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -758,9 +1201,52 @@ input:checked + .toggleSlider:before {
     gap: 1rem;
     text-align: center;
   }
+
+  .logoutButton {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .profileDetail {
+    max-width: 100%;
+    padding: 0.6rem;
+  }
 }
 
 @media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 1rem 0.5rem;
+  }
+
+  .gamesList {
+    padding: 1rem;
+  }
+
+  .gameCard {
+    padding: 1rem;
+  }
+
+  .notificationsStats {
+    grid-template-columns: 1fr;
+  }
+  
+  .notificationCard {
+    padding: 1rem;
+  }
+  
+  .notificationIcon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .notificationTitle {
+    font-size: 1rem;
+  }
+
   .profileCard,
   .privacyCard {
     padding: 1rem;
@@ -772,5 +1258,361 @@ input:checked + .toggleSlider:before {
   
   .privacyTitle {
     font-size: 1.1rem;
+  }
+
+  .logoutButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .profileDetail {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* Mobile responsive for game invitation buttons */
+  .gameInvitationActions {
+    flex-direction: column;
+  }
+  
+  .acceptButton, .declineButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Retro scan lines effect */
+.contentArea::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.02) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}
+/* Add to existing Dashboard.module.css */
+
+/* Search Container */
+.searchContainer {
+  position: relative;
+  flex: 1;
+  max-width: 300px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border: 2px solid #000;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 2px 2px 0 #4ecdc4;
+}
+
+.searchInput::placeholder {
+  color: #999;
+  font-weight: 600;
+}
+
+.clearSearchButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clearSearchButton:hover {
+  color: #ff6b6b;
+  background: #f0f0f0;
+}
+
+/* Filter and Sort Container */
+.filterSortContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.filterSortGroup {
+  position: relative;
+}
+
+/* Filter and Sort Buttons */
+.filterButton, .sortButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 2px solid #000;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  min-width: 160px;
+  justify-content: space-between;
+}
+
+.filterButton:hover, .sortButton:hover {
+  background: #4ecdc4;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.filterButton:active, .sortButton:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0 #000;
+}
+
+/* Dropdowns */
+.filterDropdown, .sortDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  z-index: 100;
+  min-width: 200px;
+  animation: dropdownAppear 0.2s ease;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Filter and Sort Options */
+.filterOption, .sortOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  text-align: left;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #eee;
+}
+
+.filterOption:last-child, .sortOption:last-child {
+  border-bottom: none;
+}
+
+.filterOption:hover, .sortOption:hover {
+  background: #f8f9fa;
+  color: #000;
+}
+
+.filterOptionActive, .sortOptionActive {
+  background: #4ecdc4 !important;
+  color: #000 !important;
+  font-weight: 800;
+}
+
+/* Clear Filters Button */
+.clearFiltersButton {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #ff6b6b;
+  color: #fff;
+  border: 2px solid #000;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+.clearFiltersButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* Active Filters Display */
+.activeFilters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: #f8f9fa;
+  border-bottom: 2px solid #000;
+  flex-wrap: wrap;
+}
+
+.activeFiltersLabel {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activeFilterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4ecdc4;
+  color: #000;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid #000;
+  border-radius: 20px;
+  box-shadow: 1px 1px 0 #000;
+  text-transform: uppercase;
+}
+
+.removeFilterButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.removeFilterButton:hover {
+  background: #000;
+  color: #fff;
+}
+
+.gamesCount {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Update Section Actions for new layout */
+.sectionActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Update empty state for filtered results */
+.emptyState .emptyText {
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+/* Mobile Responsive Updates */
+@media (max-width: 768px) {
+  .sectionActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .searchContainer {
+    max-width: 100%;
+  }
+  
+  .filterSortContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .filterButton, .sortButton {
+    min-width: 140px;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .filterDropdown, .sortDropdown {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 300px;
+  }
+  
+  .activeFilters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .gamesCount {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterSortContainer {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .filterSortGroup {
+    width: 100%;
+  }
+  
+  .filterButton, .sortButton {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .clearFiltersButton {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .activeFilterTag {
+    font-size: 0.7rem;
   }
 }

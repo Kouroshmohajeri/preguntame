@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import gameResultRoutes from "./routes/gameResultRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -33,6 +34,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/gameResults", gameResultRoutes);
+app.use("/api/gameResults", gameResultRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 server.listen(PORT, "0.0.0.0", () =>
   console.log(`✅ Server running on :${PORT}`)

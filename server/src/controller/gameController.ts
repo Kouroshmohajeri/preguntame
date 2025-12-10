@@ -34,7 +34,7 @@ export const GameController = {
       const game = await GameRepository.createGame(title, questions, hostId);
       await UserRepository.incrementGamesCreated(hostId);
 
-      const gameUrl = `${process.env.CLIENT_URL}/play/${game.gameCode}`;
+      const gameUrl = `https://preguntame.eu/play/guest/${game.gameCode}`;
       const qrCode = await QRCode.toDataURL(gameUrl);
 
       return res.status(201).json({ game, qrCode, url: gameUrl });
@@ -105,6 +105,68 @@ export const GameController = {
       return res.status(500).json({ error: "Failed to update game" });
     }
   },
+  async cloneGame(req: Request, res: Response) {
+    try {
+      const { code } = req.params;
+      const { hostId } = req.body;
+
+      if (!hostId) {
+        return res.status(400).json({ error: "hostId is required" });
+      }
+
+      // Validate hostId as ObjectId
+      if (!hostId.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ error: "Invalid hostId" });
+      }
+
+      // Get original game
+      const originalGame = await GameRepository.getGameByCode(code);
+      if (!originalGame) {
+        return res.status(404).json({ error: "Game not found" });
+      }
+
+      // Ensure host owns original game
+      // if (originalGame.hostId.toString() !== hostId) {
+      //   return res
+      //     .status(403)
+      //     .json({ error: "Not authorized to clone this game" });
+      // }
+
+      // Deep clone questions & answers
+      const clonedQuestions = originalGame.questions.map((q: any) => ({
+        text: q.text,
+        order: q.order,
+        time: q.time,
+        answers: q.answers.map((a: any) => ({
+          text: a.text,
+          correct: a.correct,
+        })),
+      }));
+
+      // Create new game
+      const clonedGame = await GameRepository.createGame(
+        `${originalGame.title} (Copy)`,
+        clonedQuestions,
+        hostId
+      );
+
+      await UserRepository.incrementGamesCreated(hostId);
+
+      const gameUrl = `${process.env.CLIENT_URL}/play/${clonedGame.gameCode}`;
+      const qrCode = await QRCode.toDataURL(gameUrl);
+
+      return res.status(201).json({
+        message: "Game cloned successfully",
+        game: clonedGame,
+        url: gameUrl,
+        qrCode,
+      });
+    } catch (error) {
+      console.error("❌ cloneGame error:", error);
+      return res.status(500).json({ error: "Failed to clone game" });
+    }
+  },
+
   async getGamesByHost(req: Request, res: Response) {
     try {
       const { hostId } = req.params;

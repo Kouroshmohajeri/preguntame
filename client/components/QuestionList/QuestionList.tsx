@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import styles from "./QuestionList.module.css";
 import { Question } from "../types";
+import { useSession } from "next-auth/react";
+import LoginModal from "../LoginModal/LoginModal";
 
 interface QuestionListProps {
   questions: Question[];
@@ -11,9 +13,12 @@ interface QuestionListProps {
   onDeleteQuestion: (index: number) => void;
   onSelectQuestion: (index: number) => void;
   onPublish: (title: string) => void;
+  onClearAll: () => void;
   publishedData: { gameUrl: string; qrCode: string } | null;
   initialTitle?: string;
   isEditMode?: boolean;
+  gameTitle: string;
+  setGameTitle: (title: string) => void;
 }
 
 export default function QuestionList({
@@ -25,22 +30,39 @@ export default function QuestionList({
   onSelectQuestion,
   onPublish,
   publishedData,
+  onClearAll,
   initialTitle = "",
   isEditMode = false,
+  gameTitle, // parent-controlled title
+  setGameTitle,
 }: QuestionListProps) {
   const [newQuestion, setNewQuestion] = useState("");
-  const [gameTitle, setGameTitle] = useState(initialTitle);
+  // local editable title (keeps user's local edits safe, but synced with parent)
+  const [localTitle, setLocalTitle] = useState<string>(gameTitle || initialTitle || "");
   const [selectedTime, setSelectedTime] = useState<number>(10);
   const [customTime, setCustomTime] = useState<string>("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showTimeSelector, setShowTimeSelector] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasValidationRun, setHasValidationRun] = useState(false);
+  const { data: session } = useSession();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [pendingPublish, setPendingPublish] = useState(false);
 
-  // Update game title when initialTitle changes (for edit mode)
+  // keep localTitle in sync when parent restores title (e.g. from localStorage)
   useEffect(() => {
-    setGameTitle(initialTitle);
-  }, [initialTitle]);
+    // only update local when parent changed (avoid overwriting user's typing)
+    if ((gameTitle || initialTitle || "") !== localTitle) {
+      setLocalTitle(gameTitle || initialTitle || "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameTitle, initialTitle]);
+
+  // If user types, update both local and parent so parent saves draft
+  const handleTitleChange = (value: string) => {
+    setLocalTitle(value);
+    setGameTitle(value);
+  };
 
   // Pre-set time options
   const timeOptions = [
@@ -50,6 +72,18 @@ export default function QuestionList({
     { value: 30, label: "30s" },
     { value: -1, label: "Custom" },
   ];
+
+  // Resume publish after successful login
+  useEffect(() => {
+    if (session && pendingPublish) {
+      setPendingPublish(false);
+      // small delay ensures session state is ready
+      setTimeout(() => {
+        handlePublish();
+      }, 50);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
 
   const handleQuestionChange = (text: string) => {
     setNewQuestion(text);
@@ -63,13 +97,22 @@ export default function QuestionList({
 
     let actualTime = selectedTime;
     if (showCustomInput && customTime) {
-      const customTimeValue = parseInt(customTime);
+      const customTimeValue = parseInt(customTime, 10);
       if (!isNaN(customTimeValue) && customTimeValue > 0 && customTimeValue <= 300) {
         actualTime = customTimeValue;
       }
     }
 
+    // Add the question
     onAddQuestion(newQuestion.trim(), actualTime);
+
+    // Select the new question — call onSelectQuestion after next tick so parent can update
+    // We use a short timeout so React has time to append the new question in parent state.
+    setTimeout(() => {
+      onSelectQuestion(questions.length); // new question will be at previous length index
+    }, 0);
+
+    // Reset UI
     setNewQuestion("");
     setSelectedTime(10);
     setCustomTime("");
@@ -97,7 +140,7 @@ export default function QuestionList({
 
   const handleCustomTimeChange = (value: string) => {
     setCustomTime(value);
-    const timeValue = parseInt(value);
+    const timeValue = parseInt(value, 10);
     if (!isNaN(timeValue) && timeValue > 0 && timeValue <= 300) {
       setSelectedTime(timeValue);
     }
@@ -109,7 +152,18 @@ export default function QuestionList({
 
   const handlePublish = async () => {
     setHasValidationRun(true);
-    if (!gameTitle.trim()) return alert("Please enter a game title!");
+
+    // Make sure parent has latest title
+    setGameTitle(localTitle);
+
+    // Check login first
+    if (!session) {
+      setPendingPublish(true); // remember the user wanted to publish
+      setShowLoginModal(true); // open login modal
+      return;
+    }
+
+    if (!localTitle.trim()) return alert("Please enter a game title!");
     if (questions.length === 0) return alert("Please add at least one question!");
 
     const questionsWithoutCorrect = questions.filter((q) => !q.answers.some((a) => a.correct));
@@ -142,16 +196,22 @@ export default function QuestionList({
 
     setLoading(true);
     try {
-      onPublish(gameTitle);
+      onPublish(localTitle);
       if (!isEditMode) {
-        setGameTitle("");
+        onClearAll();
+
+        setLocalTitle("");
         setNewQuestion("");
         setSelectedTime(10);
         setCustomTime("");
         setShowCustomInput(false);
         setShowTimeSelector(false);
         setHasValidationRun(false);
+        setGameTitle(""); // clear parent title too
       }
+      // parent saves draft / clears localStorage as needed
+      localStorage.removeItem("draftGame");
+      onClearAll();
     } catch (error) {
       console.error("Failed to publish game:", error);
       alert("Failed to publish game. Please try again.");
@@ -165,8 +225,8 @@ export default function QuestionList({
       {/* Game title */}
       <div className={styles.inputWrapper}>
         <input
-          value={gameTitle}
-          onChange={(e) => setGameTitle(e.target.value)}
+          value={localTitle}
+          onChange={(e) => handleTitleChange(e.target.value)}
           placeholder="Enter game title..."
           className={styles.input}
         />
@@ -275,7 +335,7 @@ export default function QuestionList({
         <button
           onClick={handlePublish}
           className={styles.publishButton}
-          disabled={loading || questions.length === 0 || !gameTitle.trim()}
+          disabled={loading || questions.length === 0 || !localTitle.trim()}
         >
           {loading
             ? isEditMode
@@ -297,6 +357,17 @@ export default function QuestionList({
             </strong>
           </div>
         )}
+
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => {
+            setShowLoginModal(false);
+            setPendingPublish(false);
+          }}
+          onLoginSuccess={() => {
+            setShowLoginModal(false);
+          }}
+        />
       </div>
     </div>
   );

@@ -37,7 +37,82 @@ export const UserController = {
       return res.status(500).json({ error: "Server error" });
     }
   },
+  async searchUsers(req: Request, res: Response) {
+    try {
+      const query = req.query.q as string;
+      const exclude = req.query.exclude as string; // <--- accepted from client
 
+      if (!query) return res.status(400).json([]);
+
+      const users = await UserRepository.searchUsersForAutocomplete(
+        query,
+        exclude
+      );
+
+      return res.status(200).json(users);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json([]);
+    }
+  },
+  // Add this to your userController.ts
+  async incrementGameGotCloned(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+      const { increment = 1 } = req.body; // Default to increment by 1
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      // Find the user by ID and increment gameGotCloned
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $inc: { gameGotCloned: increment },
+          $set: { updatedAt: new Date() },
+        },
+        { new: true } // Return the updated document
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `Game cloned count incremented for ${updatedUser.name}`,
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("❌ incrementGameGotCloned error:", error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  },
+  async decrementGamesCreated(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      const updatedUser = await UserRepository.decrementGamesCreated(userId);
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `gamesCreated decremented for user ${updatedUser.name}`,
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("❌ decrementGamesCreated error:", error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  },
   async getUser(req: Request, res: Response) {
     try {
       const { email } = req.params;

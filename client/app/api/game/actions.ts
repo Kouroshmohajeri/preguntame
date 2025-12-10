@@ -16,7 +16,13 @@ export const getGamesByHost = async (hostId: string) => {
   const response = await API.get(`/games/host/${hostId}`);
   return response.data;
 };
-//Update game
+
+// Clone a game
+export const cloneGame = async (gameCode: string, hostId: string) => {
+  const response = await API.post(`/games/clone/${gameCode}`, { hostId });
+  return response.data;
+};
+
 // Update game
 export const updateGame = async (
   gameCode: string,

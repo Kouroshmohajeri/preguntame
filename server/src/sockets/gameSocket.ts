@@ -319,6 +319,91 @@ export function registerGameSocket(io: Server, socket: Socket) {
   );
 
   // 🎮 Joining game
+  // socket.on(
+  //   "joinGame",
+  //   async ({ gameCode, playerName, avatar, playerUUID, isHost, hostId }) => {
+  //     socket.join(gameCode);
+
+  //     let room = await getRoom(gameCode);
+  //     const isLateJoin = room.gameStarted;
+
+  //     let existingPlayer = room.players[playerUUID];
+
+  //     if (existingPlayer) {
+  //       // Update avatar and name if they choose to customize mid-game
+  //       existingPlayer.name = playerName || existingPlayer.name;
+  //       existingPlayer.avatar = avatar || existingPlayer.avatar;
+  //       existingPlayer.id = socket.id;
+  //       // Update userId if host is reconnecting
+  //       if (isHost && hostId) {
+  //         existingPlayer.userId = hostId;
+  //       }
+  //     } else {
+  //       room.players[playerUUID] = {
+  //         id: socket.id,
+  //         name: playerName,
+  //         avatar,
+  //         isReady: false,
+  //         score: 0,
+  //         isHost: isHost && !room.hostId, // Only first player can be host
+  //         uuid: playerUUID, // Keep playerUUID for socket identification
+  //         userId: isHost && hostId ? hostId : undefined, // Store user MongoDB ObjectId for host
+  //         currentQuestion: isLateJoin ? room.currentQuestion || 0 : 0, // Track which question player should start from
+  //       };
+
+  //       // Set room.hostId to the user's MongoDB ObjectId (not UUID) - only for host
+  //       if (isHost && hostId) {
+  //         if (!room.hostId) {
+  //           room.hostId = hostId; // This should be the MongoDB ObjectId from session.user.id
+  //           console.log(`✅ Host joined with MongoDB ObjectId: ${hostId}`);
+  //         }
+  //       }
+  //     }
+
+  //     if (!room.viewers.includes(playerUUID)) room.viewers.push(playerUUID);
+
+  //     await saveRoom(gameCode, room);
+
+  //     io.to(gameCode).emit("playersUpdate", {
+  //       players: Object.values(room.players),
+  //       hostId: room.hostId,
+  //     });
+  //     io.to(gameCode).emit("viewerCountUpdate", {
+  //       count: room.viewers.length,
+  //     });
+
+  //     if (isLateJoin) {
+  //       socket.emit("joinOngoingGame", {
+  //         gameStarted: true,
+  //         currentQuestion: room.players[playerUUID].currentQuestion,
+  //       });
+  //     }
+  //   }
+  // );
+  // In the joinGame handler, add this check:
+  //Clean up function
+  async function cleanupDuplicatePlayers(room: Room): Promise<Room> {
+    const uniquePlayers: Record<string, Player> = {};
+
+    // Keep only the most recent player for each UUID
+    Object.values(room.players).forEach((player) => {
+      if (player.uuid) {
+        // If we already have this UUID, keep the one with the most recent socket.id
+        // (or you could choose based on other criteria like isReady status)
+        if (
+          !uniquePlayers[player.uuid] ||
+          player.id > uniquePlayers[player.uuid].id
+        ) {
+          uniquePlayers[player.uuid] = player;
+        }
+      }
+    });
+
+    room.players = uniquePlayers;
+    return room;
+  }
+
+  // Join game
   socket.on(
     "joinGame",
     async ({ gameCode, playerName, avatar, playerUUID, isHost, hostId }) => {
@@ -327,47 +412,63 @@ export function registerGameSocket(io: Server, socket: Socket) {
       let room = await getRoom(gameCode);
       const isLateJoin = room.gameStarted;
 
+      // Check if player with this UUID already exists
       let existingPlayer = room.players[playerUUID];
 
       if (existingPlayer) {
-        // Update avatar and name if they choose to customize mid-game
+        // Update existing player instead of creating new one
         existingPlayer.name = playerName || existingPlayer.name;
         existingPlayer.avatar = avatar || existingPlayer.avatar;
         existingPlayer.id = socket.id;
-        // Update userId if host is reconnecting
+        existingPlayer.isReady = false; // Reset ready status on rejoin
         if (isHost && hostId) {
           existingPlayer.userId = hostId;
         }
+        console.log(
+          `🔄 Updated existing player: ${playerName} (UUID: ${playerUUID})`
+        );
       } else {
+        // Create new player
+        const playerIsHost = Boolean(isHost && !room.hostId);
+        const playerUserId = isHost && hostId ? hostId : "";
+
         room.players[playerUUID] = {
           id: socket.id,
           name: playerName,
           avatar,
           isReady: false,
           score: 0,
-          isHost: isHost && !room.hostId, // Only first player can be host
-          uuid: playerUUID, // Keep playerUUID for socket identification
-          userId: isHost && hostId ? hostId : undefined, // Store user MongoDB ObjectId for host
-          currentQuestion: isLateJoin ? room.currentQuestion || 0 : 0, // Track which question player should start from
+          isHost: playerIsHost,
+          uuid: playerUUID,
+          userId: playerUserId,
+          currentQuestion: isLateJoin ? room.currentQuestion || 0 : 0,
         };
 
-        // Set room.hostId to the user's MongoDB ObjectId (not UUID) - only for host
-        if (isHost && hostId) {
-          if (!room.hostId) {
-            room.hostId = hostId; // This should be the MongoDB ObjectId from session.user.id
-            console.log(`✅ Host joined with MongoDB ObjectId: ${hostId}`);
-          }
+        if (isHost && hostId && !room.hostId) {
+          room.hostId = hostId;
         }
+        console.log(
+          `✅ Created new player: ${playerName} (UUID: ${playerUUID})`
+        );
       }
 
       if (!room.viewers.includes(playerUUID)) room.viewers.push(playerUUID);
 
+      // Clean up duplicates and save
+      room = await cleanupDuplicatePlayers(room); // <- Pass the room parameter here
       await saveRoom(gameCode, room);
+
+      // Emit unique players only
+      const nonHostPlayers = Object.values(room.players).filter(
+        (p) => !p.isHost
+      );
 
       io.to(gameCode).emit("playersUpdate", {
         players: Object.values(room.players),
         hostId: room.hostId,
+        playerCount: nonHostPlayers.length,
       });
+
       io.to(gameCode).emit("viewerCountUpdate", {
         count: room.viewers.length,
       });
@@ -380,7 +481,6 @@ export function registerGameSocket(io: Server, socket: Socket) {
       }
     }
   );
-
   // socket.on("startGame", async ({ gameCode }) => {
   //   const room = await getRoom(gameCode);
   //   if (!room) return;

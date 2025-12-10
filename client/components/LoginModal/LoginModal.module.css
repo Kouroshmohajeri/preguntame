@@ -22,6 +22,7 @@
   width: 90%;
   position: relative;
   animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1001;
 }
 
 .header {
@@ -340,4 +341,27 @@
   pointer-events: none;
   z-index: 1;
   opacity: 0.3;
+}
+.toastContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Update overlay z-index to be below toast */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Toast is 10000, modal is 1000 */
 }

@@ -1,0 +1,356 @@
+/* components/GameCodeModal/GameCodeModal.module.css */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal {
+  background: #fffaf4;
+  border: 4px solid #000;
+  box-shadow: 
+    8px 8px 0px #000,
+    0 0 0 4px #fffaf4;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.header {
+  background: #000;
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid #000;
+}
+
+.modalHeaderContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modalIcon {
+  color: #4ecdc4;
+  filter: drop-shadow(2px 2px 0px #000);
+}
+
+.pixelTitle {
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0px #4ecdc4;
+  animation: textGlitch 2s infinite;
+}
+
+.closeButton {
+  background: #fff;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: 700;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px #000;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background: #ff6b6b;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.content {
+  padding: 2rem;
+}
+
+.inputSection {
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.labelIcon {
+  color: #4ecdc4;
+}
+
+.inputContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.codeInput {
+  flex: 1;
+  border: 3px solid #000;
+  background: #fff;
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  font-family: monospace;
+}
+
+.codeInput:focus {
+  outline: none;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.cameraButton {
+  background: #000;
+  border: 3px solid #000;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  min-width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cameraButton:hover {
+  background: #fff;
+  color: #000;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.codeHint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.cameraSection {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #fff;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.cameraLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.cameraPreview {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: #000;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scanFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  height: 150px;
+  border: 2px solid #4ecdc4;
+  box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.3);
+  animation: scanPulse 2s infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qrIcon {
+  color: #4ecdc4;
+  opacity: 0.7;
+}
+
+.cameraHint {
+  font-size: 0.8rem;
+  color: #666;
+  text-align: center;
+}
+
+.errorMessage {
+  background: #ffe6e6;
+  border: 2px solid #ff6b6b;
+  color: #d00000;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 3px 3px 0px #ff6b6b;
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.submitButton, .cancelButton {
+  border: 3px solid #000;
+  background: #000;
+  color: #fff;
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 0px #000;
+  transition: all 0.2s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #4ecdc4;
+  border-color: #4ecdc4;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.submitButton:disabled {
+  background: #ccc;
+  border-color: #666;
+  cursor: not-allowed;
+  box-shadow: 4px 4px 0px #666;
+}
+
+.buttonIcon {
+  transition: transform 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) .buttonIcon {
+  transform: translateX(4px);
+}
+
+.cancelButton {
+  background: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.cancelButton:hover {
+  background: #fff;
+  color: #ff6b6b;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.mobileHint {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #e8f4fd;
+  border: 2px solid #4ecdc4;
+  color: #0066cc;
+  font-size: 0.9rem;
+  box-shadow: 3px 3px 0px #4ecdc4;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPop {
+  0% { 
+    transform: scale(0.5) rotate(-5deg);
+    opacity: 0;
+  }
+  70% { 
+    transform: scale(1.1) rotate(2deg);
+  }
+  100% { 
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes textGlitch {
+  0%, 100% {
+    text-shadow: 2px 2px 0px #4ecdc4, -1px -1px 0px #ff6b6b;
+  }
+  50% {
+    text-shadow: -2px -2px 0px #4ecdc4, 1px 1px 0px #ff6b6b;
+  }
+}
+
+@keyframes scanPulse {
+  0%, 100% {
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Retro scan lines effect */
+.modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(0, 0, 0, 0.03) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.3;
+}

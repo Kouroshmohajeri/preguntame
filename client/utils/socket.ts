@@ -15,7 +15,7 @@ class SocketManager {
 
   public initialize(): Socket {
     if (!this.socket) {
-      this.socket = io(process.env.NEXT_PUBLIC_SERVER_URL, {
+      this.socket = io(process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:4000", {
         transports: ["websocket"],
         autoConnect: false,
       });

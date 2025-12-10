@@ -24,10 +24,36 @@ export default function CreateGame() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState<number | null>(null);
   const { data: session, status } = useSession();
+  const [gameTitle, setGameTitle] = useState("");
+
   useEffect(() => {
     console.log("SESSION DATA:", session);
   }, [session]);
-  // ✅ Hold the published data to pass to QuestionList
+  useEffect(() => {
+    const saved = localStorage.getItem("draftGame");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setQuestions(parsed.questions || []);
+      setSelectedQuestionIndex(parsed.selectedQuestionIndex ?? null);
+      setGameTitle(parsed.title || "");
+    }
+  }, []);
+  useEffect(() => {
+    const data = {
+      title: gameTitle,
+      questions,
+      selectedQuestionIndex,
+    };
+    localStorage.setItem("draftGame", JSON.stringify(data));
+  }, [gameTitle, questions, selectedQuestionIndex]);
+  const clearAll = () => {
+    setQuestions([]);
+    setSelectedQuestionIndex(null);
+    setGameTitle("");
+    localStorage.removeItem("draftGame");
+  };
+
+  // Hold the published data to pass to QuestionList
   const [publishedData, setPublishedData] = useState<{
     gameUrl: string;
     qrCode: string;
@@ -100,6 +126,9 @@ export default function CreateGame() {
             onSelectQuestion={setSelectedQuestionIndex}
             onPublish={handlePublish}
             publishedData={publishedData}
+            gameTitle={gameTitle}
+            setGameTitle={setGameTitle}
+            onClearAll={clearAll}
           />
         </div>
       </div>

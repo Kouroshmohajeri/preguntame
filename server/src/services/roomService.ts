@@ -32,6 +32,22 @@ export async function deleteRoom(code: string) {
   await redis.del(ROOM_PREFIX + code);
 }
 
+// export async function addPlayer(code: string, player: Player) {
+//   const room = (await getRoom(code)) || {
+//     players: {},
+//     hostId: "",
+//     createdAt: new Date().toISOString(),
+//     viewers: [],
+//   };
+
+//   // assign host if none
+//   if (!room.hostId) room.hostId = player.id;
+//   player.isHost = room.hostId === player.id;
+
+//   room.players[player.id] = player;
+//   await saveRoom(code, room);
+//   return room;
+// }
 export async function addPlayer(code: string, player: Player) {
   const room = (await getRoom(code)) || {
     players: {},
@@ -57,10 +73,7 @@ export async function removePlayer(code: string, id: string) {
   room.viewers = room.viewers.filter((v) => v !== id);
 
   // delete room if empty
-  if (
-    Object.keys(room.players).length === 0 &&
-    room.viewers.length === 0
-  ) {
+  if (Object.keys(room.players).length === 0 && room.viewers.length === 0) {
     await deleteRoom(code);
     return;
   }
@@ -80,7 +93,11 @@ export async function addViewer(code: string, id: string) {
   return room;
 }
 
-export async function toggleReady(code: string, playerId: string, isReady: boolean) {
+export async function toggleReady(
+  code: string,
+  playerId: string,
+  isReady: boolean
+) {
   const room = await getRoom(code);
   if (!room || !room.players[playerId]) return;
   room.players[playerId].isReady = isReady;

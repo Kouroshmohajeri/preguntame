@@ -14,7 +14,32 @@ export const googleAuth = async (userData: {
 
 // Get user by email
 export const getUser = async (email: string) => {
-  const response = await API.get(`/users/${email}`);
+  const response = await API.get(`/users/credentials/${email}`);
+  return response.data;
+};
+
+// Search users by query (autocomplete)
+export const searchUsers = async (query: string, excludeEmail: string) => {
+  const response = await API.get(
+    `/users/search?q=${encodeURIComponent(query)}&exclude=${encodeURIComponent(excludeEmail)}`
+  );
+  return response.data;
+};
+
+// Increment host cloned game
+export const incrementGameCloned = async (userId: string, increment: number = 1) => {
+  console.log(userId);
+  const response = await API.put(`/users/${userId}/increment-game-cloned`, {
+    increment,
+  });
+  return response.data;
+};
+
+// Decrement gamesCreated
+export const decrementGamesCreated = async (userId: string, decrement: number = 1) => {
+  const response = await API.put(`/users/${userId}/decrement-games-created`, {
+    decrement,
+  });
   return response.data;
 };
 

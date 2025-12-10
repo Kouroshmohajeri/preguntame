@@ -1,0 +1,94 @@
+/* components/PixelLogo/PixelLogo.module.css */
+.pixelLogoContainer {
+  display: inline-flex;
+  position: relative;
+  font-family: "Courier New", monospace;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.pixelText {
+  color: #2D3748;
+  position: relative;
+  z-index: 2;
+  font-size: 14px;
+}
+
+.pixelLetter {
+  display: inline-block;
+  position: relative;
+  animation: pixelGlitch 3s infinite;
+}
+
+/* Different animation delays for each letter */
+.letterP { animation-delay: 0s; }
+.letterR { animation-delay: 0.15s; }
+.letterE { animation-delay: 0.3s; }
+.letterG { animation-delay: 0.45s; }
+.letterU { animation-delay: 0.6s; }
+.letterN { animation-delay: 0.75s; }
+.letterT { animation-delay: 0.9s; }
+.letterA { animation-delay: 1.05s; }
+.letterM { animation-delay: 1.2s; }
+.letterE2 { animation-delay: 1.35s; }
+.dot { animation-delay: 1.5s; color: #E53E3E; }
+.letterE3 { animation-delay: 1.65s; }
+.letterU2 { animation-delay: 1.8s; }
+
+.pixelTrail {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    #4ecdc4 20%, 
+    #E53E3E 50%, 
+    #4ecdc4 80%, 
+    transparent 100%);
+  transform: translateY(-50%);
+  z-index: 1;
+  opacity: 0;
+  animation: pixelTrail 3s infinite;
+  filter: blur(1px);
+}
+
+@keyframes pixelGlitch {
+  0%, 90%, 100% {
+    transform: translateY(0) scale(1);
+    color: #2D3748;
+    text-shadow: none;
+  }
+  92% {
+    transform: translateY(-2px) scale(1.1);
+    color: #4ecdc4;
+    text-shadow: 0 0 3px #4ecdc4;
+  }
+  94% {
+    transform: translateY(2px) scale(0.9);
+    color: #E53E3E;
+    text-shadow: 0 0 3px #E53E3E;
+  }
+  96% {
+    transform: translateY(0) scale(1);
+    color: #2D3748;
+    text-shadow: none;
+  }
+}
+
+@keyframes pixelTrail {
+  0%, 90%, 100% {
+    opacity: 0;
+    transform: translateY(-50%) scaleX(0);
+  }
+  92% {
+    opacity: 0.7;
+    transform: translateY(-50%) scaleX(1);
+  }
+  96% {
+    opacity: 0;
+    transform: translateY(-50%) scaleX(0);
+  }
+}

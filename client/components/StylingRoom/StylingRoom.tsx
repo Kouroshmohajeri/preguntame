@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import styles from "./StylingRoom.module.css";
 import { useSocket } from "@/context/SocketContext/SocketContext";
 import { v4 as uuidv4 } from "uuid";
+import { CrownSimple } from "@phosphor-icons/react";
 
 interface Player {
   id: string;
@@ -13,6 +14,7 @@ interface Player {
   score?: number;
   isHost: boolean;
   uuid: string;
+  userId?: string; // Add userId for host identification
 }
 
 const avatarStyles = [
@@ -56,6 +58,8 @@ export default function StylingRoom() {
   const [isHost, setIsHost] = useState(false);
   const [error, setError] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
+  // 🔊 Join sound
+  const joinSound = typeof window !== "undefined" ? new Audio("/sounds/joinroom.mp3") : null;
 
   // 🧩 Persistent identity per browser
   let playerUUID: string;
@@ -68,128 +72,164 @@ export default function StylingRoom() {
     }
   } else playerUUID = uuidv4();
 
+  // Check if user is already authenticated as host
+  const [checkingHostStatus, setCheckingHostStatus] = useState(true);
+
   const avatarUrl = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${
     playerName || "player"
   }&backgroundColor=${selectedColor.replace("#", "")}`;
 
   // 🔌 Handle socket lifecycle
-useEffect(() => {
-  if (!socket || !gameCode) return;
+  useEffect(() => {
+    if (!socket || !gameCode) return;
 
-  console.log("🔌 Setting up socket listeners for room:", gameCode);
-  
-  socket.emit("visitRoom", { gameCode });
+    console.log("🔌 Setting up socket listeners for room:", gameCode);
 
-  const handlePlayersUpdate = ({
-    players,
-    hostId,
-  }: {
-    players: Player[];
-    hostId: string;
-  }) => {
+    socket.emit("visitRoom", { gameCode });
 
-    setPlayers(players);
+    // In the handlePlayersUpdate function, add filtering:
+    const handlePlayersUpdate = ({ players, hostId }: { players: Player[]; hostId: string }) => {
+      // Filter out duplicate players by UUID
+      const uniquePlayers = players.filter(
+        (player, index, self) => index === self.findIndex((p) => p.uuid === player.uuid)
+      );
 
-    // Find current player by UUID instead of socket.id (more reliable)
-    const me = players.find((p) => p.uuid === playerUUID);
-    if (me) {
-      setIsReady(me.isReady);
-      setIsHost(me.isHost);
-      setCurrentPlayerId(me.id);
-      console.log("👤 Current player found:", me);
+      // Also remove any players without UUID (shouldn't happen but just in case)
+      const validPlayers = uniquePlayers.filter((p) => p.uuid);
+
+      setPlayers(validPlayers);
+
+      // Find current player by UUID instead of socket.id (more reliable)
+      const me = validPlayers.find((p) => p.uuid === playerUUID);
+      if (me) {
+        setIsReady(me.isReady);
+        setIsHost(me.isHost);
+        setCurrentPlayerId(me.id);
+        console.log("👤 Current player found:", me);
+
+        // If player is host, redirect to host page
+        if (me.isHost) {
+          console.log("🎮 Player is host, redirecting to host page");
+          router.push(`/play/host/${gameCode}`);
+        }
+      }
+
+      setCheckingHostStatus(false);
+    };
+
+    const handleViewerCount = ({ count }: { count: number }) => {
+      setViewerCount(count);
+    };
+
+    const handleGameStarted = () => {
+      router.push(`/play/guest/${gameCode}`);
+    };
+
+    // Auto-join if we have saved player info
+    const autoJoinIfPossible = () => {
+      const saved = localStorage.getItem("playerInfo");
+      if (!saved) {
+        console.log("❌ No saved player info, waiting for manual join");
+        setCheckingHostStatus(false);
+        return;
+      }
+
+      const playerData = JSON.parse(saved);
+      if (playerData?.name && !joined) {
+        const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
+          playerData.name
+        }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
+
+        socket.emit("joinGame", {
+          gameCode,
+          playerName: playerData.name,
+          avatar,
+          playerUUID,
+        });
+        setJoined(true);
+        setPlayerName(playerData.name);
+        setSelectedStyle(playerData.style || "avataaars");
+        setSelectedColor(playerData.color || colors[0]);
+      }
+
+      setCheckingHostStatus(false);
+    };
+
+    // Set up event listeners
+    socket.on("playersUpdate", handlePlayersUpdate);
+    socket.on("viewerCountUpdate", handleViewerCount);
+    socket.on("gameStarted", handleGameStarted);
+    socket.on("connect", autoJoinIfPossible);
+
+    // Auto-join if already connected
+    if (socket.connected) {
+      autoJoinIfPossible();
+    } else {
+      setCheckingHostStatus(false);
     }
+
+    // Cleanup
+    return () => {
+      socket.off("playersUpdate", handlePlayersUpdate);
+      socket.off("viewerCountUpdate", handleViewerCount);
+      socket.off("gameStarted", handleGameStarted);
+      socket.off("connect", autoJoinIfPossible);
+    };
+  }, [socket, gameCode, playerUUID, router, joined]);
+
+  // Function to handle host redirection
+  const checkIfUserIsHost = () => {
+    // Check if current user is the game creator/host
+    // This should check against the game data in your backend
+    // For now, we'll check localStorage or session for host status
+    const savedHostData = localStorage.getItem("hostGameCode");
+    if (savedHostData === gameCode) {
+      console.log("🎮 User is creator of this game, redirecting to host page");
+      router.push(`/play/host/${gameCode}`);
+      return true;
+    }
+    return false;
   };
 
-  const handleViewerCount = ({ count }: { count: number }) => {
+  // Check on component mount if user is host
+  useEffect(() => {
+    if (checkIfUserIsHost()) {
+      return;
+    }
+  }, [gameCode, router]);
 
-    setViewerCount(count);
-  };
-
-  const handleGameStarted = () => {
-
-    router.push(`/play/guest/${gameCode}`);
-  };
-
-  // Auto-join if we have saved player info
-  const autoJoinIfPossible = () => {
-    const saved = localStorage.getItem("playerInfo");
-    if (!saved) {
-      console.log("❌ No saved player info, waiting for manual join");
+  // 🧠 Removed duplicate auto-join useEffect (this was the main cause of overwriting players)
+  const handleJoinGame = () => {
+    if (!playerName.trim() || !socket) {
+      setError("Please enter a player name");
       return;
     }
 
-    const playerData = JSON.parse(saved);
-    if (playerData?.name && !joined) {
+    const avatar = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${playerName}&backgroundColor=${selectedColor.replace(
+      "#",
+      ""
+    )}`;
 
-      
-      const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
-        playerData.name
-      }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
+    const playerInfo = {
+      name: playerName,
+      avatar,
+      style: selectedStyle,
+      color: selectedColor,
+    };
 
-      socket.emit("joinGame", {
-        gameCode,
-        playerName: playerData.name,
-        avatar,
-        playerUUID,
-      });
-      setJoined(true);
-      setPlayerName(playerData.name);
-      setSelectedStyle(playerData.style || "avataaars");
-      setSelectedColor(playerData.color || colors[0]);
-    }
+    localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
+
+    socket.emit("joinGame", {
+      gameCode,
+      playerName: playerName.trim(),
+      avatar,
+      playerUUID,
+    });
+
+    setJoined(true);
+    joinSound?.play().catch(() => {});
+    setError("");
   };
-
-  // Set up event listeners
-  socket.on("playersUpdate", handlePlayersUpdate);
-  socket.on("viewerCountUpdate", handleViewerCount);
-  socket.on("gameStarted", handleGameStarted);
-  socket.on("connect", autoJoinIfPossible);
-
-  // Auto-join if already connected
-  if (socket.connected) {
-    autoJoinIfPossible();
-  }
-
-  // Cleanup
-  return () => {
-    socket.off("playersUpdate", handlePlayersUpdate);
-    socket.off("viewerCountUpdate", handleViewerCount);
-    socket.off("gameStarted", handleGameStarted);
-    socket.off("connect", autoJoinIfPossible);
-  };
-}, [socket, gameCode, playerUUID]); 
-
-  // 🧠 Removed duplicate auto-join useEffect (this was the main cause of overwriting players)
-const handleJoinGame = () => {
-  if (!playerName.trim() || !socket) {
-    setError("Please enter a player name");
-    return;
-  }
-
-  const avatar = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${playerName}&backgroundColor=${selectedColor.replace(
-    "#",
-    ""
-  )}`;
-
-  const playerInfo = {
-    name: playerName,
-    avatar,
-    style: selectedStyle,
-    color: selectedColor,
-  };
-
-  localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
-  
-  socket.emit("joinGame", { 
-    gameCode, 
-    playerName: playerName.trim(), 
-    avatar, 
-    playerUUID 
-  });
-  
-  setJoined(true);
-  setError("");
-};
 
   const handleReady = () => {
     if (!socket || !joined) return;
@@ -214,21 +254,25 @@ const handleJoinGame = () => {
     }
   };
 
+  // Show loading while checking host status
+  if (checkingHostStatus) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Checking room access...</div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.gameInfo}>
-          <div className={styles.gameTitle}>
-            STYLING ROOM {isHost && "👑"}
-          </div>
+          <div className={styles.gameTitle}>STYLING ROOM {isHost && "👑"}</div>
           <div className={styles.roomCode}>#{gameCode}</div>
           {isHost && <div className={styles.hostBadge}>HOST</div>}
         </div>
         <div className={styles.headerControls}>
-          <div
-            className={styles.instructionsButton}
-            onClick={() => setShowInstructions(true)}
-          >
+          <div className={styles.instructionsButton} onClick={() => setShowInstructions(true)}>
             ❓
           </div>
           {joined && (
@@ -246,11 +290,7 @@ const handleJoinGame = () => {
         <div className={styles.customizationPanel}>
           <div className={styles.panelTitle}>CREATE YOUR AVATAR</div>
           <div className={styles.avatarPreview}>
-            <img
-              src={avatarUrl}
-              alt="Your avatar"
-              className={styles.avatarImage}
-            />
+            <img src={avatarUrl} alt="Your avatar" className={styles.avatarImage} />
           </div>
 
           <div className={styles.inputGroup}>
@@ -315,9 +355,7 @@ const handleJoinGame = () => {
             </button>
           ) : (
             <button
-              className={`${styles.readyButton} ${
-                isReady ? styles.readyActive : ""
-              }`}
+              className={`${styles.readyButton} ${isReady ? styles.readyActive : ""}`}
               onClick={handleReady}
               disabled={!socket}
             >
@@ -332,7 +370,7 @@ const handleJoinGame = () => {
           <div className={styles.playersList}>
             {players.map((player) => (
               <div
-                key={player.uuid || player.id}
+                key={`${player.uuid}-${player.id}`}
                 className={`${styles.playerCard} ${
                   player.isReady ? styles.playerReady : ""
                 } ${player.isHost ? styles.playerHost : ""}`}
@@ -340,21 +378,20 @@ const handleJoinGame = () => {
                 <div className={styles.playerAvatar}>
                   <img src={player.avatar} alt={player.name} />
                   {player.isHost && (
-                    <div className={styles.hostCrown}>👑</div>
+                    <div className={styles.hostCrown}>
+                      <CrownSimple size={32} />
+                    </div>
                   )}
                 </div>
                 <div className={styles.playerInfo}>
                   <div className={styles.playerName}>
-                    {player.name}{" "}
-                    {player.id === currentPlayerId && "(You)"}
+                    {player.name} {player.id === currentPlayerId && "(You)"}
                   </div>
                   <div className={styles.playerStatus}>
                     {player.isReady ? "READY" : "WAITING..."}
                   </div>
                 </div>
-                {player.isReady && (
-                  <div className={styles.readyIndicator}>✓</div>
-                )}
+                {player.isReady && <div className={styles.readyIndicator}>✓</div>}
               </div>
             ))}
           </div>
@@ -372,11 +409,7 @@ const handleJoinGame = () => {
                 START GAME
               </button>
             )}
-            {!isHost && (
-              <div className={styles.waitingHost}>
-                Waiting for host to start...
-              </div>
-            )}
+            {!isHost && <div className={styles.waitingHost}>Waiting for host to start...</div>}
           </div>
         </div>
       </div>
