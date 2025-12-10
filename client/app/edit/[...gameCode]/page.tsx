@@ -185,6 +185,9 @@ export default function EditGame() {
             publishedData={publishedData}
             initialTitle={gameTitle}
             isEditMode={true}
+            gameTitle={gameTitle}
+            setGameTitle={setGameTitle}
+            onClearAll={() => {}}
           />
         </div>
       </div>
