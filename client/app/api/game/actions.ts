@@ -56,3 +56,9 @@ export const checkGameCode = async (code: string) => {
   const response = await API.get(`/games/check/${code}`);
   return response.data; // { exists: true | false }
 };
+
+// HostId indetifier
+export const getHostIdShort = async (gameCode: string) => {
+  const response = await API.get(`/games/hostid/${gameCode}`);
+  return response.data;
+};

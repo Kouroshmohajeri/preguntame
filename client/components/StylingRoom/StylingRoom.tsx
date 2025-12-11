@@ -5,6 +5,8 @@ import styles from "./StylingRoom.module.css";
 import { useSocket } from "@/context/SocketContext/SocketContext";
 import { v4 as uuidv4 } from "uuid";
 import { CrownSimple } from "@phosphor-icons/react";
+import { getHostIdShort } from "@/app/api/game/actions";
+import { useSession } from "next-auth/react";
 
 interface Player {
   id: string;
@@ -58,6 +60,7 @@ export default function StylingRoom() {
   const [isHost, setIsHost] = useState(false);
   const [error, setError] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
+  const { data: session } = useSession();
   // 🔊 Join sound
   const joinSound = typeof window !== "undefined" ? new Audio("/sounds/joinroom.mp3") : null;
 
@@ -83,35 +86,22 @@ export default function StylingRoom() {
   useEffect(() => {
     if (!socket || !gameCode) return;
 
-    console.log("🔌 Setting up socket listeners for room:", gameCode);
-
     socket.emit("visitRoom", { gameCode });
 
-    // In the handlePlayersUpdate function, add filtering:
+    // ---------- HANDLE PLAYERS UPDATE ----------
     const handlePlayersUpdate = ({ players, hostId }: { players: Player[]; hostId: string }) => {
-      // Filter out duplicate players by UUID
       const uniquePlayers = players.filter(
         (player, index, self) => index === self.findIndex((p) => p.uuid === player.uuid)
       );
 
-      // Also remove any players without UUID (shouldn't happen but just in case)
       const validPlayers = uniquePlayers.filter((p) => p.uuid);
-
       setPlayers(validPlayers);
 
-      // Find current player by UUID instead of socket.id (more reliable)
       const me = validPlayers.find((p) => p.uuid === playerUUID);
       if (me) {
         setIsReady(me.isReady);
         setIsHost(me.isHost);
         setCurrentPlayerId(me.id);
-        console.log("👤 Current player found:", me);
-
-        // If player is host, redirect to host page
-        if (me.isHost) {
-          console.log("🎮 Player is host, redirecting to host page");
-          router.push(`/play/host/${gameCode}`);
-        }
       }
 
       setCheckingHostStatus(false);
@@ -125,78 +115,81 @@ export default function StylingRoom() {
       router.push(`/play/guest/${gameCode}`);
     };
 
-    // Auto-join if we have saved player info
-    const autoJoinIfPossible = () => {
+    // ---------- AUTO JOIN ----------
+    const autoJoinIfPossible = async () => {
       const saved = localStorage.getItem("playerInfo");
       if (!saved) {
-        console.log("❌ No saved player info, waiting for manual join");
         setCheckingHostStatus(false);
         return;
       }
 
       const playerData = JSON.parse(saved);
-      if (playerData?.name && !joined) {
-        const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
-          playerData.name
-        }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
-
-        socket.emit("joinGame", {
-          gameCode,
-          playerName: playerData.name,
-          avatar,
-          playerUUID,
-        });
-        setJoined(true);
-        setPlayerName(playerData.name);
-        setSelectedStyle(playerData.style || "avataaars");
-        setSelectedColor(playerData.color || colors[0]);
+      if (!playerData?.name || joined) {
+        setCheckingHostStatus(false);
+        return;
       }
+
+      // --- CHECK HOST ONLY IF USER LOGGED IN ---
+      let isHost = false;
+      let hostIdToSend = null;
+
+      if (session?.user?.id) {
+        try {
+          const { hostIdShort } = await getHostIdShort(gameCode);
+          const userShort = session.user.id.slice(-5);
+          if (hostIdShort === userShort) {
+            isHost = true;
+            hostIdToSend = session.user.id;
+            router.push(`/play/host/${gameCode}`);
+          }
+        } catch (err) {
+          console.error("Failed checking hostIdShort", err);
+        }
+      }
+
+      // --- AVATAR BUILD ---
+      const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
+        playerData.name
+      }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
+
+      // --- EMIT JOIN GAME ---
+      socket.emit("joinGame", {
+        gameCode,
+        playerName: playerData.name,
+        avatar,
+        playerUUID,
+        isHost,
+        hostId: hostIdToSend,
+      });
+
+      // --- UPDATE STATE ---
+      setJoined(true);
+      setPlayerName(playerData.name);
+      setSelectedStyle(playerData.style || "avataaars");
+      setSelectedColor(playerData.color || colors[0]);
 
       setCheckingHostStatus(false);
     };
 
-    // Set up event listeners
+    // ---------- SOCKET LISTENERS ----------
     socket.on("playersUpdate", handlePlayersUpdate);
     socket.on("viewerCountUpdate", handleViewerCount);
     socket.on("gameStarted", handleGameStarted);
     socket.on("connect", autoJoinIfPossible);
 
-    // Auto-join if already connected
     if (socket.connected) {
       autoJoinIfPossible();
     } else {
       setCheckingHostStatus(false);
     }
 
-    // Cleanup
     return () => {
       socket.off("playersUpdate", handlePlayersUpdate);
       socket.off("viewerCountUpdate", handleViewerCount);
       socket.off("gameStarted", handleGameStarted);
       socket.off("connect", autoJoinIfPossible);
     };
-  }, [socket, gameCode, playerUUID, router, joined]);
-
-  // Function to handle host redirection
-  const checkIfUserIsHost = () => {
-    // Check if current user is the game creator/host
-    // This should check against the game data in your backend
-    // For now, we'll check localStorage or session for host status
-    const savedHostData = localStorage.getItem("hostGameCode");
-    if (savedHostData === gameCode) {
-      console.log("🎮 User is creator of this game, redirecting to host page");
-      router.push(`/play/host/${gameCode}`);
-      return true;
-    }
-    return false;
-  };
-
-  // Check on component mount if user is host
-  useEffect(() => {
-    if (checkIfUserIsHost()) {
-      return;
-    }
-  }, [gameCode, router]);
+  }, [socket, gameCode, playerUUID, session, joined]);
 
   // 🧠 Removed duplicate auto-join useEffect (this was the main cause of overwriting players)
   const handleJoinGame = () => {

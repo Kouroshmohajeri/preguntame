@@ -214,6 +214,31 @@ export const GameController = {
       return res.status(500).json({ error: "Failed to delete game" });
     }
   },
+  async getHostIdentifier(req: Request, res: Response) {
+    try {
+      const { gameCode } = req.params;
+      if (!gameCode) {
+        return res.status(400).json({ error: "Missing gameCode" });
+      }
+
+      const game = await GameRepository.getGameByCode(gameCode.toUpperCase());
+      if (!game) {
+        return res.status(404).json({ error: "Game not found" });
+      }
+
+      const hostId = game.hostId.toString();
+      const hostIdShort = hostId.slice(-5); // last 5 chars
+
+      return res.status(200).json({
+        hostIdShort,
+        gameCode,
+      });
+    } catch (err) {
+      console.error("❌ getHostIdentifier error:", err);
+      return res.status(500).json({ error: "Failed to fetch host ID" });
+    }
+  },
+
   async checkGameCode(req: Request, res: Response) {
     try {
       const { code } = req.params;

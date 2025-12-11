@@ -9,6 +9,7 @@ router.get("/", GameController.listGames);
 router.get("/check/:code", GameController.checkGameCode);
 router.get("/host/:hostId", GameController.getGamesByHost);
 router.put("/:code", GameController.updateGame);
+router.get("/hostid/:gameCode", GameController.getHostIdentifier);
 router.post("/clone/:code", GameController.cloneGame);
 router.get("/room/:code", async (req, res) => {
   const { code } = req.params;
