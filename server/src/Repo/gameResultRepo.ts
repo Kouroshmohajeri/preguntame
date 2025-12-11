@@ -2,6 +2,15 @@ import mongoose from "mongoose";
 import GameResult from "../models/GameResult.js";
 
 export const saveGameResult = async (resultData: any) => {
+  const { hostId } = resultData;
+
+  if (!hostId || !mongoose.Types.ObjectId.isValid(hostId)) {
+    console.error("❌ Invalid hostId:", hostId);
+    throw new Error("Invalid hostId");
+  }
+
+  resultData.hostId = new mongoose.Types.ObjectId(hostId);
+
   const result = new GameResult(resultData);
   return await result.save();
 };
@@ -12,6 +21,7 @@ export async function saveTheGameResult(
   hostId: any
 ) {
   // Convert hostId string to MongoDB ObjectId
+
   const hostObjectId = new mongoose.Types.ObjectId(hostId);
 
   return await GameResult.create({
@@ -21,6 +31,10 @@ export async function saveTheGameResult(
     createdAt: new Date(),
   });
 }
+export const checkGameCodeExists = async (gameCode: string) => {
+  return await GameResult.exists({ gameCode });
+};
+
 export const markPlayerAsAssigned = async (gameCode: string, uuid: string) => {
   return await GameResult.findOneAndUpdate(
     { gameCode, "players.uuid": uuid },

@@ -554,11 +554,7 @@ export function registerGameSocket(io: Server, socket: Socket) {
     }
 
     // finally, save using the resolved mongo id
-    await saveGameResult({
-      gameCode: finalGameCode,
-      hostId: hostMongoId,
-      players,
-    });
+    await saveTheGameResult(gameCode, players, hostId);
   };
 
   // End Game & finalize leaderboard

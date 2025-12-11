@@ -53,6 +53,18 @@ export const assignPlayer = async (gameCode: string, uuid: string) => {
   return res.data;
 };
 
+// Check if a gameCode exists (returns only 200 or 404)
+export const checkGameCode = async (gameCode: string) => {
+  try {
+    const res = await API.get(`/gameResults/check/${gameCode}`);
+    return res.status === 200; // true = exists
+  } catch (err: any) {
+    if (err.response?.status === 404) return false; // does not exist
+    throw err; // other errors should bubble up
+  }
+};
+
+// Deleting game result
 export const deleteGameResult = async (gameCode: string) => {
   const response = await API.delete(`/gameResults/${gameCode}`);
   return response.data;

@@ -4,6 +4,7 @@ import {
   getGameResultByCode,
   markPlayerAsAssigned,
   deleteGameResultByCode,
+  checkGameCodeExists,
 } from "../Repo/gameResultRepo.js";
 
 export const createGameResult = async (req: Request, res: Response) => {
@@ -35,6 +36,27 @@ export const deleteGameResult = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete GameResult" });
   }
 };
+export const checkGameResult = async (req: Request, res: Response) => {
+  try {
+    const { gameCode } = req.params;
+
+    if (!gameCode) {
+      return res.sendStatus(400);
+    }
+
+    const exists = await checkGameCodeExists(gameCode);
+
+    if (exists) {
+      return res.sendStatus(200);
+    } else {
+      return res.sendStatus(404);
+    }
+  } catch (err) {
+    console.error("❌ Failed to check game result", err);
+    return res.sendStatus(500);
+  }
+};
+
 export const assignPlayerStats = async (req: Request, res: Response) => {
   try {
     const { gameCode, uuid } = req.body;

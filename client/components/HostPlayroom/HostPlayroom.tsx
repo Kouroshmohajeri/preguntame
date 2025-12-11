@@ -9,7 +9,12 @@ import LoginModal from "../LoginModal/LoginModal";
 import RetroErrorModal from "../RetroErrorModal/RetroErrorModal";
 import AudioToggle from "../AudioToggle/AudioToggle";
 import { getGlobalAudio } from "@/utils/globalAudio";
-import { createGameResult, deleteGameResult, getGameResult } from "@/app/api/gameResult/actions";
+import {
+  checkGameCode,
+  createGameResult,
+  deleteGameResult,
+  getGameResult,
+} from "@/app/api/gameResult/actions";
 
 // import { createGameResult } from "@/app/api/gameResult/actions";
 
@@ -494,37 +499,27 @@ export default function HostPlayroom() {
       return;
     }
 
-    let existing = null;
-
     try {
-      existing = await getGameResult(gameCode);
-    } catch (err: any) {
-      // ⭐ Only ignore 404
-      if (err?.response?.status === 404) {
-        existing = null; // ok → continue normally
-      } else {
-        console.error("Unexpected error fetching game result:", err);
-        return; // stop only for real errors
-      }
-    }
-
-    // 2️⃣ If result exists, delete it
-    if (existing) {
-      try {
-        await deleteGameResult(gameCode);
-      } catch (err) {
-        console.error("Failed to delete existing game result:", err);
-        // DON’T STOP the flow — continue anyway
-      }
-    }
-
-    try {
-      // 1️⃣ End game for all players
-      socket!.emit("endGame", { gameCode });
-
-      // 2️⃣ Prepare results to save
       const code = Array.isArray(gameCode) ? gameCode[0] : gameCode;
 
+      // 1️⃣ Check if GameResult already exists
+      const exists = await checkGameCode(code);
+      console.log(exists);
+
+      // 2️⃣ If it exists → delete the old result
+      if (exists) {
+        try {
+          await deleteGameResult(code);
+        } catch (err) {
+          console.error("Failed to delete existing game result:", err);
+          // continue anyway
+        }
+      }
+
+      // 3️⃣ End game for all players (socket)
+      socket!.emit("endGame", { gameCode: code });
+
+      // 4️⃣ Build the players array for saving
       const playersToSave = leaderboard.map((p) => ({
         playerId: p.id,
         name: p.name,
@@ -535,11 +530,11 @@ export default function HostPlayroom() {
         answers: p.answers || [],
       }));
 
-      // 3️⃣ Let backend create gameResult
+      // 5️⃣ Create the NEW GameResult
       // await createGameResult(code, session.user.id, playersToSave);
 
-      // 4️⃣ Go to leaderboard
-      // router.push(`/leaderboard/${code}`);
+      // 6️⃣ Redirect to leaderboard
+      router.push(`/leaderboard/${code}`);
     } catch (err) {
       console.error("Failed finishing results:", err);
     }

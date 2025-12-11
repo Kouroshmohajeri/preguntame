@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   assignPlayerStats,
+  checkGameResult,
   createGameResult,
   deleteGameResult,
   getGameResult,
@@ -9,6 +10,7 @@ import {
 const router = Router();
 
 router.post("/", createGameResult);
+router.get("/check/:gameCode", checkGameResult);
 router.get("/:gameCode", getGameResult);
 router.post("/assign", assignPlayerStats);
 router.delete("/:gameCode", deleteGameResult);
