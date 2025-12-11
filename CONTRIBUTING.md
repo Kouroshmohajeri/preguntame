@@ -58,7 +58,7 @@ You can also pitch feature ideas via email:
 To set up the project locally:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/preguntame
+git clone https://github.com/Kouroshmohajeri/preguntame.git
 cd preguntame
 npm install
 npm run dev
