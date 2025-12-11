@@ -41,7 +41,7 @@ export default function ShareModal({
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const { showToast } = useToast();
 
-  const gameUrl = `${process.env.NEXT_PUBLIC_API_URL}/play/guest/${gameCode}`;
+  const gameUrl = `${process.env.NEXT_PUBLIC_SHARE_URL}/play/guest/${gameCode}`;
 
   // Generate QR code
   useEffect(() => {
@@ -120,8 +120,8 @@ export default function ShareModal({
       // Send notifications to each selected user
       for (const user of selectedUsers) {
         await sendNotification({
-          userId: user._id, // receiver
-          senderId: userId, // OR userId if you store it in context
+          userId: user._id,
+          senderId: userId,
           type: "game",
           title: "Game Invitation",
           message: `${email} shared the game "${gameTitle}" with you.`,
