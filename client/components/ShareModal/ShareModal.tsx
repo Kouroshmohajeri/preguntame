@@ -41,7 +41,7 @@ export default function ShareModal({
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState<string>("");
   const { showToast } = useToast();
 
-  const gameUrl = `${process.env.NEXT_PUBLIC_SHARE_URL}/play/guest/${gameCode}`;
+  const gameUrl = `${process.env.NEXT_PUBLIC_SHARE_URL}/${gameCode}`;
 
   // Generate QR code
   useEffect(() => {
