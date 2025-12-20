@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://preguntame.eu
+
+# Sitemaps
+Sitemap: https://preguntame.eu/sitemap.xml
