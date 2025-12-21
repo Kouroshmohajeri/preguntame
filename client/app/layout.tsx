@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/components/Providers/Providers";
 import { SocketProvider } from "@/context/SocketContext/SocketContext";
+import { Analytics } from "@vercel/analytics/next";
 
 // Load Nunito from local file
 const nunito = localFont({
