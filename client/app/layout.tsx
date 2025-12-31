@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     siteName: "Pregúntame",
     images: [
       {
-        url: "https://preguntame.eu/images/logo/logo.png",
+        url: "https://preguntame.eu/images/logo.png",
         width: 1200,
         height: 630,
         alt: "Pregúntame Real-Time Quiz Platform",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pregúntame | Real-Time Quiz Platform",
     description: "Create, join, and host real-time quiz games for free!",
-    images: ["https://preguntame.eu/images/logo/logo.png"],
+    images: ["https://preguntame.eu/images/logo.png"],
     creator: "@preguntame",
   },
   viewport: {
@@ -82,6 +82,13 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://preguntame.eu",
   },
+  icons: {
+    icon: [
+      { url: "/images/p.svg", type: "image/svg+xml" },
+      { url: "/images/logo.png", type: "image/png" },
+    ],
+    apple: [{ url: "/images/logo.png", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({
@@ -92,12 +99,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* Favicon */}
-        <link rel="icon" type="image/svg+xml" href="/images/p.svg" />
-        <link rel="icon" type="image/png" href="/images/logo/logo.png" />
         {/* Preconnect to improve performance */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+
+        {/* Apple Touch Icon (explicit fallback) */}
+        <link rel="apple-touch-icon" href="/images/logo.png" />
+
         {/* Structured Data for Rich Results */}
         <script
           type="application/ld+json"
@@ -125,7 +133,7 @@ export default function RootLayout({
                 "PDF export functionality",
                 "Mobile-responsive design",
               ],
-              screenshot: "https://preguntame.eu/images/logo/logo.png",
+              screenshot: "https://preguntame.eu/images/logo.png",
               author: {
                 "@type": "Organization",
                 name: "Web Gallery",
@@ -133,9 +141,12 @@ export default function RootLayout({
             }),
           }}
         />
+
         {/* Mobile Web App Capable */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="Pregúntame" />
+
         {/* Theme Color */}
         <meta name="theme-color" content="#fefaf6" />
       </head>
@@ -143,6 +154,7 @@ export default function RootLayout({
         <Providers>
           <SocketProvider>
             <main id="main-content">{children}</main>
+            <Analytics />
           </SocketProvider>
         </Providers>
       </body>

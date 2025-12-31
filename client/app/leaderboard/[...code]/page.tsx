@@ -178,7 +178,7 @@ export default function LeaderboardPage() {
           zIndex: 100,
         }}
       >
-        <PixelMenu currentPage="leaderboard" />
+        <PixelMenu currentPage="leaderboard" alwaysHamburger={false} />
       </div>
       {/* Confetti overlay - triggers automatically when showConfetti is true */}
       {showConfetti && (

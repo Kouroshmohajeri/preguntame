@@ -1,4 +1,293 @@
-/* components/PixelMenu/PixelMenu.module.css */
+/* ============================================
+   DESKTOP HEADER MENU (Horizontal - Minimal & Chic)
+   ============================================ */
+
+.desktopHeader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #FFFAF7;
+  border-bottom: 3px solid #2D3748;
+  z-index: 1000;
+  height: 74px; /* Fixed height for consistent spacing */
+}
+
+.desktopHeaderContent {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  height: 100%;
+}
+
+/* Logo */
+.desktopLogoLink {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.desktopLogoLink:hover {
+  transform: scale(1.05);
+}
+
+.desktopLogoImage {
+  display: block;
+}
+
+/* Navigation - Minimal Text Links */
+.desktopNav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.desktopMenuItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4A5568;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: "Nunito", sans-serif;
+  position: relative;
+}
+
+.desktopMenuItem::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #E53E3E;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.desktopMenuItem:hover {
+  color: #2D3748;
+}
+
+.desktopMenuItem:hover::after {
+  transform: scaleX(1);
+}
+
+.desktopMenuItem:hover .desktopMenuIcon {
+  color: #E53E3E;
+}
+
+.desktopMenuItem.desktopActive {
+  color: #2D3748;
+  font-weight: 900;
+}
+
+.desktopMenuItem.desktopActive::after {
+  transform: scaleX(1);
+  background: #4ECDC4;
+}
+
+.desktopMenuItem.desktopActive .desktopMenuIcon {
+  color: #4ECDC4;
+}
+
+.desktopMenuIcon {
+  color: #4A5568;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+
+/* User Section - Right Side */
+.desktopUserSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+  padding-left: 30px;
+  border-left: 2px solid #E2E8F0;
+}
+
+.desktopUserItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4A5568;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: "Nunito", sans-serif;
+  position: relative;
+  max-width: 200px;
+}
+
+.desktopUserItem::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #4ECDC4;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.desktopUserItem:hover {
+  color: #2D3748;
+}
+
+.desktopUserItem:hover::after {
+  transform: scaleX(1);
+}
+
+.desktopUserItem:hover .desktopMenuIcon {
+  color: #4ECDC4;
+}
+
+.desktopUserItem.desktopActive {
+  color: #2D3748;
+  font-weight: 900;
+}
+
+.desktopUserItem.desktopActive::after {
+  transform: scaleX(1);
+}
+
+/* Username Truncation */
+.desktopUserName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.desktopLogoutItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: 700;
+  color: #E53E3E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: "Nunito", sans-serif;
+  position: relative;
+}
+
+.desktopLogoutItem::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #E53E3E;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.desktopLogoutItem:hover {
+  color: #C53030;
+}
+
+.desktopLogoutItem:hover::after {
+  transform: scaleX(1);
+}
+
+.desktopLogoutItem svg {
+  color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.desktopLogoutItem:hover svg {
+  transform: translateX(2px);
+}
+
+/* Hide desktop header on tablet/mobile */
+@media (max-width: 1024px) {
+  .desktopHeader {
+    display: none;
+  }
+}
+
+/* Responsive adjustments for smaller desktops */
+@media (max-width: 1280px) {
+  .desktopHeaderContent {
+    padding: 12px 30px;
+    gap: 20px;
+  }
+
+  .desktopNav {
+    gap: 15px;
+  }
+
+  .desktopMenuItem,
+  .desktopUserItem,
+  .desktopLogoutItem {
+    font-size: 13px;
+  }
+
+  .desktopUserSection {
+    padding-left: 20px;
+    gap: 12px;
+  }
+
+  .desktopUserName {
+    max-width: 120px;
+  }
+}
+
+/* Large desktop optimization */
+@media (min-width: 1600px) {
+  .desktopHeaderContent {
+    padding: 15px 60px;
+    gap: 40px;
+  }
+
+  .desktopNav {
+    gap: 25px;
+  }
+
+  .desktopMenuItem,
+  .desktopUserItem,
+  .desktopLogoutItem {
+    font-size: 15px;
+  }
+
+  .desktopUserName {
+    max-width: 180px;
+  }
+}
+
+
+/* ============================================
+   HAMBURGER MENU (Mobile/Tablet + Optional Desktop)
+   ============================================ */
+
 .pixelMenuContainer {
   position: fixed;
   top: 20px;
@@ -6,24 +295,38 @@
   z-index: 1000;
 }
 
-/* Hamburger Styles */
+/* Always show hamburger */
+.pixelMenuContainer.alwaysHamburger {
+  display: block;
+}
+
+/* Show only on tablet/mobile when alwaysHamburger is false */
+.pixelMenuContainer.hamburgerOnly {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .pixelMenuContainer.hamburgerOnly {
+    display: block;
+  }
+}
+
+/* Hamburger Button - Brutalist Style */
 .hamburger {
   height: 50px;
   width: 57px;
-  transform: 0.2s;
   position: relative;
   cursor: pointer;
   background: #FFFAF7;
   border: 3px solid #2D3748;
-  border-radius: 8px;
   box-shadow: 4px 4px 0 #2D3748;
   transition: all 0.2s ease;
   z-index: 1001;
 }
 
 .hamburger:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 #2D3748;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #2D3748;
 }
 
 .hamburger .checkbox {
@@ -33,6 +336,7 @@
   width: 100%;
   cursor: pointer;
   z-index: 1002;
+  margin: 0;
 }
 
 .line {
@@ -82,7 +386,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(45, 55, 72, 0.7);
+  background: rgba(45, 55, 72, 0.85);
   backdrop-filter: blur(4px);
   z-index: 999;
 }
@@ -95,30 +399,31 @@
   animation: fadeOut 0.3s ease forwards;
 }
 
-/* Menu Content */
+/* Menu Content - Fixed Layout */
 .menuContent {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  width: 320px;
+  width: min(380px, 100vw);
   background: #FFFAF7;
-  border-left: 4px solid #2D3748;
-  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
-  padding: 80px 0 20px;
+  border-right: 4px solid #2D3748;
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .menuContent.contentAnimating {
-  animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .menuContent.contentClosing {
   animation: slideOut 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Pixel Grid Animation - FIXED */
+/* Pixel Grid Animation */
 .pixelGrid {
   position: absolute;
   top: 0;
@@ -129,7 +434,7 @@
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   pointer-events: none;
-  z-index: 1; /* Behind the content */
+  z-index: 1;
 }
 
 .pixel {
@@ -139,7 +444,6 @@
   animation: pixelAppear 0.8s ease forwards;
 }
 
-/* Fix pixel animation to fade out after appearing */
 @keyframes pixelAppear {
   0% {
     opacity: 0;
@@ -159,15 +463,25 @@
   }
 }
 
-/* Menu Header - Make sure it's above the pixels */
+/* Menu Header - Fixed at Top */
 .menuHeader {
-  padding: 5px 20px;
-  border-bottom: 2px solid #E2E8F0;
-  margin-bottom: 20px;
+  flex-shrink: 0;
+  padding: 20px;
+  border-bottom: 3px solid #2D3748;
   position: relative;
-  z-index: 2; /* Above the pixel grid */
-  background: #FFFAF7; 
+  z-index: 2;
+  background: #FFFAF7;
+  margin-top: 20px;
+}
 
+.menuHeader::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #4ECDC4, #E53E3E, #4ECDC4);
 }
 
 .userInfo {
@@ -183,98 +497,134 @@
 
 .userText {
   flex: 1;
+  min-width: 0;
 }
 
 .welcomeText {
-  font-size: 12px;
-  font-weight: 700;
-  color: #718096;
-  letter-spacing: 1px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #E53E3E;
+  letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
 
 .userName {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
   color: #2D3748;
   font-family: "Nunito", sans-serif;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .userEmail {
-  font-size: 12px;
+  font-size: 11px;
   color: #718096;
   margin-top: 2px;
   font-family: "Nunito", sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Menu Items - Make sure they're above the pixels */
+/* Menu Items Wrapper - Scrollable Section */
+.menuItemsWrapper {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 2;
+  padding: 20px 0;
+}
+
+/* Custom Scrollbar */
+.menuItemsWrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.menuItemsWrapper::-webkit-scrollbar-track {
+  background: #EDF2F7;
+  border-left: 2px solid #2D3748;
+}
+
+.menuItemsWrapper::-webkit-scrollbar-thumb {
+  background: #4ECDC4;
+  border: 2px solid #2D3748;
+}
+
+.menuItemsWrapper::-webkit-scrollbar-thumb:hover {
+  background: #E53E3E;
+}
+
+/* Menu Items */
 .menuItems {
   padding: 0 20px;
-  position: relative;
-  z-index: 2; /* Above the pixel grid */
 }
 
 .menuItem {
   position: relative;
-  margin-bottom: 8px;
-  background: #FFFFFF;
-  border: 2px solid #2D3748;
-  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #F7FAFC;
+  border: 3px solid #2D3748;
   cursor: pointer;
   transform: translateX(20px);
   opacity: 0;
   animation: menuItemAppear 0.3s ease forwards;
   transition: all 0.2s ease;
-  z-index: 3; /* Above everything */
+  z-index: 3;
+  box-shadow: 3px 3px 0 #2D3748;
 }
 
 .menuItem:hover {
-  transform: translateX(4px);
-  background: #EDF2F7;
-  box-shadow: 4px 4px 0 #2D3748;
+  transform: translate(-2px, -2px);
+  background: #4ECDC4;
+  box-shadow: 5px 5px 0 #2D3748;
+}
+
+.menuItem:hover .menuItemIcon,
+.menuItem:hover .menuItemText {
+  color: #FFFAF7;
 }
 
 .menuItem.active {
   background: #2D3748;
-  border: 3px solid #E53E3E; /* Red border for active item */
+  border-color: #E53E3E;
+  box-shadow: 4px 4px 0 #E53E3E;
 }
 
-.menuItem.active .menuItemText {
-  color: #FFFFFF;
-}
-
+.menuItem.active .menuItemText,
 .menuItem.active .menuItemIcon {
-  color: #FFFFFF;
+  color: #FFFAF7;
 }
 
-/* Log Out item - Red styling */
+/* Logout Item - Red Brutalist */
 .menuItem.logout {
-  border-color: #E53E3E; /* Red border for logout */
+  border-color: #E53E3E;
+  background: #FFF5F5;
 }
 
-.menuItem.logout .menuItemIcon {
-  color: #E53E3E; /* Red icon for logout */
-}
-
+.menuItem.logout .menuItemIcon,
 .menuItem.logout .menuItemText {
-  color: #E53E3E; /* Red text for logout */
+  color: #E53E3E;
 }
 
 .menuItem.logout:hover {
-  background: #FED7D7; /* Light red background on hover */
-  border-color: #E53E3E;
+  background: #E53E3E;
+  border-color: #2D3748;
 }
 
 .menuItem.logout:hover .menuItemIcon,
 .menuItem.logout:hover .menuItemText {
-  color: #C53030; /* Darker red on hover */
+  color: #FFFAF7;
 }
 
 .menuItemInner {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
   padding: 16px 20px;
   position: relative;
   z-index: 2;
@@ -283,65 +633,40 @@
 .menuItemIcon {
   color: #2D3748;
   flex-shrink: 0;
+  transition: color 0.2s ease;
 }
 
 .menuItemText {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   color: #2D3748;
   font-family: "Nunito", sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: color 0.2s ease;
 }
 
-.menuItemPixel {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  bottom: 4px;
-  border: 2px solid #2D3748;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.menuItem:hover .menuItemPixel {
-  opacity: 1;
-}
-
-/* Menu Footer - Make sure it's above the pixels */
-/* .menuFooter {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20px;
-  border-top: 2px solid #E2E8F0;
-  background: #FFFFFF;
-  z-index: 2; 
-}
-
-.menuFooterText {
-  font-size: 12px;
-  color: #718096;
-  font-weight: 600;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-family: "Nunito", sans-serif;
-} */
-/* Add to components/PixelMenu/PixelMenu.module.css */
-
-/* Menu Footer - Updated with animation */
+/* Menu Footer - Fixed at Bottom */
 .menuFooter {
+  flex-shrink: 0;
+  padding: 20px;
+  border-top: 3px solid #2D3748;
+  background: #FFFAF7;
+  z-index: 2;
+  position: relative;
+}
+
+.menuFooter::before {
+  content: "";
   position: absolute;
-  bottom: 0;
+  top: -3px;
   left: 0;
   right: 0;
-  padding: 15px 20px;
-  
-  z-index: 2; /* Above the pixel grid */
-  overflow: hidden;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    #4ECDC4 0%, 
+    #E53E3E 50%, 
+    #4ECDC4 100%);
 }
 
 .menuFooterContent {
@@ -349,70 +674,27 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 5px 0;
 }
 
-/* Add a subtle retro scan line effect */
-.menuFooter::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    #4ecdc4 25%, 
-    #E53E3E 50%, 
-    #4ecdc4 75%, 
-    transparent 100%);
-  opacity: 0.5;
-  animation: scanLine 4s linear infinite;
-}
-
-@keyframes scanLine {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
 /* Animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes fadeOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 
 @keyframes slideOut {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
 }
 
 @keyframes menuItemAppear {
@@ -426,7 +708,14 @@
   }
 }
 
-/* Responsive Styles */
+/* Responsive - Tablet */
+@media (max-width: 1024px) {
+  .menuContent {
+    width: min(350px, 100vw);
+  }
+}
+
+/* Responsive - Mobile */
 @media (max-width: 768px) {
   .pixelMenuContainer {
     top: 15px;
@@ -435,11 +724,33 @@
 
   .hamburger {
     height: 45px;
-    width: 45px;
+    width: 52px;
   }
 
   .menuContent {
-    width: 280px;
+    width: min(320px, 100vw);
+  }
+
+  .menuHeader {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .userIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .userName {
+    font-size: 16px;
+  }
+
+  .menuItemsWrapper {
+    padding: 15px 0;
+  }
+
+  .menuItems {
+    padding: 0 15px;
   }
 
   .menuItemInner {
@@ -449,8 +760,14 @@
   .menuItemText {
     font-size: 14px;
   }
+
+  .menuItemIcon {
+    width: 20px;
+    height: 20px;
+  }
 }
 
+/* Responsive - Small Mobile */
 @media (max-width: 480px) {
   .pixelMenuContainer {
     top: 10px;
@@ -459,11 +776,65 @@
 
   .hamburger {
     height: 40px;
-    width: 40px;
+    width: 47px;
   }
 
   .menuContent {
     width: 100%;
-    max-width: 280px;
+    max-width: 300px;
+  }
+
+  .menuHeader {
+    padding: 12px;
+    margin-top: 12px;
+  }
+
+  .welcomeText {
+    font-size: 10px;
+  }
+
+  .userName {
+    font-size: 14px;
+  }
+
+  .userEmail {
+    font-size: 10px;
+  }
+
+  .menuItems {
+    padding: 0 12px;
+  }
+
+  .menuItemInner {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .menuItemText {
+    font-size: 13px;
+  }
+}
+
+/* Desktop Large Screens */
+@media (min-width: 1440px) {
+  .desktopHeaderContent {
+    max-width: 1600px;
+  }
+
+  .desktopMenuItem {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+
+  .menuContent {
+    width: 420px;
+  }
+
+  .menuItemInner {
+    padding: 18px 24px;
+  }
+
+  .menuItemText {
+    font-size: 16px;
   }
 }
