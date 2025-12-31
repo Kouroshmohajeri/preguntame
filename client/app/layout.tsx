@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "@/components/Providers/Providers";
@@ -12,7 +12,13 @@ const nunito = localFont({
   weight: "500",
   style: "normal",
 });
-
+// View Port
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: "#fefaf6",
+};
 // Comprehensive SEO metadata
 export const metadata: Metadata = {
   title: "Pregúntame | Real-Time Quiz Platform - Interactive Live Trivia Game",
@@ -67,11 +73,6 @@ export const metadata: Metadata = {
     description: "Create, join, and host real-time quiz games for free!",
     images: ["https://preguntame.eu/images/logo.png"],
     creator: "@preguntame",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
   },
   verification: {
     // verification codes here when available
