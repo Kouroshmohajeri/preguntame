@@ -1,0 +1,274 @@
+.contactContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+
+
+/* Contact Info Cards */
+.contactGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 60px;
+}
+
+.contactCard {
+  background: #F7FAFC;
+  border: 3px solid #2D3748;
+  padding: 30px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px 0 #2D3748;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.contactCard:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #2D3748;
+  background: #4ECDC4;
+}
+
+.contactCard:hover .cardIcon {
+  background: #2D3748;
+}
+
+.contactCard:hover .cardIcon svg {
+  color: #FFFAF7;
+}
+
+.contactCard:hover .cardTitle,
+.contactCard:hover .cardText {
+  color: #FFFAF7;
+}
+
+.cardIcon {
+  width: 60px;
+  height: 60px;
+  background: #EDF2F7;
+  border: 2px solid #2D3748;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.cardIcon svg {
+
+  transition: color 0.2s ease;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #2D3748;
+  text-transform: uppercase;
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.cardText {
+  font-size: 0.95rem;
+  color: #4A5568;
+  margin: 0;
+  word-break: break-word;
+  transition: color 0.2s ease;
+}
+
+/* Form Section */
+.formSection {
+  background: #FFFAF7;
+  border: 3px solid #2D3748;
+  padding: 40px;
+  box-shadow: 4px 4px 0 #2D3748;
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.formTitle {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #2D3748;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.formSubtitle {
+  font-size: 1rem;
+  color: #4A5568;
+  margin: 0;
+}
+
+/* Form Styles */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2D3748;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: #F7FAFC;
+  border: 2px solid #2D3748;
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+  color: #2D3748;
+  transition: all 0.2s ease;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #4ECDC4;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #A0AEC0;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  background: #4ECDC4;
+  border: 3px solid #2D3748;
+  color: #2D3748;
+  font-family: "Nunito", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px 0 #2D3748;
+}
+
+.submitButton:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #2D3748;
+  background: #38B2AC;
+}
+
+.submitButton:active {
+  transform: translate(0, 0);
+  box-shadow: 2px 2px 0 #2D3748;
+}
+
+.submitButton svg {
+  color: #2D3748;
+}
+
+.successMessage {
+  padding: 16px;
+  background: #C6F6D5;
+  border: 2px solid #2D3748;
+  color: #2D3748;
+  font-weight: 700;
+  text-align: center;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive - Tablet */
+@media (max-width: 768px) {
+  .contactGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 40px;
+  }
+
+  .formSection {
+    padding: 30px 20px;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+  }
+
+  .submitButton {
+    padding: 14px 24px;
+  }
+}
+
+/* Responsive - Mobile */
+@media (max-width: 480px) {
+  .contactContainer {
+    padding: 0 15px 30px;
+  }
+
+  .contactCard {
+    padding: 25px 15px;
+  }
+
+  .cardIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cardIcon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .formSection {
+    padding: 25px 15px;
+  }
+
+  .formTitle {
+    font-size: 1.3rem;
+  }
+
+  .formSubtitle {
+    font-size: 0.9rem;
+  }
+
+  .input,
+  .textarea {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+}
