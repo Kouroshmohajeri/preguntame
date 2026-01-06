@@ -11,8 +11,6 @@ import {
   CameraSlash,
   QrCode,
   ArrowRight,
-  User,
-  ChartBar,
 } from "@phosphor-icons/react";
 
 export type ModalType = "join" | "leaderboard";
@@ -96,10 +94,10 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
         }
         handleClose();
       } else {
-        setScanError(`❌ Game not found. Please check your code.`);
+        setScanError("Game not found. Please check your code.");
       }
     } catch {
-      setScanError(`⚠️ Failed to verify game code. Try again.`);
+      setScanError("Failed to verify game code. Try again.");
     } finally {
       setLoading(false);
     }
@@ -115,37 +113,36 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
 
   if (!isOpen) return null;
 
-  const modalTitle = type === "join" ? "JOIN GAME" : "VIEW LEADERBOARD";
-  const submitButtonText = type === "join" ? "JOIN GAME" : "VIEW LEADERBOARD";
+  const modalTitle = type === "join" ? "Join Game" : "View Leaderboard";
+  const modalSubtitle =
+    type === "join"
+      ? "Enter your 6-digit game code to join the quiz"
+      : "Enter game code to view results and rankings";
+  const submitButtonText = type === "join" ? "Join Game" : "View Leaderboard";
   const modalIcon =
     type === "join" ? (
-      <GameController size={32} weight="fill" className={styles.modalIcon} />
+      <GameController size={48} weight="duotone" className={styles.modalIcon} />
     ) : (
-      <Trophy size={32} weight="fill" className={styles.modalIcon} />
+      <Trophy size={48} weight="duotone" className={styles.modalIcon} />
     );
 
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        {/* Header */}
-        <div className={styles.header}>
-          <div className={styles.modalHeaderContent}>
-            {modalIcon}
-            <div className={styles.pixelTitle}>{modalTitle}</div>
-          </div>
-          <button onClick={handleClose} className={styles.closeButton}>
-            <X size={20} weight="bold" />
-          </button>
-        </div>
+        {/* Icon */}
+        <div className={styles.iconContainer}>{modalIcon}</div>
+
+        {/* Title */}
+        <h2 className={styles.title}>{modalTitle}</h2>
+
+        {/* Subtitle */}
+        <p className={styles.message}>{modalSubtitle}</p>
 
         {/* Content */}
         <div className={styles.content}>
           {/* Game Code Input */}
           <div className={styles.inputSection}>
-            <label className={styles.label}>
-              <User size={16} weight="fill" className={styles.labelIcon} />
-              ENTER GAME CODE:
-            </label>
+            <label className={styles.label}>Game Code</label>
             <div className={styles.inputContainer}>
               <input
                 type="text"
@@ -159,6 +156,7 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
                 <button
                   onClick={cameraActive ? stopCamera : startCamera}
                   className={styles.cameraButton}
+                  aria-label={cameraActive ? "Stop camera" : "Start camera"}
                 >
                   {cameraActive ? (
                     <CameraSlash size={24} weight="fill" />
@@ -169,7 +167,7 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
               )}
             </div>
             <div className={styles.codeHint}>
-              <QrCode size={12} weight="bold" />6 characters (A-Z, 0-9)
+              <QrCode size={14} weight="bold" />6 characters (A-Z, 0-9)
             </div>
           </div>
 
@@ -177,8 +175,8 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
           {cameraActive && (
             <div className={styles.cameraSection}>
               <div className={styles.cameraLabel}>
-                <QrCode size={16} weight="fill" className={styles.labelIcon} />
-                Scan QR Code:
+                <QrCode size={16} weight="fill" />
+                Scan QR Code
               </div>
               <div className={styles.cameraPreview}>
                 <video ref={videoRef} autoPlay playsInline className={styles.video} />
@@ -191,35 +189,38 @@ export default function GameCodeModal({ isOpen, onClose, type }: GameCodeModalPr
           )}
 
           {/* Error Message */}
-          {scanError && <div className={styles.errorMessage}>⚠️ {scanError}</div>}
+          {scanError && <div className={styles.errorMessage}>{scanError}</div>}
 
-          {/* Action Buttons */}
-          <div className={styles.buttons}>
-            <button
-              onClick={handleSubmit}
-              disabled={gameCode.length !== 6 || loading}
-              className={styles.submitButton}
-            >
-              {loading ? (
-                "CHECKING..."
-              ) : (
-                <>
-                  {submitButtonText}
-                  <ArrowRight size={20} weight="bold" className={styles.buttonIcon} />
-                </>
-              )}
-            </button>
+          {/* Action Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={gameCode.length !== 6 || loading}
+            className={styles.submitButton}
+          >
+            {loading ? (
+              <div className={styles.loadingSpinner}>
+                <div className={styles.spinnerDot}></div>
+                <div className={styles.spinnerDot}></div>
+                <div className={styles.spinnerDot}></div>
+              </div>
+            ) : (
+              <>
+                <span>{submitButtonText}</span>
+                <ArrowRight size={20} weight="bold" />
+              </>
+            )}
+          </button>
 
-            <button onClick={handleClose} className={styles.cancelButton}>
-              CANCEL
-            </button>
-          </div>
-
-          {/* Manual Entry Hint */}
+          {/* Mobile Hint */}
           {!cameraActive && isMobile && (
             <div className={styles.mobileHint}>💡 Tip: Use camera button to scan QR code</div>
           )}
         </div>
+
+        {/* Close Button */}
+        <button onClick={handleClose} className={styles.closeButton} aria-label="Close">
+          <X size={20} weight="bold" />
+        </button>
       </div>
     </div>
   );

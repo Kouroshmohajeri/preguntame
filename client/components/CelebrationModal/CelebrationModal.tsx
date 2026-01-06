@@ -9,92 +9,114 @@ interface CelebrationModalProps {
   qrCode: string;
 }
 
-export default function CelebrationModal({ 
-  isOpen, 
-  onClose, 
-  gameUrl, 
-  qrCode 
+export default function CelebrationModal({
+  isOpen,
+  onClose,
+  gameUrl,
+  qrCode,
 }: CelebrationModalProps) {
-  const [showParticles, setShowParticles] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      setShowParticles(true);
-      const timer = setTimeout(() => setShowParticles(false), 2000);
-      return () => clearTimeout(timer);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
     }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [isOpen]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(gameUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   if (!isOpen) return null;
 
   return (
     <div className={styles.overlay}>
-      {/* Pixel particles */}
-      {showParticles && (
-        <>
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className={styles.pixel}
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 1}s`,
-                backgroundColor: `hsl(${Math.random() * 360}, 100%, 50%)`,
-              }}
-            />
-          ))}
-        </>
-      )}
-
       <div className={styles.modal}>
-        {/* Retro header */}
-        <div className={styles.header}>
-          <div className={styles.pixelTitle}>🎉 SUCCESS! 🎉</div>
-          <button onClick={onClose} className={styles.closeButton}>
-            ✕
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className={styles.content}>
-          <div className={styles.message}>
-            Your game has been published!
-          </div>
-
-          {/* QR Code */}
-          <div className={styles.qrSection}>
-            <div className={styles.qrLabel}>Scan to play:</div>
-            <img src={qrCode} alt="Game QR Code" className={styles.qrImage} />
-          </div>
-
-          {/* Game URL */}
-          <div className={styles.urlSection}>
-            <div className={styles.urlLabel}>Or share this link:</div>
-            <div className={styles.urlBox}>
-              <code className={styles.url}>{gameUrl}</code>
-              <button 
-                onClick={() => navigator.clipboard.writeText(gameUrl)}
-                className={styles.copyButton}
-              >
-                📋
-              </button>
+        {/* Celebration Icon */}
+        <div className={styles.iconContainer}>
+          <div className={styles.celebrationIcon}>
+            <div className={styles.trophy}>🏆</div>
+            <div className={styles.confetti}>
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className={styles.confettiPiece}
+                  style={
+                    {
+                      "--delay": `${i * 0.1}s`,
+                      "--x": `${(i % 4) * 30 - 45}px`,
+                      "--rotation": `${i * 30}deg`,
+                    } as React.CSSProperties
+                  }
+                />
+              ))}
             </div>
           </div>
+        </div>
 
-          {/* Retro buttons */}
-          <div className={styles.buttons}>
-            <button onClick={onClose} className={styles.continueButton}>
-              CREATE ANOTHER
-            </button>
-            <a 
-              href={gameUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className={styles.playButton}
-            >
-              HOST NOW
-            </a>
+        {/* Title */}
+        <h2 className={styles.title}>Game Published!</h2>
+
+        {/* Success Message */}
+        <p className={styles.message}>
+          Your quiz is now live and ready for players to join. Share it now or host a game session!
+        </p>
+
+        {/* QR Code Section */}
+        <div className={styles.qrSection}>
+          <div className={styles.qrLabel}>Scan to Join</div>
+          <div className={styles.qrContainer}>
+            <img src={qrCode} alt="Game QR Code" className={styles.qrImage} />
           </div>
+        </div>
+
+        {/* URL Section */}
+        <div className={styles.urlSection}>
+          <div className={styles.urlLabel}>Game Link</div>
+          <div className={styles.urlBox}>
+            <input
+              type="text"
+              value={gameUrl}
+              readOnly
+              className={styles.urlInput}
+              onClick={(e) => e.currentTarget.select()}
+            />
+            <button onClick={handleCopy} className={styles.copyButton} aria-label="Copy link">
+              {copied ? "✓" : "📋"}
+            </button>
+          </div>
+          {copied && <div className={styles.copiedMessage}>Copied to clipboard!</div>}
+        </div>
+
+        {/* Action Buttons */}
+        <div className={styles.buttonContainer}>
+          <button
+            onClick={onClose}
+            className={styles.secondaryButton}
+            aria-label="Create another quiz"
+          >
+            Create Another
+          </button>
+          <a
+            href={gameUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.primaryButton}
+            aria-label="Host game now"
+          >
+            Host Game Now
+          </a>
         </div>
       </div>
     </div>

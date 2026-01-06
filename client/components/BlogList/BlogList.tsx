@@ -9,6 +9,8 @@ import {
   Clock,
   ArrowRight,
   MagnifyingGlass,
+  Sparkle,
+  Lightning,
 } from "@phosphor-icons/react";
 import styles from "./BlogList.module.css";
 
@@ -24,7 +26,7 @@ interface BlogPost {
   icon: React.ReactNode;
 }
 
-// Current blog posts (only What is Preguntame for now)
+// Blog posts
 const blogPosts: BlogPost[] = [
   {
     id: "1",
@@ -37,9 +39,31 @@ const blogPosts: BlogPost[] = [
     readTime: "8 min read",
     icon: <Question size={32} weight="fill" />,
   },
+  {
+    id: "2",
+    slug: "kahoot-alternative",
+    title: "The Best Free Kahoot Alternative: Why Preguntame Stands Out",
+    excerpt:
+      "Looking for a Kahoot alternative? Discover why Preguntame offers a completely free, feature-rich experience for interactive quizzes without subscription limits.",
+    category: "Comparisons",
+    date: "2025-01-06",
+    readTime: "10 min read",
+    icon: <Sparkle size={32} weight="fill" />,
+  },
+  {
+    id: "3",
+    slug: "real-time-quiz-platform",
+    title: "Real-Time Quiz Platform: How Preguntame Powers Interactive Learning",
+    excerpt:
+      "Explore how Preguntame's real-time technology creates engaging, synchronous quiz experiences for classrooms, training sessions, and live events.",
+    category: "Features",
+    date: "2025-01-06",
+    readTime: "9 min read",
+    icon: <Lightning size={32} weight="fill" />,
+  },
 ];
 
-const categories = ["All", "About"];
+const categories = ["All", "About", "Comparisons", "Features"];
 
 export default function BlogList() {
   const router = useRouter();
@@ -166,18 +190,6 @@ export default function BlogList() {
               <p>Try adjusting your search or filter criteria</p>
             </div>
           )}
-        </section>
-
-        {/* Coming Soon Notice */}
-        <section className={styles.comingSoonSection}>
-          <div className={styles.comingSoonBox}>
-            <Article size={40} weight="fill" />
-            <h3>More Articles Coming Soon</h3>
-            <p>
-              We're working on creating helpful content about quiz best practices, teaching
-              strategies, and interactive learning tips. Stay tuned!
-            </p>
-          </div>
         </section>
 
         {/* CTA Section */}

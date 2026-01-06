@@ -2,48 +2,53 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  animation: fadeIn 0.3s ease;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
   background: #fffaf4;
   border: 4px solid #000;
-  box-shadow: 
-    8px 8px 0px #000,
-    0 0 0 4px #fffaf4;
-  max-width: 450px;
-  width: 90%;
+  box-shadow: 8px 8px 0px #000;
+  max-width: 500px;
+  width: 100%;
+  padding: 2.5rem;
+  animation: slideUp 0.3s ease-out;
   position: relative;
-  animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  z-index: 1001;
 }
 
-.header {
-  background: #000;
-  color: #fff;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 4px solid #000;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.pixelTitle {
-  font-weight: 800;
-  font-size: 1.3rem;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 0px #ff6b6b;
-  animation: textGlitch 3s infinite;
-}
-
+/* Close Button */
 .closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   background: #fff;
   border: 2px solid #000;
   color: #000;
@@ -56,118 +61,63 @@
   cursor: pointer;
   box-shadow: 2px 2px 0px #000;
   transition: all 0.2s ease;
+  font-size: 1.2rem;
 }
 
 .closeButton:hover {
-  background: #ff6b6b;
+  background: #4ecdc4;
+  color: #fff;
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0px #000;
 }
 
-.content {
-  padding: 2rem;
-  text-align: center;
+.closeButton:active {
+  box-shadow: 0px 0px 0px #000;
+  transform: translate(2px, 2px);
 }
 
-/* Retro Computer Graphic */
-.computerGraphic {
-  margin-bottom: 2rem;
-}
-
-.monitor {
-  background: #333;
-  border: 4px solid #000;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  box-shadow: 4px 4px 0px #000;
-}
-
-.screen {
-  background: #1a1a1a;
-  border: 2px solid #000;
-  padding: 1.5rem;
-  min-height: 100px;
+/* Lottie Animation */
+.iconContainer {
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-}
-
-.pixelText {
-  color: #4ecdc4;
-  font-family: monospace;
-  font-weight: 700;
-  font-size: 1.2rem;
-  letter-spacing: 2px;
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #4ecdc4;
-  animation: textFlicker 2s infinite;
 }
 
-.loadingBar {
-  display: flex;
-  gap: 4px;
+.lottieAnimation {
+  width: 100px;
+  height: 100px;
 }
 
-.loadingPixel {
-  width: 8px;
-  height: 8px;
-  background: #ff6b6b;
-  animation: pixelLoad 1.5s infinite;
-}
-
-.loadingPixel:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.loadingPixel:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-.keyboard {
-  width: 80%;
-  height: 20px;
-  background: #666;
-  border: 3px solid #000;
-  border-radius: 4px;
-  margin: 0 auto;
-  box-shadow: 3px 3px 0px #000;
-  position: relative;
-}
-
-.keyboard::before {
-  content: "";
-  position: absolute;
-  top: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 6px;
-  background: #333;
-  border-radius: 2px;
+/* Title */
+.title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #000;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
 }
 
 /* Message */
 .message {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  line-height: 1.4;
-  color: #333;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4a5568;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
 }
 
 /* Google Login Button */
 .googleButton {
   width: 100%;
-  background: #000;
+  background: #4ecdc4;
   border: 3px solid #000;
   color: #fff;
   padding: 1rem 1.5rem;
   font-weight: 800;
   font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
   cursor: pointer;
   box-shadow: 4px 4px 0px #000;
   transition: all 0.2s ease;
@@ -175,21 +125,26 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  font-family: inherit;
 }
 
 .googleButton:hover:not(:disabled) {
-  background: #4285f4;
-  border-color: #4285f4;
+  background: #38b2ac;
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0px #000;
 }
 
+.googleButton:active:not(:disabled) {
+  box-shadow: 0px 0px 0px #000;
+  transform: translate(4px, 4px);
+}
+
 .googleButton:disabled {
-  background: #ccc;
-  border-color: #666;
+  background: #cbd5e0;
+  border-color: #000;
   cursor: not-allowed;
-  box-shadow: 4px 4px 0px #666;
+  opacity: 0.7;
 }
 
 .googleIcon {
@@ -202,146 +157,88 @@
   align-items: center;
   justify-content: center;
   font-weight: 900;
-  font-size: 0.9rem;
-  box-shadow: 1px 1px 0px #000;
+  font-size: 1rem;
+  border: 2px solid #000;
 }
 
 /* Loading Spinner */
 .loadingSpinner {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: center;
 }
 
-.spinnerPixel {
-  width: 6px;
-  height: 6px;
+.spinnerDot {
+  width: 8px;
+  height: 8px;
   background: #fff;
-  animation: pixelBounce 0.6s infinite alternate;
+  border-radius: 50%;
+  animation: spinnerBounce 0.6s infinite alternate;
 }
 
-.spinnerPixel:nth-child(2) {
+.spinnerDot:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.spinnerPixel:nth-child(3) {
+.spinnerDot:nth-child(3) {
   animation-delay: 0.4s;
 }
 
-/* Features List */
+@keyframes spinnerBounce {
+  0% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* Features */
 .features {
   margin-bottom: 1.5rem;
-  text-align: left;
+}
+
+.featuresLabel {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #2d3748;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.75rem;
 }
 
 .feature {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   font-size: 0.9rem;
-  color: #333;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+.feature:last-child {
+  margin-bottom: 0;
 }
 
 .featureIcon {
-  font-size: 1.1rem;
-  width: 24px;
-  text-align: center;
+  flex-shrink: 0;
+  color: #4ecdc4;
 }
 
 /* Privacy Note */
 .privacyNote {
-  font-size: 0.8rem;
-  color: #666;
+  font-size: 0.85rem;
+  color: #718096;
+  text-align: center;
   font-style: italic;
-  border-top: 2px dashed #ccc;
+  border-top: 2px dashed #cbd5e0;
   padding-top: 1rem;
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes modalPop {
-  0% { 
-    transform: scale(0.5) rotate(-5deg);
-    opacity: 0;
-  }
-  70% { 
-    transform: scale(1.1) rotate(2deg);
-  }
-  100% { 
-    transform: scale(1) rotate(0);
-    opacity: 1;
-  }
-}
-
-@keyframes textGlitch {
-  0%, 100% {
-    text-shadow: 2px 2px 0px #ff6b6b, -1px -1px 0px #4ecdc4;
-  }
-  25% {
-    text-shadow: -2px -2px 0px #ff6b6b, 1px 1px 0px #4ecdc4;
-  }
-  50% {
-    text-shadow: 2px -2px 0px #ff6b6b, -1px 1px 0px #4ecdc4;
-  }
-  75% {
-    text-shadow: -2px 2px 0px #ff6b6b, 1px -1px 0px #4ecdc4;
-  }
-}
-
-@keyframes textFlicker {
-  0%, 100% {
-    opacity: 1;
-    text-shadow: 0 0 10px #4ecdc4;
-  }
-  50% {
-    opacity: 0.8;
-    text-shadow: 0 0 5px #4ecdc4;
-  }
-}
-
-@keyframes pixelLoad {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes pixelBounce {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-4px);
-  }
-}
-
-/* Retro scan lines effect */
-.modal::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 50%,
-    rgba(0, 0, 0, 0.03) 50%
-  );
-  background-size: 100% 4px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.3;
-}
+/* Toast Container */
 .toastContainer {
   position: fixed;
   top: 20px;
@@ -352,16 +249,94 @@
   gap: 0.5rem;
 }
 
-/* Update overlay z-index to be below toast */
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Toast is 10000, modal is 1000 */
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .modal {
+    padding: 2rem 1.5rem;
+    border-width: 3px;
+    box-shadow: 6px 6px 0px #000;
+  }
+
+  .lottieAnimation {
+    width: 80px;
+    height: 80px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .message {
+    font-size: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .googleButton {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    border-width: 2px;
+    box-shadow: 3px 3px 0px #000;
+  }
+
+  .feature {
+    font-size: 0.85rem;
+  }
+
+  .featureIcon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .overlay {
+    padding: 0.5rem;
+  }
+
+  .modal {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .closeButton {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1rem;
+  }
+
+  .lottieAnimation {
+    width: 70px;
+    height: 70px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .message {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .googleButton {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .featuresLabel {
+    font-size: 0.85rem;
+  }
+
+  .feature {
+    font-size: 0.8rem;
+  }
+
+  .featureIcon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .privacyNote {
+    font-size: 0.8rem;
+  }
 }
