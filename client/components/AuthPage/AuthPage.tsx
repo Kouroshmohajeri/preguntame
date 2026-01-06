@@ -15,7 +15,6 @@ import {
 } from "@phosphor-icons/react";
 import PixelMenu from "@/components/PixelMenu/PixelMenu";
 import Toast, { ToastType } from "@/components/Toast/Toast";
-import { googleAuth } from "@/app/api/users/actions";
 import styles from "./AuthPage.module.css";
 
 export default function AuthPage() {
@@ -26,7 +25,8 @@ export default function AuthPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (status === "authenticated" && session?.user) {
+    if (status === "authenticated" && session?.user?.id) {
+      console.log("✅ User authenticated, redirecting to dashboard");
       router.push("/dashboard");
     }
   }, [status, session, router]);
@@ -52,50 +52,25 @@ export default function AuthPage() {
     showToast("Connecting to Google...", "info");
 
     try {
-      // Trigger Google OAuth popup
-      const result = await signIn("google", { redirect: false });
+      // Trigger Google OAuth - this will handle everything in NextAuth callbacks
+      const result = await signIn("google", {
+        callbackUrl: "/dashboard",
+        redirect: true, // ✅ Changed to true - let NextAuth handle redirect
+      });
 
+      // This code won't run if redirect: true, but keep for fallback
       if (result?.error) {
-        console.error("Google login failed:", result.error);
+        console.error("❌ Google login failed:", result.error);
         showToast("Google login failed. Please try again.", "error");
         setIsLoading(false);
         return;
       }
 
-      showToast("Google authentication successful!", "success");
-
-      // Wait a bit for session to populate
-      setTimeout(async () => {
-        const user = session?.user;
-        if (user && user.email) {
-          try {
-            showToast("Setting up your account...", "info");
-
-            // Send to backend to create/get user
-            await googleAuth({
-              name: user.name?.split(" ")[0] || "",
-              lastname: user.name?.split(" ")[1] || "",
-              email: user.email,
-            });
-
-            showToast("Account setup complete! Welcome!", "success");
-
-            // Redirect to dashboard
-            setTimeout(() => {
-              router.push("/dashboard");
-            }, 1000);
-          } catch (error) {
-            console.error("Account setup error:", error);
-            showToast("Failed to setup account. Please try again.", "error");
-            setIsLoading(false);
-          }
-        } else {
-          showToast("User information not found. Please try again.", "warning");
-          setIsLoading(false);
-        }
-      }, 1500);
+      if (result?.ok) {
+        showToast("Successfully logged in! Redirecting...", "success");
+      }
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("❌ Login error:", error);
       showToast("Login failed. Please try again.", "error");
       setIsLoading(false);
     }

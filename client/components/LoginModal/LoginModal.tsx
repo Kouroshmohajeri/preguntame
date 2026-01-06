@@ -4,6 +4,8 @@ import { signIn, useSession } from "next-auth/react";
 import styles from "./LoginModal.module.css";
 import { googleAuth } from "@/app/api/users/actions";
 import Toast, { ToastType } from "@/components/Toast/Toast";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { FloppyDisk, ChartBar, GameController } from "@phosphor-icons/react";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -37,7 +39,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
     showToast("Connecting to Google...", "info");
 
     try {
-      // Trigger Google OAuth popup
       const result = await signIn("google", { redirect: false });
 
       if (result?.error) {
@@ -49,14 +50,12 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
 
       showToast("Google authentication successful!", "success");
 
-      // Wait a bit for session to populate
       setTimeout(async () => {
         const user = session?.user;
         if (user && user.email) {
           try {
             showToast("Setting up your account...", "info");
 
-            // Send to backend to create/get user
             await googleAuth({
               name: user.name?.split(" ")[0] || "",
               lastname: user.name?.split(" ")[1] || "",
@@ -65,7 +64,6 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
 
             showToast("Account setup complete! Welcome!", "success");
 
-            // Small delay to show success toast
             setTimeout(() => {
               setIsLoading(false);
               onClose();
@@ -107,73 +105,66 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }: LoginMod
 
       <div className={styles.overlay}>
         <div className={styles.modal}>
-          {/* Header */}
-          <div className={styles.header}>
-            <div className={styles.pixelTitle}>🔐 LOGIN / REGISTER 🔐</div>
-            <button onClick={onClose} className={styles.closeButton}>
-              ✕
-            </button>
+          {/* Login Animation */}
+          <div className={styles.iconContainer}>
+            <DotLottieReact
+              src="https://lottie.host/680e2dcb-5282-4f3f-b66d-d97887aac705/49C552puuV.lottie"
+              loop
+              autoplay
+              className={styles.lottieAnimation}
+            />
           </div>
 
-          {/* Content */}
-          <div className={styles.content}>
-            {/* Retro Computer Graphic */}
-            <div className={styles.computerGraphic}>
-              <div className={styles.monitor}>
-                <div className={styles.screen}>
-                  <div className={styles.pixelText}>PREGÚNTAME</div>
-                  <div className={styles.loadingBar}>
-                    <div className={styles.loadingPixel}></div>
-                    <div className={styles.loadingPixel}></div>
-                    <div className={styles.loadingPixel}></div>
-                  </div>
-                </div>
+          {/* Title */}
+          <h2 className={styles.title}>Welcome Back!</h2>
+
+          {/* Message */}
+          <p className={styles.message}>
+            Sign in to save your games, track progress, and access your created quizzes anytime.
+          </p>
+
+          {/* Google Login Button */}
+          <button onClick={handleGoogleLogin} disabled={isLoading} className={styles.googleButton}>
+            {isLoading ? (
+              <div className={styles.loadingSpinner}>
+                <div className={styles.spinnerDot}></div>
+                <div className={styles.spinnerDot}></div>
+                <div className={styles.spinnerDot}></div>
               </div>
-              <div className={styles.keyboard}></div>
+            ) : (
+              <>
+                <div className={styles.googleIcon}>G</div>
+                <span>Continue with Google</span>
+              </>
+            )}
+          </button>
+
+          {/* Features */}
+          <div className={styles.features}>
+            <div className={styles.featuresLabel}>What you get:</div>
+            <div className={styles.feature}>
+              <FloppyDisk size={24} weight="duotone" className={styles.featureIcon} />
+              <span>Save and manage your game creations</span>
             </div>
-
-            {/* Message */}
-            <div className={styles.message}>
-              Join the PREGÚNTAME!
-              <br />
-              Save your games and track progress.
+            <div className={styles.feature}>
+              <ChartBar size={24} weight="duotone" className={styles.featureIcon} />
+              <span>Track player statistics and performance</span>
             </div>
-
-            {/* Google Login Button */}
-            <button
-              onClick={handleGoogleLogin}
-              disabled={isLoading}
-              className={styles.googleButton}
-            >
-              {isLoading ? (
-                <div className={styles.loadingSpinner}>
-                  <div className={styles.spinnerPixel}></div>
-                  <div className={styles.spinnerPixel}></div>
-                  <div className={styles.spinnerPixel}></div>
-                </div>
-              ) : (
-                <>
-                  <div className={styles.googleIcon}>G</div>
-                  <span>CONTINUE WITH GOOGLE</span>
-                </>
-              )}
-            </button>
-
-            {/* Features */}
-            <div className={styles.features}>
-              <div className={styles.feature}>
-                <span className={styles.featureIcon}>💾</span>
-                Save your game creations
-              </div>
-              <div className={styles.feature}>
-                <span className={styles.featureIcon}>📊</span>
-                Track player statistics
-              </div>
+            <div className={styles.feature}>
+              <GameController size={24} weight="duotone" className={styles.featureIcon} />
+              <span>Access your games from any device</span>
             </div>
-
-            {/* Privacy Note */}
-            <div className={styles.privacyNote}>We only access your email. No spam, just fun!</div>
           </div>
+
+          {/* Privacy Note */}
+          <div className={styles.privacyNote}>
+            We only access your email. No spam, just fun quizzes!
+          </div>
+
+          {/* Close Button */}
+          <button onClick={onClose} className={styles.closeButton} aria-label="Close">
+            ✕
+          </button>
         </div>
       </div>
     </>
