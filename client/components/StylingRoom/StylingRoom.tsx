@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import styles from "./StylingRoom.module.css";
 import { useSocket } from "@/context/SocketContext/SocketContext";
 import { v4 as uuidv4 } from "uuid";
-import { CrownSimple } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react";
 import { getHostIdShort } from "@/app/api/game/actions";
 import { useSession } from "next-auth/react";
 
@@ -16,18 +16,18 @@ interface Player {
   score?: number;
   isHost: boolean;
   uuid: string;
-  userId?: string; // Add userId for host identification
+  userId?: string;
 }
 
 const avatarStyles = [
   "adventurer",
   "adventurer-neutral",
-  "avataaars",
   "big-ears",
   "big-ears-neutral",
   "bottts",
   "pixel-art",
   "shapes",
+  "lorelei",
 ];
 
 const colors = [
@@ -50,21 +50,21 @@ export default function StylingRoom() {
   const socket = useSocket();
 
   const [playerName, setPlayerName] = useState("");
-  const [selectedStyle, setSelectedStyle] = useState("avataaars");
+  const [selectedStyle, setSelectedStyle] = useState("pixel-art");
   const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [showInstructions, setShowInstructions] = useState(false);
-  const [isReady, setIsReady] = useState(false);
   const [joined, setJoined] = useState(false);
   const [currentPlayerId, setCurrentPlayerId] = useState<string | null>(null);
   const [isHost, setIsHost] = useState(false);
   const [error, setError] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
   const { data: session } = useSession();
-  // 🔊 Join sound
+
+  const hasJoinedRef = useRef(false);
+
   const joinSound = typeof window !== "undefined" ? new Audio("/sounds/joinroom.mp3") : null;
 
-  // 🧩 Persistent identity per browser
   let playerUUID: string;
   if (typeof window !== "undefined") {
     const stored = localStorage.getItem("playerUUID");
@@ -75,33 +75,73 @@ export default function StylingRoom() {
     }
   } else playerUUID = uuidv4();
 
-  // Check if user is already authenticated as host
   const [checkingHostStatus, setCheckingHostStatus] = useState(true);
 
   const avatarUrl = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${
-    playerName || "player"
+    playerName || "guest"
   }&backgroundColor=${selectedColor.replace("#", "")}`;
 
-  // 🔌 Handle socket lifecycle
+  const getDefaultHostAvatar = () => {
+    return `https://api.dicebear.com/7.x/pixel-art/svg?seed=host&backgroundColor=4ecdc4`;
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedDraft = localStorage.getItem(`draft_${gameCode}`);
+    if (savedDraft) {
+      const draft = JSON.parse(savedDraft);
+      setPlayerName(draft.name || "");
+      setSelectedStyle(draft.style || "pixel-art");
+      setSelectedColor(draft.color || colors[0]);
+    }
+  }, [gameCode]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const draft = {
+      name: playerName,
+      style: selectedStyle,
+      color: selectedColor,
+    };
+
+    localStorage.setItem(`draft_${gameCode}`, JSON.stringify(draft));
+  }, [playerName, selectedStyle, selectedColor, gameCode]);
+
   useEffect(() => {
     if (!socket || !gameCode) return;
 
-    socket.emit("visitRoom", { gameCode });
+    socket.emit("visitRoom", { gameCode, playerUUID });
 
-    // ---------- HANDLE PLAYERS UPDATE ----------
     const handlePlayersUpdate = ({ players, hostId }: { players: Player[]; hostId: string }) => {
       const uniquePlayers = players.filter(
         (player, index, self) => index === self.findIndex((p) => p.uuid === player.uuid)
       );
 
       const validPlayers = uniquePlayers.filter((p) => p.uuid);
-      setPlayers(validPlayers);
 
-      const me = validPlayers.find((p) => p.uuid === playerUUID);
+      const playersWithAvatars = validPlayers.map((p) => ({
+        ...p,
+        avatar: p.isHost && !p.avatar ? getDefaultHostAvatar() : p.avatar,
+      }));
+
+      setPlayers(playersWithAvatars);
+
+      const me = playersWithAvatars.find((p) => p.uuid === playerUUID);
       if (me) {
-        setIsReady(me.isReady);
         setIsHost(me.isHost);
         setCurrentPlayerId(me.id);
+
+        if (!hasJoinedRef.current) {
+          hasJoinedRef.current = true;
+          setJoined(true);
+        }
+      } else {
+        if (hasJoinedRef.current) {
+          hasJoinedRef.current = false;
+          setJoined(false);
+        }
       }
 
       setCheckingHostStatus(false);
@@ -111,12 +151,21 @@ export default function StylingRoom() {
       setViewerCount(count);
     };
 
-    const handleGameStarted = () => {
-      router.push(`/play/guest/${gameCode}`);
+    const handleGameStarted = ({ started }: { started: boolean }) => {
+      // if (started) {
+      //   // Small delay to ensure everything is synced
+      //   setTimeout(() => {
+      //     router.push(`/play/guest/${gameCode}`);
+      //   }, 500);
+      // }
     };
 
-    // ---------- AUTO JOIN ----------
     const autoJoinIfPossible = async () => {
+      if (hasJoinedRef.current) {
+        setCheckingHostStatus(false);
+        return;
+      }
+
       const saved = localStorage.getItem("playerInfo");
       if (!saved) {
         setCheckingHostStatus(false);
@@ -124,12 +173,11 @@ export default function StylingRoom() {
       }
 
       const playerData = JSON.parse(saved);
-      if (!playerData?.name || joined) {
+      if (!playerData?.name) {
         setCheckingHostStatus(false);
         return;
       }
 
-      // --- CHECK HOST ONLY IF USER LOGGED IN ---
       let isHost = false;
       let hostIdToSend = null;
 
@@ -141,18 +189,17 @@ export default function StylingRoom() {
             isHost = true;
             hostIdToSend = session.user.id;
             router.push(`/play/host/${gameCode}`);
+            return;
           }
         } catch (err) {
-          console.error("Failed checking hostIdShort", err);
+          // Failed to check host
         }
       }
 
-      // --- AVATAR BUILD ---
       const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
         playerData.name
       }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
 
-      // --- EMIT JOIN GAME ---
       socket.emit("joinGame", {
         gameCode,
         playerName: playerData.name,
@@ -162,16 +209,15 @@ export default function StylingRoom() {
         hostId: hostIdToSend,
       });
 
-      // --- UPDATE STATE ---
+      hasJoinedRef.current = true;
       setJoined(true);
       setPlayerName(playerData.name);
-      setSelectedStyle(playerData.style || "avataaars");
+      setSelectedStyle(playerData.style || "pixel-art");
       setSelectedColor(playerData.color || colors[0]);
 
       setCheckingHostStatus(false);
     };
 
-    // ---------- SOCKET LISTENERS ----------
     socket.on("playersUpdate", handlePlayersUpdate);
     socket.on("viewerCountUpdate", handleViewerCount);
     socket.on("gameStarted", handleGameStarted);
@@ -189,12 +235,15 @@ export default function StylingRoom() {
       socket.off("gameStarted", handleGameStarted);
       socket.off("connect", autoJoinIfPossible);
     };
-  }, [socket, gameCode, playerUUID, session, joined]);
+  }, [socket, gameCode, playerUUID, session]);
 
-  // 🧠 Removed duplicate auto-join useEffect (this was the main cause of overwriting players)
   const handleJoinGame = () => {
     if (!playerName.trim() || !socket) {
       setError("Please enter a player name");
+      return;
+    }
+
+    if (hasJoinedRef.current || joined) {
       return;
     }
 
@@ -219,35 +268,58 @@ export default function StylingRoom() {
       playerUUID,
     });
 
+    hasJoinedRef.current = true;
     setJoined(true);
     joinSound?.play().catch(() => {});
     setError("");
   };
 
-  const handleReady = () => {
+  const handleUpdateAvatar = () => {
     if (!socket || !joined) return;
-    const newReady = !isReady;
-    setIsReady(newReady);
-    socket.emit("toggleReady", { gameCode, isReady: newReady });
-  };
 
-  const canStartGame = players.filter((p) => p.isReady).length >= 1 && isHost;
+    const newAvatar = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${playerName}&backgroundColor=${selectedColor.replace(
+      "#",
+      ""
+    )}`;
+
+    const playerInfo = {
+      name: playerName,
+      avatar: newAvatar,
+      style: selectedStyle,
+      color: selectedColor,
+    };
+
+    localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
+
+    socket.emit("updateAvatar", {
+      gameCode,
+      avatar: newAvatar,
+      playerUUID,
+    });
+  };
 
   const handleLeaveGame = () => {
-    if (socket && joined) socket.emit("leaveGame", { gameCode });
+    if (socket && joined) {
+      socket.emit("leaveGame", { gameCode, playerUUID });
+    }
+
     localStorage.removeItem("playerInfo");
+    localStorage.removeItem(`draft_${gameCode}`);
+
+    hasJoinedRef.current = false;
     setJoined(false);
+
     router.push("/");
   };
+
+  const canStartGame = players.length >= 2 && isHost;
 
   const handleStartGame = () => {
     if (canStartGame && socket) {
       socket.emit("startGame", { gameCode });
-      router.push(`/play/guest/${gameCode}/game`);
     }
   };
 
-  // Show loading while checking host status
   if (checkingHostStatus) {
     return (
       <div className={styles.container}>
@@ -258,6 +330,52 @@ export default function StylingRoom() {
 
   return (
     <div className={styles.container}>
+      {showInstructions && (
+        <div className={styles.modalOverlay} onClick={() => setShowInstructions(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>How to Customize</h2>
+              <button className={styles.closeButton} onClick={() => setShowInstructions(false)}>
+                <X size={20} weight="bold" />
+              </button>
+            </div>
+            <div className={styles.modalContent}>
+              <div className={styles.instructionStep}>
+                <div className={styles.stepNumber}>1</div>
+                <div>
+                  <strong>Enter Your Name</strong>
+                  <p>Type your player name - your avatar changes with every letter!</p>
+                </div>
+              </div>
+              <div className={styles.instructionStep}>
+                <div className={styles.stepNumber}>2</div>
+                <div>
+                  <strong>Choose Avatar Style</strong>
+                  <p>Select from different avatar styles to match your personality.</p>
+                </div>
+              </div>
+              <div className={styles.instructionStep}>
+                <div className={styles.stepNumber}>3</div>
+                <div>
+                  <strong>Pick Background Color</strong>
+                  <p>Choose your favorite background color for your avatar.</p>
+                </div>
+              </div>
+              <div className={styles.instructionStep}>
+                <div className={styles.stepNumber}>4</div>
+                <div>
+                  <strong>Join & Customize Anytime</strong>
+                  <p>
+                    Click "Join Game" when ready. You can change your avatar anytime before the game
+                    starts!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className={styles.header}>
         <div className={styles.gameInfo}>
           <div className={styles.gameTitle}>STYLING ROOM {isHost && "👑"}</div>
@@ -265,12 +383,12 @@ export default function StylingRoom() {
           {isHost && <div className={styles.hostBadge}>HOST</div>}
         </div>
         <div className={styles.headerControls}>
-          <div className={styles.instructionsButton} onClick={() => setShowInstructions(true)}>
-            ❓
-          </div>
+          <button className={styles.helpButton} onClick={() => setShowInstructions(true)}>
+            ?
+          </button>
           {joined && (
             <button className={styles.leaveButton} onClick={handleLeaveGame}>
-              LEAVE
+              LEAVE ROOM
             </button>
           )}
         </div>
@@ -279,7 +397,6 @@ export default function StylingRoom() {
       {error && <div className={styles.errorMessage}>{error}</div>}
 
       <div className={styles.content}>
-        {/* Customization panel */}
         <div className={styles.customizationPanel}>
           <div className={styles.panelTitle}>CREATE YOUR AVATAR</div>
           <div className={styles.avatarPreview}>
@@ -309,7 +426,6 @@ export default function StylingRoom() {
                     selectedStyle === style ? styles.styleSelected : ""
                   }`}
                   onClick={() => setSelectedStyle(style)}
-                  disabled={joined}
                 >
                   <img
                     src={`https://api.dicebear.com/7.x/${style}/svg?seed=preview&backgroundColor=ff6b6b`}
@@ -332,7 +448,6 @@ export default function StylingRoom() {
                   }`}
                   style={{ backgroundColor: color }}
                   onClick={() => setSelectedColor(color)}
-                  disabled={joined}
                 />
               ))}
             </div>
@@ -340,60 +455,42 @@ export default function StylingRoom() {
 
           {!joined ? (
             <button
-              className={styles.readyButton}
+              className={styles.joinButton}
               onClick={handleJoinGame}
               disabled={!playerName.trim() || !socket}
             >
               JOIN GAME
             </button>
           ) : (
-            <button
-              className={`${styles.readyButton} ${isReady ? styles.readyActive : ""}`}
-              onClick={handleReady}
-              disabled={!socket}
-            >
-              {isReady ? "✓ READY!" : "CLICK TO READY"}
+            <button className={styles.updateButton} onClick={handleUpdateAvatar} disabled={!socket}>
+              UPDATE AVATAR
             </button>
           )}
         </div>
 
-        {/* Player list */}
         <div className={styles.playersPanel}>
-          <div className={styles.panelTitle}>PLAYERS ({viewerCount}/8)</div>
+          <div className={styles.panelTitle}>PLAYERS ({viewerCount})</div>
           <div className={styles.playersList}>
             {players.map((player) => (
               <div
                 key={`${player.uuid}-${player.id}`}
-                className={`${styles.playerCard} ${
-                  player.isReady ? styles.playerReady : ""
-                } ${player.isHost ? styles.playerHost : ""}`}
+                className={`${styles.playerCard} ${player.isHost ? styles.playerHost : ""}`}
               >
                 <div className={styles.playerAvatar}>
                   <img src={player.avatar} alt={player.name} />
-                  {player.isHost && (
-                    <div className={styles.hostCrown}>
-                      <CrownSimple size={32} />
-                    </div>
-                  )}
                 </div>
                 <div className={styles.playerInfo}>
                   <div className={styles.playerName}>
                     {player.name} {player.id === currentPlayerId && "(You)"}
-                  </div>
-                  <div className={styles.playerStatus}>
-                    {player.isReady ? "READY" : "WAITING..."}
+                    {player.isHost && " 👑"}
                   </div>
                 </div>
-                {player.isReady && <div className={styles.readyIndicator}>✓</div>}
               </div>
             ))}
           </div>
 
           <div className={styles.startSection}>
-            <div className={styles.readyCount}>
-              {players.filter((p) => p.isReady).length} / {players.length} READY
-            </div>
-            {isHost && (
+            {isHost ? (
               <button
                 className={styles.startButton}
                 onClick={handleStartGame}
@@ -401,8 +498,9 @@ export default function StylingRoom() {
               >
                 START GAME
               </button>
+            ) : (
+              <div className={styles.waitingHost}>Waiting for host to start...</div>
             )}
-            {!isHost && <div className={styles.waitingHost}>Waiting for host to start...</div>}
           </div>
         </div>
       </div>
