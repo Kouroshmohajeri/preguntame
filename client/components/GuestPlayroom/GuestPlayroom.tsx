@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { getGame } from "@/app/api/game/actions";
 import { useSocket } from "@/context/SocketContext/SocketContext";
 import styles from "./GuestPlayroom.module.css";
@@ -31,11 +31,14 @@ export default function GuestPlayroom() {
   const params = useParams();
   const codeParam = params.code;
   const gameCode = Array.isArray(codeParam) ? codeParam[0] : codeParam;
+
   if (!gameCode) {
     console.error("❌ No gameCode found in URL");
     return null;
   }
+
   const socket = useSocket();
+  const router = useRouter();
 
   const [game, setGame] = useState<Game | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -43,14 +46,16 @@ export default function GuestPlayroom() {
   const [timerActive, setTimerActive] = useState(false);
   const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showPreparation, setShowPreparation] = useState(false);
-  const [preparationTime, setPreparationTime] = useState(3);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [waitingForQuestion, setWaitingForQuestion] = useState(true);
+
+  const hasJoinedRef = useRef(false);
 
   const currentQuestion = game?.questions[currentQuestionIndex];
   const totalQuestions = game?.questions.length || 0;
   const answerCount = currentQuestion?.answers.length || 0;
   const progressPercentage = (timeLeft / 20) * 100;
+
   function getOrCreatePlayerUUID() {
     let uuid = localStorage.getItem("playerUUID");
     if (!uuid) {
@@ -59,14 +64,31 @@ export default function GuestPlayroom() {
     }
     return uuid;
   }
+
   const playerUUID = getOrCreatePlayerUUID();
 
-  // 🧩 Server-authoritative socket join + question start
+  // Load game data
+  useEffect(() => {
+    const loadGame = async () => {
+      try {
+        const gameData = await getGame(gameCode);
+        setGame(gameData);
+      } catch (err) {
+        console.error("Error loading game:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadGame();
+  }, [gameCode]);
+
+  // Socket event handlers
   useEffect(() => {
     if (!socket) return;
 
     const handleConnect = () => {
-      console.log("✅ Guest connected, joining:", gameCode);
+      if (hasJoinedRef.current) return;
 
       const storedPlayer = localStorage.getItem("playerInfo");
       const playerName = storedPlayer
@@ -74,21 +96,26 @@ export default function GuestPlayroom() {
         : "Guest_" + Math.floor(Math.random() * 1000);
 
       socket.emit("joinGame", { gameCode, playerName, playerUUID });
+      hasJoinedRef.current = true;
     };
 
     const handleStartQuestion = ({
       questionIndex,
-      timeLeft,
+      timeLeft: initialTime,
     }: {
       questionIndex: number;
       timeLeft?: number;
     }) => {
+      setWaitingForQuestion(false);
       setCurrentQuestionIndex(questionIndex);
-      setShowPreparation(false);
       setShowCorrectAnswer(false);
       setSelectedAnswer(null);
-      setTimeLeft(typeof timeLeft === "number" ? timeLeft : 20);
+      setTimeLeft(typeof initialTime === "number" ? initialTime : 20);
       setTimerActive(true);
+    };
+
+    const handleUpdateTimer = ({ timeLeft: newTime }: { timeLeft: number }) => {
+      setTimeLeft(newTime);
     };
 
     const handleShowCorrectAnswer = () => {
@@ -96,35 +123,37 @@ export default function GuestPlayroom() {
       setTimerActive(false);
     };
 
+    // ✅ NEW: Listen for game ended event
+    const handleGameEnded = ({ leaderboard }: { leaderboard: any[] }) => {
+      // Clear all game-related localStorage
+      localStorage.removeItem("playerInfo");
+      localStorage.removeItem(`draft_${gameCode}`);
+      // Keep playerUUID for future games
+
+      // Redirect to leaderboard page
+      setTimeout(() => {
+        router.push(`/leaderboard/${gameCode}`);
+      }, 500);
+    };
+
     socket.on("connect", handleConnect);
     socket.on("startQuestion", handleStartQuestion);
+    socket.on("updateTimer", handleUpdateTimer);
     socket.on("showCorrectAnswer", handleShowCorrectAnswer);
+    socket.on("gameEnded", handleGameEnded); // ✅ NEW
 
     if (socket.connected) handleConnect();
 
     return () => {
-      socket.emit("leaveGame", { gameCode });
       socket.off("connect", handleConnect);
       socket.off("startQuestion", handleStartQuestion);
-      socket.off("showCorrectAnswer", handleShowCorrectAnswer);
-    };
-  }, [socket, gameCode]);
-
-  // Sync time from host
-  useEffect(() => {
-    if (!socket) return;
-
-    const handleUpdateTimer = ({ timeLeft }: { timeLeft: number }) => {
-      setTimeLeft(timeLeft);
-    };
-
-    socket.on("updateTimer", handleUpdateTimer);
-    return () => {
       socket.off("updateTimer", handleUpdateTimer);
+      socket.off("showCorrectAnswer", handleShowCorrectAnswer);
+      socket.off("gameEnded", handleGameEnded); // ✅ NEW
     };
-  }, [socket]);
+  }, [socket, gameCode, playerUUID, router]);
 
-  // ⏱️ Local timer fallback (for smoother UX)
+  // Local timer fallback
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (timerActive && timeLeft > 0) {
@@ -136,46 +165,10 @@ export default function GuestPlayroom() {
     return () => clearTimeout(timer);
   }, [timerActive, timeLeft]);
 
-  // 🧠 Preparation countdown
-  useEffect(() => {
-    let prepTimer: NodeJS.Timeout;
-    if (showPreparation && preparationTime > 0) {
-      prepTimer = setTimeout(() => setPreparationTime((t) => t - 1), 1000);
-    } else if (showPreparation && preparationTime === 0) {
-      setShowPreparation(false);
-      setPreparationTime(3);
-      startQuestionTimer();
-    }
-    return () => clearTimeout(prepTimer);
-  }, [showPreparation, preparationTime]);
-
-  // 🎮 Load game data
-  const loadGame = async () => {
-    try {
-      const gameData = await getGame(gameCode);
-      setGame(gameData);
-    } catch (err) {
-      console.error("Error loading game:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    loadGame();
-  }, [gameCode]);
-
-  const startQuestionTimer = () => {
-    setTimerActive(true);
-    setSelectedAnswer(null);
-  };
-
-  // 🧩 Handle answer submission
   const handleAnswer = (answerId: string) => {
     if (!socket || !timerActive || showCorrectAnswer || !currentQuestion) return;
 
     setSelectedAnswer(answerId);
-
-    const isCorrect = currentQuestion.answers.find((a) => a._id === answerId)?.correct || false;
 
     socket.emit("playerAnswer", {
       gameCode,
@@ -184,15 +177,12 @@ export default function GuestPlayroom() {
       answerId,
       timeLeft,
     });
-
-    console.log(`Answer sent → ${isCorrect ? "✅ Correct" : "❌ Wrong"} (${timeLeft}s left)`);
   };
 
-  // 🧱 UI Rendering
   if (loading) {
     return (
       <div className={styles.container}>
-        <div className={styles.loading}>JOINING GAME...</div>
+        <div className={styles.loading}>LOADING GAME...</div>
       </div>
     );
   }
@@ -201,6 +191,18 @@ export default function GuestPlayroom() {
     return (
       <div className={styles.container}>
         <div className={styles.error}>Game not found</div>
+      </div>
+    );
+  }
+
+  if (waitingForQuestion) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.waitingScreen}>
+          <div className={styles.waitingTitle}>GET READY!</div>
+          <div className={styles.waitingMessage}>Waiting for host to start the game...</div>
+          <div className={styles.waitingSpinner}>⏳</div>
+        </div>
       </div>
     );
   }
@@ -220,17 +222,6 @@ export default function GuestPlayroom() {
 
   return (
     <div className={styles.container}>
-      {/* Preparation Overlay */}
-      {showPreparation && (
-        <div className={styles.preparationOverlay}>
-          <div className={styles.preparationModal}>
-            <div className={styles.preparationTitle}>GET READY!</div>
-            <div className={styles.preparationCounter}>{preparationTime}</div>
-            <div className={styles.preparationSubtitle}>Next question starting...</div>
-          </div>
-        </div>
-      )}
-
       {/* Timer bar */}
       <div className={styles.progressBarContainer}>
         <div

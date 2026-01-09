@@ -53,25 +53,63 @@
   color: #666;
 }
 
-.instructionsButton {
-  background: #4ecdc4;
+.hostBadge {
+  background: #FFD700;
   border: 2px solid #000;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  width: fit-content;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.headerControls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.helpButton {
+  background: #4ecdc4;
+  border: 3px solid #000;
   color: #000;
   width: 3rem;
   height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1.2rem;
+  font-weight: 900;
+  font-size: 1.5rem;
   cursor: pointer;
-  box-shadow: 2px 2px 0 #000;
+  box-shadow: 3px 3px 0 #000;
   transition: all 0.2s ease;
+  font-family: 'Nunito', sans-serif;
 }
 
-.instructionsButton:hover {
-  transform: translate(1px, 1px);
+.helpButton:hover {
+  transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 #000;
+}
+
+.leaveButton {
+  background: #ff6b6b;
+  border: 3px solid #000;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Nunito', sans-serif;
+}
+
+.leaveButton:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+  background: #ff5252;
 }
 
 /* Modal */
@@ -95,7 +133,9 @@
   padding: 1.5rem;
   box-shadow: 6px 6px 0 #000;
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modalHeader {
@@ -104,11 +144,11 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #000;
+  border-bottom: 3px solid #000;
 }
 
 .modalTitle {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 800;
   color: #000;
   text-transform: uppercase;
@@ -117,16 +157,17 @@
 
 .closeButton {
   background: #ff6b6b;
-  border: 2px solid #000;
-  color: #000;
-  width: 2rem;
-  height: 2rem;
+  border: 3px solid #000;
+  color: #fff;
+  width: 2.5rem;
+  height: 2.5rem;
   font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
 }
 
 .closeButton:hover {
@@ -144,22 +185,40 @@
   align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1rem;
-  padding: 0.75rem;
+  padding: 1rem;
   background: #fff;
-  border: 2px solid #000;
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0 #000;
+}
+
+.instructionStep:last-child {
+  margin-bottom: 0;
 }
 
 .stepNumber {
-  background: #000;
-  color: #fff;
-  width: 1.5rem;
-  height: 1.5rem;
+  background: #4ecdc4;
+  color: #000;
+  width: 2rem;
+  height: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 0.8rem;
+  font-size: 1rem;
   flex-shrink: 0;
+  border: 2px solid #000;
+}
+
+.instructionStep strong {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.instructionStep p {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
 }
 
 /* Main Content */
@@ -213,7 +272,7 @@
   letter-spacing: 1px;
   margin-bottom: 1.5rem;
   text-align: center;
-  border-bottom: 2px solid #000;
+  border-bottom: 3px solid #000;
   padding-bottom: 0.5rem;
 }
 
@@ -251,7 +310,7 @@
 .nameInput {
   width: 100%;
   background: #fff;
-  border: 2px solid #000;
+  border: 3px solid #000;
   color: #000;
   padding: 1rem;
   font-family: 'Nunito', sans-serif;
@@ -261,7 +320,7 @@
 }
 
 .nameInput::placeholder {
-  color: #666;
+  color: #999;
 }
 
 .nameInput:focus {
@@ -283,7 +342,7 @@
 
 .styleButton {
   background: #fff;
-  border: 2px solid #000;
+  border: 3px solid #000;
   padding: 0.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -298,6 +357,7 @@
 
 .styleSelected {
   border-color: #4ecdc4;
+  border-width: 4px;
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 #000;
 }
@@ -317,7 +377,7 @@
 .colorButton {
   width: 100%;
   aspect-ratio: 1;
-  border: 2px solid #000;
+  border: 3px solid #000;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 2px 2px 0 #000;
@@ -329,15 +389,16 @@
 }
 
 .colorSelected {
+  border-width: 4px;
   border-color: #4ecdc4;
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 #000;
 }
 
-/* Ready Button */
-.readyButton {
+/* Buttons */
+.joinButton {
   width: 100%;
-  background: #fff;
+  background: #4ecdc4;
   border: 3px solid #000;
   color: #000;
   padding: 1.25rem;
@@ -352,28 +413,43 @@
   box-shadow: 3px 3px 0 #000;
 }
 
-.readyButton:hover:not(:disabled) {
+.joinButton:hover:not(:disabled) {
   transform: translate(2px, 2px);
   box-shadow: 1px 1px 0 #000;
+  background: #45b7d1;
 }
 
-.readyButton:disabled {
+.joinButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.readyActive {
-  background: #4ecdc4;
-  animation: readyPulse 1s infinite;
+.updateButton {
+  width: 100%;
+  background: #FFEAA7;
+  border: 3px solid #000;
+  color: #000;
+  padding: 1.25rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+  box-shadow: 3px 3px 0 #000;
 }
 
-@keyframes readyPulse {
-  0%, 100% {
-    background: #4ecdc4;
-  }
-  50% {
-    background: #45b7d1;
-  }
+.updateButton:hover:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+  background: #F7DC6F;
+}
+
+.updateButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Players Panel */
@@ -391,13 +467,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.25rem;
+  padding: 1rem;
   background: #fff;
-  border: 2px solid #000;
+  border: 3px solid #000;
   transition: all 0.2s ease;
   position: relative;
   box-shadow: 2px 2px 0 #000;
-  width: 99%;
 }
 
 .playerCard:hover {
@@ -405,15 +480,14 @@
   box-shadow: 1px 1px 0 #000;
 }
 
-.playerReady {
-  background: #d4edda;
-  border-color: #28a745;
+.playerHost {
+  background: #fff8dc;
 }
 
 .playerAvatar {
   width: 60px;
   height: 60px;
-  border: 2px solid #000;
+  border: 3px solid #000;
   background: #fff;
   flex-shrink: 0;
 }
@@ -431,55 +505,22 @@
 .playerName {
   font-weight: 800;
   color: #000;
-  margin-bottom: 0.25rem;
   font-size: 1.1rem;
-}
-
-.playerStatus {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #666;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.readyIndicator {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #28a745;
-  color: #fff;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
-  font-weight: 800;
-  border: 2px solid #000;
 }
 
 /* Start Section */
 .startSection {
   text-align: center;
   padding-top: 1.5rem;
-  border-top: 2px solid #000;
+  border-top: 3px solid #000;
   flex-shrink: 0;
-}
-
-.readyCount {
-  font-size: 1rem;
-  font-weight: 800;
-  color: #000;
-  margin-bottom: 1rem;
 }
 
 .startButton {
   width: 100%;
   background: #ff6b6b;
   border: 3px solid #000;
-  color: #000;
+  color: #fff;
   padding: 1.25rem;
   font-family: 'Nunito', sans-serif;
   font-size: 1.3rem;
@@ -502,25 +543,32 @@
   cursor: not-allowed;
 }
 
-/* Footer */
-.footer {
-  background: #000;
-  color: #fff;
-  padding: 1rem 1.5rem;
-  text-align: center;
-  border: 3px solid #000;
-  border-left: none;
-  border-right: none;
-  border-bottom: none;
-  width: 100%;
-  flex-shrink: 0;
+.waitingHost {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #666;
+  font-style: italic;
 }
 
-.footerText {
-  font-size: 0.9rem;
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.errorMessage {
+  background: #ff6b6b;
+  border: 3px solid #000;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 #000;
+  margin: 1rem 1.5rem;
 }
 
 /* Mobile Responsive */
@@ -530,7 +578,7 @@
   }
 
   .content {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 100px);
     flex-direction: column;
   }
 
@@ -538,11 +586,13 @@
     border-right: none;
     border-bottom: 3px solid #000;
     flex: 1;
+    min-height: 50vh;
   }
 
   .playersPanel {
     flex: 1;
     min-width: auto;
+    min-height: 40vh;
   }
 
   .header {
@@ -550,7 +600,26 @@
   }
 
   .gameTitle {
+    font-size: 1.2rem;
+  }
+
+  .roomCode {
+    font-size: 0.9rem;
+  }
+
+  .headerControls {
+    gap: 0.5rem;
+  }
+
+  .helpButton {
+    width: 2.5rem;
+    height: 2.5rem;
     font-size: 1.3rem;
+  }
+
+  .leaveButton {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
   }
 
   .customizationPanel,
@@ -558,9 +627,15 @@
     padding: 1rem;
   }
 
+  .panelTitle {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
   .avatarPreview {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.5rem;
   }
 
   .styleGrid {
@@ -574,13 +649,120 @@
   }
 
   .playersList {
-    max-height: 200px;
+    max-height: none;
   }
 
-  .readyButton,
+  .playerCard {
+    padding: 0.75rem;
+  }
+
+  .playerAvatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .playerName {
+    font-size: 1rem;
+  }
+
+  .joinButton,
+  .updateButton,
   .startButton {
     padding: 1rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .modal {
+    max-width: 95%;
+    padding: 1rem;
+  }
+
+  .modalTitle {
+    font-size: 1.2rem;
+  }
+
+  .instructionStep {
+    padding: 0.75rem;
+    gap: 0.75rem;
   }
 }
 
+/* Extra small mobile */
+@media (max-width: 480px) {
+  .gameTitle {
+    font-size: 1rem;
+  }
+
+  .roomCode {
+    font-size: 0.8rem;
+  }
+
+  .hostBadge {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .helpButton {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.2rem;
+  }
+
+  .leaveButton {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .panelTitle {
+    font-size: 1rem;
+  }
+
+  .avatarPreview {
+    width: 90px;
+    height: 90px;
+  }
+
+  .inputLabel {
+    font-size: 0.9rem;
+  }
+
+  .nameInput {
+    font-size: 1rem;
+    padding: 0.875rem;
+  }
+
+  .styleGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+  }
+
+  .colorGrid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.4rem;
+  }
+
+  .joinButton,
+  .updateButton,
+  .startButton {
+    padding: 0.875rem;
+    font-size: 0.95rem;
+  }
+
+  .playerCard {
+    padding: 0.625rem;
+    gap: 0.75rem;
+  }
+
+  .playerAvatar {
+    width: 45px;
+    height: 45px;
+  }
+
+  .playerName {
+    font-size: 0.95rem;
+  }
+
+  .waitingHost {
+    font-size: 0.85rem;
+  }
+}

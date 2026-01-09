@@ -10,46 +10,36 @@ export default function Page() {
   const socket = useSocket();
   const { code } = useParams();
   const gameCode = code as string;
-  const [gameStarted, setGameStarted] = useState<boolean | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState("CONECTING...");
-
-  const enterSound = useRef<HTMLAudioElement | null>(null);
+  const [gameStarted, setGameStarted] = useState(false); // ✅ Default to FALSE (StylingRoom)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socket || !gameCode) return;
 
-    const fallbackTimer = setTimeout(() => {
-      if (gameStarted === null) {
-        console.warn("⚠️ No response from server, defaulting to StylingRoom");
-        setGameStarted(false);
+    const handleGameStarted = ({ started }: { started: boolean }) => {
+      if (started) {
+        setGameStarted(true);
       }
-    }, 4000);
+    };
 
-    socket.emit("getRoomPlayers", { gameCode });
-
-    socket.on("playersUpdate", () => {
-      setLoadingMessage("SYNCING PLAYERS...");
-    });
-
-    socket.on("gameStarted", ({ started }) => {
+    const handleJoinOngoingGame = ({ gameStarted: started }: { gameStarted: boolean }) => {
       setGameStarted(started);
-    });
+    };
 
-    socket.on("joinOngoingGame", ({ gameStarted }) => {
-      setGameStarted(gameStarted);
-    });
+    socket.on("gameStarted", handleGameStarted);
+    socket.on("joinOngoingGame", handleJoinOngoingGame);
+
+    // After socket setup, stop loading
+    setLoading(false);
 
     return () => {
-      socket.off("gameStarted");
-      socket.off("joinOngoingGame");
-      socket.off("playersUpdate");
-      clearTimeout(fallbackTimer);
+      socket.off("gameStarted", handleGameStarted);
+      socket.off("joinOngoingGame", handleJoinOngoingGame);
     };
   }, [socket, gameCode]);
 
-  // Show retro loading while waiting for server response
-  if (gameStarted === null) {
-    return <RetroLoading message={loadingMessage} />;
+  if (loading) {
+    return <RetroLoading message="CONNECTING..." />;
   }
 
   return <div>{gameStarted ? <GuestPlayroom /> : <StylingRoom />}</div>;

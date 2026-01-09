@@ -30,13 +30,25 @@ async function deleteRoom(gameCode: string) {
 export function registerGameSocket(io: Server, socket: Socket) {
   // Note: This function is called from setupSocket which already handles the connection event
   // So we register handlers directly on the socket, not on io.on("connection")
+  // socket.on("startGame", async ({ gameCode }) => {
+  //   const room = await getRoom(gameCode);
+  //   room.gameStarted = true;
+  //   await saveRoom(gameCode, room);
+
+  //   io.to(gameCode).emit("gameStarted", { started: true });
+  // });
   socket.on("startGame", async ({ gameCode }) => {
     const room = await getRoom(gameCode);
+    if (!room) return;
+
     room.gameStarted = true;
+    room.currentQuestion = 0;
     await saveRoom(gameCode, room);
 
+    // Broadcast to ALL clients in the room
     io.to(gameCode).emit("gameStarted", { started: true });
   });
+
   // 🧭 When visiting a game lobby
   socket.on("visitRoom", async ({ gameCode, playerUUID }) => {
     socket.join(gameCode);
@@ -481,6 +493,59 @@ export function registerGameSocket(io: Server, socket: Socket) {
       }
     }
   );
+  // Leave Game - Add this handler
+  socket.on("leaveGame", async ({ gameCode, playerUUID }) => {
+    const room = await getRoom(gameCode);
+    if (!room) return;
+
+    // Remove player from players object
+    if (room.players[playerUUID]) {
+      delete room.players[playerUUID];
+    }
+
+    // Remove from viewers list
+    room.viewers = room.viewers.filter((uuid) => uuid !== playerUUID);
+
+    // If room is empty, delete it
+    if (Object.keys(room.players).length === 0 && room.viewers.length === 0) {
+      await deleteRoom(gameCode);
+    } else {
+      await saveRoom(gameCode, room);
+
+      // Notify remaining players
+      io.to(gameCode).emit("playersUpdate", {
+        players: Object.values(room.players),
+        hostId: room.hostId,
+      });
+      io.to(gameCode).emit("viewerCountUpdate", {
+        count: room.viewers.length,
+      });
+    }
+
+    // Leave the socket room
+    socket.leave(gameCode);
+  });
+
+  // Update Avatar - Add this handler
+  socket.on("updateAvatar", async ({ gameCode, avatar, playerUUID }) => {
+    const room = await getRoom(gameCode);
+    if (!room) return;
+
+    const player = room.players[playerUUID];
+    if (!player) return;
+
+    // Update player's avatar
+    player.avatar = avatar;
+
+    await saveRoom(gameCode, room);
+
+    // Notify all players of the update
+    io.to(gameCode).emit("playersUpdate", {
+      players: Object.values(room.players),
+      hostId: room.hostId,
+    });
+  });
+
   // socket.on("startGame", async ({ gameCode }) => {
   //   const room = await getRoom(gameCode);
   //   if (!room) return;
@@ -558,11 +623,21 @@ export function registerGameSocket(io: Server, socket: Socket) {
   };
 
   // End Game & finalize leaderboard
+  // In your gameSocket.ts file - UPDATE the endGame handler
   socket.on("endGame", async ({ gameCode }) => {
     const room = await getRoom(gameCode);
-    if (!room) return;
+    if (!room) {
+      console.error("❌ Room not found for endGame");
+      return;
+    }
 
-    // Build final leaderboard AND full player result objects
+    console.log("🏁 Processing endGame for:", gameCode);
+    console.log(
+      "📦 Room players before processing:",
+      JSON.stringify(room.players, null, 2)
+    );
+
+    // Build final leaderboard with COMPLETE player data including ALL answer details
     const players = Object.values(room.players)
       .filter((p) => !p.isHost)
       .map((p) => {
@@ -578,53 +653,39 @@ export function registerGameSocket(io: Server, socket: Socket) {
           : undefined;
 
         return {
-          playerId: p.id,
+          playerId: p.id, // Socket ID
           name: p.name,
           avatar: p.avatar,
-          uuid: p.uuid,
-          score: p.score,
+          uuid: p.uuid, // Player UUID
+          score: p.score || 0,
           correct,
           wrong,
           responseTime: avgResponseTime,
-          answers: p.answers || [],
+          answers: p.answers || [], // ✅ This includes ALL answer details with questionIndex, answerId, isCorrect, points, timeLeft
+          isAssigned: false,
         };
       })
       .sort((a, b) => b.score - a.score);
 
-    // Save to Redis (temporary)
-    await redis.set(`leaderboard:${gameCode}`, JSON.stringify(players));
+    console.log(
+      "📊 Complete leaderboard data:",
+      JSON.stringify(players, null, 2)
+    );
 
-    // Save permanently to MongoDB
+    // Save to Redis temporarily for leaderboard page access
+    await redis.set(`leaderboard:${gameCode}`, JSON.stringify(players), {
+      EX: 3600,
+    }); // 1 hour expiry
 
-    await finalizeGame(gameCode, room.hostId, players);
-
-    // Emit end signal
+    // Emit complete data to all clients
     io.to(gameCode).emit("gameEnded", { leaderboard: players });
+
+    console.log(
+      `✅ Game ended, emitted complete player data with ${players.length} players`
+    );
 
     // Cleanup Redis room after delay
     setTimeout(() => deleteRoom(gameCode), 60000);
-  });
-
-  //Finalizing
-  socket.on("finalizeLeaderboard", async ({ gameCode }) => {
-    gameCode = Array.isArray(gameCode) ? gameCode[0] : gameCode;
-    const room = await getRoom(gameCode);
-    if (!room) return;
-
-    const players = Object.values(room.players).filter((p) => !p.isHost);
-
-    const leaderboard = players
-      .map((p) => ({
-        uuid: p.uuid,
-        name: p.name,
-        score: p.score || 0,
-        answers: p.answers || [],
-      }))
-      .sort((a, b) => b.score - a.score);
-
-    await saveTheGameResult(gameCode, leaderboard, room.hostId);
-
-    io.to(gameCode).emit("gameEnded", { leaderboard });
   });
 
   // 🧹 Disconnect

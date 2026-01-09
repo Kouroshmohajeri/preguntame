@@ -527,3 +527,44 @@
     width: 100%;
   }
 }
+.waitingScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.waitingTitle {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 3px 3px 0 #4ecdc4;
+}
+
+.waitingMessage {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #666;
+  text-align: center;
+}
+
+.waitingSpinner {
+  font-size: 4rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
