@@ -834,7 +834,7 @@ export default function HostPlayroom() {
         <RetroErrorModal isOpen={showAccessDenied} onClose={() => setShowAccessDenied(false)} />
       )}
 
-      <div className={styles.joinInfo}>Players join: preguntame.com/play/guest/{game.gameCode}</div>
+      <div className={styles.joinInfo}>Players join: preguntame.eu/play/guest/{game.gameCode}</div>
     </div>
   );
 }
