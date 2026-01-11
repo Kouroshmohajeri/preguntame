@@ -58,7 +58,7 @@ export default function ContactForm() {
         </a>
 
         {/* LinkedIn Card */}
-        <a
+        {/* <a
           href="https://linkedin.com/in/kouroshmohajeri"
           className={styles.contactCard}
           target="_blank"
@@ -69,10 +69,11 @@ export default function ContactForm() {
           </div>
           <h3 className={styles.cardTitle}>LinkedIn</h3>
           <p className={styles.cardText}>@kouroshmohajeri</p>
-        </a>
+        </a> */}
 
         {/* GitHub Card */}
-        <a
+
+        {/* <a
           href="https://github.com/kouroshmohajeri"
           className={styles.contactCard}
           target="_blank"
@@ -83,7 +84,7 @@ export default function ContactForm() {
           </div>
           <h3 className={styles.cardTitle}>GitHub</h3>
           <p className={styles.cardText}>@kouroshmohajeri</p>
-        </a>
+        </a> */}
       </div>
 
       {/* Contact Form */}
