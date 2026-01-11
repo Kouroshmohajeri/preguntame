@@ -23,6 +23,7 @@ import {
   GameController as GameIcon,
 } from "@phosphor-icons/react";
 import styles from "./page.module.css";
+import FreeIranBanner from "@/components/FreeIranBanner/FreeIranBanner";
 
 export default function Home() {
   const [showJoinModal, setShowJoinModal] = useState(false);
@@ -58,7 +59,10 @@ export default function Home() {
   return (
     <>
       {/* PixelMenu with Desktop Header */}
-      <PixelMenu currentPage="home" alwaysHamburger={false} />
+      <div className={styles.pixelMenuContainer}>
+        <FreeIranBanner />
+        <PixelMenu currentPage="home" alwaysHamburger={false} />
+      </div>
 
       <div className={styles.mainContainer}>
         <section className={styles.contentSection}>
