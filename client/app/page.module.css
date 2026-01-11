@@ -537,3 +537,10 @@
     left: 20px;
   }
 }
+
+
+.pixelMenuContainer{
+  position: relative;
+  z-index: 10001;
+  
+}

@@ -1,0 +1,368 @@
+/* Backdrop overlay */
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(45, 55, 72, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Floating container */
+.floatingContainer {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 10000;
+  transition: none;
+}
+
+.floatingContainer.expanded {
+  top: 50%;
+  left: 50%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  animation: moveToCenter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes moveToCenter {
+  from {
+    top: auto;
+    bottom: 20px;
+    left: 20px;
+    transform: translate(0, 0);
+  }
+  to {
+    top: 50%;
+    left: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Close button - outside top-right */
+.closeButton {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 32px;
+  height: 32px;
+  background: #E53E3E;
+  border: 3px solid #2D3748;
+  box-shadow: 3px 3px 0 #2D3748;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10002;
+  color: #FFFAF7;
+  font-weight: 900;
+}
+
+.closeButton:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 #2D3748;
+  background: #C53030;
+}
+
+/* Modal close button */
+.modalCloseButton {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 44px;
+  height: 44px;
+  background: #E53E3E;
+  border: 4px solid #2D3748;
+  box-shadow: 4px 4px 0 #2D3748;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10002;
+  color: #FFFAF7;
+  font-weight: 900;
+}
+
+.modalCloseButton:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #2D3748;
+  background: #C53030;
+}
+
+/* Modal container */
+.modalContainer {
+  background: #FFFAF7;
+  border: 4px solid #2D3748;
+  box-shadow: 6px 6px 0 #2D3748;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modalContainer:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 9px 9px 0 #2D3748;
+}
+
+.floatingContainer.expanded .modalContainer {
+  cursor: default;
+  box-shadow: 10px 10px 0 #2D3748;
+  animation: growModal 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.floatingContainer.expanded .modalContainer:hover {
+  transform: none;
+  box-shadow: 10px 10px 0 #2D3748;
+}
+
+@keyframes growModal {
+  from {
+    width: 120px;
+  }
+  to {
+    width: 550px;
+  }
+}
+
+/* Flag section */
+.flagSection {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.floatingContainer.expanded .flagSection {
+  width: 100%;
+  height: 180px;
+}
+
+/* Shine effect */
+.shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 70%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes shine {
+  0%, 100% {
+    transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  }
+  50% {
+    transform: translateX(100%) translateY(100%) rotate(45deg);
+  }
+}
+
+/* Stripes */
+.stripe {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.green {
+  background: linear-gradient(135deg, #239f40 0%, #2db84e 100%);
+}
+
+.white {
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+}
+
+.red {
+  background: linear-gradient(135deg, #da0000 0%, #ff0000 100%);
+}
+
+/* Red fade effect when expanded */
+.redFade {
+  background: linear-gradient(
+    to bottom,
+    #da0000 0%,
+    #ff0000 20%,
+    rgba(255, 0, 0, 0.3) 60%,
+    rgba(255, 250, 247, 0) 100%
+  );
+}
+
+/* Lion and Sun icon */
+.lionSunIcon {
+  opacity: 0.95;
+  z-index: 5;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Message box */
+.messageBox {
+  padding: 40px;
+  background: #FFFAF7;
+  animation: expandMessage 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  position: relative;
+}
+
+@keyframes expandMessage {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.messageText {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2D3748;
+  font-family: "Nunito", sans-serif;
+  line-height: 1.7;
+  margin: 0 0 20px 0;
+}
+
+.messageText:last-of-type {
+  margin-bottom: 24px;
+}
+
+.messageText strong {
+  font-weight: 900;
+  color: #E53E3E;
+  font-size: 18px;
+}
+
+.hashtag {
+  font-size: 24px;
+  font-weight: 900;
+  color: #E53E3E;
+  font-family: "Nunito", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0;
+  text-align: right;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .floatingContainer {
+    bottom: 15px;
+    left: 15px;
+  }
+
+  .flagSection {
+    width: 90px;
+    height: 90px;
+  }
+
+  .floatingContainer.expanded .flagSection {
+    height: 140px;
+  }
+
+  @keyframes growModal {
+    from {
+      width: 90px;
+    }
+    to {
+      width: calc(100vw - 60px);
+      max-width: 450px;
+    }
+  }
+
+  .closeButton {
+    width: 28px;
+    height: 28px;
+    top: -12px;
+    right: -12px;
+  }
+
+  .modalCloseButton {
+    width: 38px;
+    height: 38px;
+  }
+
+  .messageBox {
+    padding: 28px;
+  }
+
+  .messageText {
+    font-size: 14px;
+  }
+
+  .messageText strong {
+    font-size: 16px;
+  }
+
+  .hashtag {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floatingContainer {
+    bottom: 10px;
+    left: 10px;
+  }
+
+  .flagSection {
+    width: 80px;
+    height: 80px;
+  }
+
+  .floatingContainer.expanded .flagSection {
+    height: 120px;
+  }
+
+  @keyframes growModal {
+    from {
+      width: 80px;
+    }
+    to {
+      width: calc(100vw - 40px);
+      max-width: 360px;
+    }
+  }
+
+  .messageBox {
+    padding: 24px;
+  }
+
+  .messageText {
+    font-size: 13px;
+  }
+
+  .messageText strong {
+    font-size: 15px;
+  }
+
+  .hashtag {
+    font-size: 18px;
+  }
+}
