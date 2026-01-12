@@ -366,3 +366,9 @@
     font-size: 18px;
   }
 }
+/* Add this new style for the hours highlight */
+.hoursHighlight {
+  font-weight: 900;
+  color: #E53E3E;
+  font-size: 18px;
+}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./FreeIranBanner.module.css";
 import Image from "next/image";
 import { X } from "@phosphor-icons/react";
@@ -7,6 +7,28 @@ import { X } from "@phosphor-icons/react";
 export default function FreeIranBanner() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+  const [hoursSinceBlackout, setHoursSinceBlackout] = useState(84);
+
+  useEffect(() => {
+    // Blackout started: January 8, 2026, 8:30 PM Iran Time (6:00 PM CET / 17:00 UTC)
+    // Source: NetBlocks monitoring data
+    const blackoutStartTime = new Date("2026-01-08T18:00:00+01:00"); // 6:00 PM CET
+
+    const updateHours = () => {
+      const now = new Date();
+      const diffMs = now.getTime() - blackoutStartTime.getTime();
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      setHoursSinceBlackout(Math.max(0, diffHours));
+    };
+
+    // Update immediately
+    updateHours();
+
+    // Update every hour
+    const interval = setInterval(updateHours, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (isClosed) return null;
 
@@ -73,8 +95,10 @@ export default function FreeIranBanner() {
             <div className={styles.messageBox}>
               <p className={styles.messageText}>
                 The people of Iran have been in a total blackout of internet and electricity for
-                more than 48 hours now, and they don't have any connection with their families and
-                loved ones outside of Iran.
+                more than{" "}
+                <strong className={styles.hoursHighlight}>{hoursSinceBlackout} hours</strong> now,
+                and they don't have any connection with their families and loved ones outside of
+                Iran.
               </p>
 
               <p className={styles.messageText}>
