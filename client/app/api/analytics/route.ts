@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
 // Function to fetch MongoDB stats from your server
 async function getMongoDBStats() {
-  const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+  const serverUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   try {
     const response = await fetch(`${serverUrl}/admin/stats`, {
