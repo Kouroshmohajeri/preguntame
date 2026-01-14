@@ -13,9 +13,14 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import gameResultRoutes from "./routes/gameResultRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+// import aiRoutes from "./routes/aiRoutes.js";
+// import subscribeRoutes from "./routes/subscriptionRoutes.js";
+// import stripeWebhook from "./routes/stripeWebhook.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
 app.use(cors());
+// app.use("/api/webhooks", stripeWebhook);
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -36,6 +41,9 @@ app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/gameResults", gameResultRoutes);
 app.use("/api/gameResults", gameResultRoutes);
 app.use("/api/notifications", notificationRoutes);
+// app.use("/api/ai", aiRoutes);
+// app.use("/api/subscribe", subscribeRoutes);
+app.use("/api/admin", adminRoutes);
 
 server.listen(PORT, "0.0.0.0", () =>
   console.log(`✅ Server running on :${PORT}`)
