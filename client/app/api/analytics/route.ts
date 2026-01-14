@@ -35,7 +35,7 @@ async function getMongoDBStats() {
   const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
   try {
-    const response = await fetch(`${serverUrl}/api/admin/stats`, {
+    const response = await fetch(`${serverUrl}/admin/stats`, {
       headers: {
         Authorization: `Bearer ${process.env.ADMIN_API_KEY}`,
       },
