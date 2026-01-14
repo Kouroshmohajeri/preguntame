@@ -1,0 +1,17 @@
+{
+  "name": "Pregúntame Analytics",
+  "short_name": "Analytics",
+  "description": "Analytics Dashboard",
+  "start_url": "/analytics",
+  "display": "standalone",
+  "background_color": "#FFFAF7",
+  "theme_color": "#4ECDC4",
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
