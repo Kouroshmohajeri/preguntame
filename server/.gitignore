@@ -16,3 +16,12 @@ node_modules
 
 # OS files
 .DS_Store
+
+#email tests
+sendTestEmail.ts
+sendLeaderboardFixToAll.ts
+sendHappyNewYearToAll.ts
+testLeaderboardAnnouncement.ts
+
+happyNewYear2026.ts
+leaderboardFixAnnouncement.ts

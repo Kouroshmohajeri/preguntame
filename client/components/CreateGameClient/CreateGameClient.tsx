@@ -103,10 +103,6 @@ export default function CreateGameClient() {
   // This mimics the OLD handlePublish but with confirmation modal
   const handlePublish = useCallback(
     async (title: string) => {
-      console.log("🎯 handlePublish called with title:", title);
-      console.log("📝 Current questions state:", questions);
-      console.log("📊 Questions length:", questions.length);
-
       // Take a SNAPSHOT of current data before anything happens
       publishDataRef.current = {
         title: title,
