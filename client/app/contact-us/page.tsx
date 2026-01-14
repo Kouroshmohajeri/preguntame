@@ -6,7 +6,7 @@ import styles from "./page.module.css";
 export const metadata: Metadata = {
   title: "Contact Us - Pregúntame | Get in Touch",
   description:
-    "Contact Pregúntame for support, feedback, or inquiries. Reach us via email at info.preguntame@gmail.com or connect on LinkedIn and GitHub.",
+    "Contact Pregúntame for support, feedback, or inquiries. Reach us via email at info@preguntame.eu or connect on LinkedIn and GitHub.",
   keywords: [
     "contact preguntame",
     "preguntame support",
