@@ -21,7 +21,7 @@ export default function ContactForm() {
       `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
     );
 
-    window.location.href = `mailto:info.preguntame@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@preguntame.eu?subject=${subject}&body=${body}`;
 
     setStatus("success");
     setTimeout(() => {
@@ -45,7 +45,7 @@ export default function ContactForm() {
       <div className={styles.contactGrid}>
         {/* Email Card */}
         <a
-          href="mailto:info.preguntame@gmail.com"
+          href="mailto:info@preguntame.eu"
           className={styles.contactCard}
           target="_blank"
           rel="noopener noreferrer"
@@ -54,7 +54,7 @@ export default function ContactForm() {
             <EnvelopeSimple size={32} weight="fill" />
           </div>
           <h3 className={styles.cardTitle}>Email Us</h3>
-          <p className={styles.cardText}>info.preguntame@gmail.com</p>
+          <p className={styles.cardText}>info@preguntame.eu</p>
         </a>
 
         {/* LinkedIn Card */}
@@ -152,7 +152,7 @@ export default function ContactForm() {
 
           {status === "success" && (
             <div className={styles.successMessage}>
-              Message sent successfully! We'll get back to you soon.
+              You will get redirected to your email! You can also attach files if needed.
             </div>
           )}
         </form>
