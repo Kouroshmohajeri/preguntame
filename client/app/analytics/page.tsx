@@ -3,6 +3,17 @@ import { useState, useEffect } from "react";
 import styles from "./analytics.module.css";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import {
+  Lock,
+  ChartBar,
+  Users,
+  GameController,
+  TrendUp,
+  Calendar,
+  CalendarCheck,
+  Globe,
+  ArrowLeft,
+} from "@phosphor-icons/react";
 
 interface AnalyticsData {
   totalUsers: number;
@@ -60,9 +71,6 @@ export default function AnalyticsPage() {
 
   // Fetch Vercel Analytics (if you have the bearer token)
   const fetchVercelAnalytics = async () => {
-    // Note: This requires Vercel bearer token from cookies
-    // For now, we'll show placeholder data
-    // You'd need to implement the undocumented API call here
     setVercelData({
       activeUsers: 0,
       topCountry: "N/A",
@@ -73,7 +81,10 @@ export default function AnalyticsPage() {
     return (
       <div className={styles.container}>
         <div className={styles.authBox}>
-          <h1 className={styles.title}>🔒 Analytics Access</h1>
+          <div className={styles.lockIconWrapper}>
+            <Lock size={64} weight="fill" className={styles.lockIcon} />
+          </div>
+          <h1 className={styles.title}>Analytics Access</h1>
           <p className={styles.subtitle}>Enter your Google Authenticator code</p>
 
           <form onSubmit={handleVerify} className={styles.form}>
@@ -105,47 +116,61 @@ export default function AnalyticsPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>📊 Analytics Dashboard</h1>
+        <h1 className={styles.title}>
+          <ChartBar size={32} weight="fill" /> Analytics Dashboard
+        </h1>
         <button onClick={() => router.push("/")} className={styles.backButton}>
-          ← Back to Home
+          <ArrowLeft size={20} weight="bold" /> Back to Home
         </button>
       </div>
 
       <div className={styles.grid}>
         {/* MongoDB Stats */}
         <div className={styles.card}>
-          <div className={styles.cardIcon}>👥</div>
+          <div className={styles.cardIcon}>
+            <Users size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Total Members</h3>
           <p className={styles.cardValue}>{mongoData?.totalUsers.toLocaleString()}</p>
         </div>
 
         <div className={styles.card}>
-          <div className={styles.cardIcon}>🎮</div>
+          <div className={styles.cardIcon}>
+            <GameController size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Games Created</h3>
           <p className={styles.cardValue}>{mongoData?.totalGames.toLocaleString()}</p>
         </div>
 
         <div className={styles.card}>
-          <div className={styles.cardIcon}>📈</div>
+          <div className={styles.cardIcon}>
+            <TrendUp size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Game Results</h3>
           <p className={styles.cardValue}>{mongoData?.totalGameResults.toLocaleString()}</p>
         </div>
 
         <div className={styles.card}>
-          <div className={styles.cardIcon}>📅</div>
+          <div className={styles.cardIcon}>
+            <Calendar size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Users Today</h3>
           <p className={styles.cardValue}>{mongoData?.usersToday.toLocaleString()}</p>
         </div>
 
         <div className={styles.card}>
-          <div className={styles.cardIcon}>📆</div>
+          <div className={styles.cardIcon}>
+            <CalendarCheck size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Users This Week</h3>
           <p className={styles.cardValue}>{mongoData?.usersThisWeek.toLocaleString()}</p>
         </div>
 
         {/* Vercel Analytics - Placeholder */}
         <div className={styles.card}>
-          <div className={styles.cardIcon}>🌍</div>
+          <div className={styles.cardIcon}>
+            <Globe size={48} weight="fill" />
+          </div>
           <h3 className={styles.cardTitle}>Top Country</h3>
           <p className={styles.cardValue}>{vercelData?.topCountry || "N/A"}</p>
           <p className={styles.cardNote}>Requires Vercel API setup</p>
