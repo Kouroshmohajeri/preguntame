@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import styles from "./TypewriterTitle.module.css";
 
 export default function TypewriterTitle({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState("");
@@ -19,9 +20,9 @@ export default function TypewriterTitle({ text }: { text: string }) {
   }, [text]);
 
   return (
-    <h1 className="text-[4rem] font-extrabold tracking-tight text-black dark:text-[#fffaf4] leading-none">
+    <h1 className={styles.title}>
       {displayed}
-      {!finished && <span className="animate-pulse text-[#ff0077]">|</span>}
+      {!finished && <span className={styles.cursor}>|</span>}
     </h1>
   );
 }

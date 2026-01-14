@@ -8,6 +8,11 @@
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
+  color: #000;
+}
+
+:global(.dark) .title {
+  color: #f7fafc;
 }
 
 .placeholder {
@@ -18,6 +23,13 @@
   background: #fffaf4;
   font-weight: 600;
   box-shadow: 4px 4px 0px #000;
+}
+
+:global(.dark) .placeholder {
+  color: #a0aec0;
+  border: 3px dashed #4a5568;
+  background: #1a202c;
+  box-shadow: 4px 4px 0px #2d3748;
 }
 
 .answersList {
@@ -37,9 +49,19 @@
   transition: all 0.2s ease;
 }
 
+:global(.dark) .answerItem {
+  border: 3px solid #4a5568;
+  background: #1a202c;
+  box-shadow: 4px 4px 0px #2d3748;
+}
+
 .answerItem:hover {
   box-shadow: 2px 2px 0px #000;
   transform: translate(2px, 2px);
+}
+
+:global(.dark) .answerItem:hover {
+  box-shadow: 2px 2px 0px #2d3748;
 }
 
 .checkbox {
@@ -56,14 +78,30 @@
   transition: all 0.2s ease;
 }
 
+:global(.dark) .checkbox {
+  border: 2px solid #4a5568;
+  background: #2d3748;
+  box-shadow: 2px 2px 0px #1a202c;
+}
+
 .checkbox:hover {
   box-shadow: 1px 1px 0px #000;
   transform: translate(1px, 1px);
 }
 
+:global(.dark) .checkbox:hover {
+  box-shadow: 1px 1px 0px #1a202c;
+}
+
 .checkbox.checked {
   background: #000;
   color: #fff;
+}
+
+:global(.dark) .checkbox.checked {
+  background: #4ecdc4;
+  color: #000;
+  border-color: #4ecdc4;
 }
 
 .checkmark {
@@ -82,11 +120,20 @@
   font-weight: 500;
   padding: 0.25rem 0;
   min-height: 1.5rem;
+  color: #000;
+}
+
+:global(.dark) .answerInput {
+  color: #f7fafc;
 }
 
 .answerInput::placeholder {
   color: #666;
   font-weight: 500;
+}
+
+:global(.dark) .answerInput::placeholder {
+  color: #718096;
 }
 
 .deleteButton {
@@ -106,6 +153,13 @@
   transition: all 0.2s ease;
 }
 
+:global(.dark) .deleteButton {
+  border: 2px solid #4a5568;
+  background: #2d3748;
+  color: #fc8181;
+  box-shadow: 2px 2px 0px #1a202c;
+}
+
 .deleteButton:hover {
   background: #e63946;
   color: #fff;
@@ -113,9 +167,19 @@
   transform: translate(1px, 1px);
 }
 
+:global(.dark) .deleteButton:hover {
+  background: #fc8181;
+  color: #000;
+  box-shadow: 1px 1px 0px #1a202c;
+}
+
 .deleteButton:active {
   box-shadow: 0px 0px 0px #000;
   transform: translate(2px, 2px);
+}
+
+:global(.dark) .deleteButton:active {
+  box-shadow: 0px 0px 0px #1a202c;
 }
 
 .addButton {
@@ -132,6 +196,13 @@
   text-align: center;
 }
 
+:global(.dark) .addButton {
+  border: 3px solid #4a5568;
+  background: #2d3748;
+  color: #f7fafc;
+  box-shadow: 4px 4px 0px #1a202c;
+}
+
 .addButton:hover {
   background: #000;
   color: #fffaf7;
@@ -139,9 +210,19 @@
   transform: translate(2px, 2px);
 }
 
+:global(.dark) .addButton:hover {
+  background: #4ecdc4;
+  color: #000;
+  box-shadow: 2px 2px 0px #1a202c;
+}
+
 .addButton:active {
   box-shadow: 0px 0px 0px #000;
   transform: translate(4px, 4px);
+}
+
+:global(.dark) .addButton:active {
+  box-shadow: 0px 0px 0px #1a202c;
 }
 
 .correctIndicator {
@@ -151,11 +232,25 @@
   font-weight: 600;
   box-shadow: 3px 3px 0px #000;
   margin-top: 0.5rem;
+  color: #000;
 }
+
+:global(.dark) .correctIndicator {
+  border: 2px solid #4a5568;
+  background: #1a202c;
+  color: #f7fafc;
+  box-shadow: 3px 3px 0px #2d3748;
+}
+
 .duplicate {
   border-color: #e63946 !important;
   background: #ffe6e6 !important;
   animation: shake 0.3s ease-in-out;
+}
+
+:global(.dark) .duplicate {
+  border-color: #fc8181 !important;
+  background: #4a2020 !important;
 }
 
 .errorMessage {
@@ -166,6 +261,13 @@
   font-weight: 600;
   box-shadow: 3px 3px 0px #e63946;
   margin-top: 0.5rem;
+}
+
+:global(.dark) .errorMessage {
+  border: 2px solid #fc8181;
+  background: #4a2020;
+  color: #fc8181;
+  box-shadow: 3px 3px 0px #fc8181;
 }
 
 @keyframes shake {
@@ -179,8 +281,17 @@
   background: #ffe6e6;
 }
 
+:global(.dark) .answerItem.duplicate .checkbox {
+  border-color: #fc8181;
+  background: #4a2020;
+}
+
 .answerItem.duplicate .answerInput {
   color: #e63946;
+}
+
+:global(.dark) .answerItem.duplicate .answerInput {
+  color: #fc8181;
 }
 
 @media (max-width: 768px) {
@@ -199,11 +310,19 @@
     box-shadow: 3px 3px 0px #000;
   }
 
+  :global(.dark) .placeholder {
+    box-shadow: 3px 3px 0px #2d3748;
+  }
+
   .answerItem {
     padding: 0.875rem;
     border-width: 2px;
     box-shadow: 3px 3px 0px #000;
     gap: 0.65rem;
+  }
+
+  :global(.dark) .answerItem {
+    box-shadow: 3px 3px 0px #2d3748;
   }
 
   .checkbox {
@@ -231,6 +350,10 @@
     font-size: 0.95rem;
     border-width: 2px;
     box-shadow: 3px 3px 0px #000;
+  }
+
+  :global(.dark) .addButton {
+    box-shadow: 3px 3px 0px #1a202c;
   }
 
   .correctIndicator {
@@ -271,6 +394,10 @@
     box-shadow: 2px 2px 0px #000;
   }
 
+  :global(.dark) .checkbox {
+    box-shadow: 2px 2px 0px #1a202c;
+  }
+
   .checkmark {
     width: 0.75rem;
     height: 0.75rem;
@@ -288,6 +415,10 @@
     box-shadow: 2px 2px 0px #000;
   }
 
+  :global(.dark) .deleteButton {
+    box-shadow: 2px 2px 0px #1a202c;
+  }
+
   .addButton {
     padding: 0.75rem;
     font-size: 0.9rem;
@@ -300,10 +431,18 @@
     box-shadow: 2px 2px 0px #000;
   }
 
+  :global(.dark) .correctIndicator {
+    box-shadow: 2px 2px 0px #2d3748;
+  }
+
   .errorMessage {
     padding: 0.5rem 0.75rem;
     font-size: 0.85rem;
     border-width: 2px;
     box-shadow: 2px 2px 0px #000;
+  }
+
+  :global(.dark) .errorMessage {
+    box-shadow: 2px 2px 0px #fc8181;
   }
 }

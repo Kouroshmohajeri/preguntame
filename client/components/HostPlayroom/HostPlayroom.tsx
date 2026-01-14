@@ -558,12 +558,6 @@ export default function HostPlayroom() {
       console.log("📊 Final ref length:", completePlayers.length);
 
       if (completePlayers.length === 0) {
-        console.error("❌ No complete player data received");
-        console.error("🔍 Debug info:");
-        console.error("  - Socket connected:", socket?.connected);
-        console.error("  - Listener setup:", gameEndedListenerSetup.current);
-        console.error("  - Leaderboard state:", leaderboard);
-        alert("Error: Could not retrieve complete game data. Please try again.");
         return;
       }
 

@@ -2,23 +2,28 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  height: 100%; /* Take full viewport height */
-  overflow: hidden; /* Prevent overall scrolling */
-  position: relative; /* Needed for fixed positioning context */
+  height: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
 .title {
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 0.5rem;
-  flex-shrink: 0; /* Prevent title from shrinking */
+  flex-shrink: 0;
+  color: #000;
+}
+
+:global(.dark) .title {
+  color: #f7fafc;
 }
 
 .inputWrapper {
   position: relative;
   display: flex;
   width: 100%;
-  flex-shrink: 0; /* Prevent input from shrinking */
+  flex-shrink: 0;
 }
 
 .input {
@@ -35,6 +40,14 @@
   resize: none;
   box-shadow: 4px 4px 0px #000;
   transition: all 0.2s ease;
+  color: #000;
+}
+
+:global(.dark) .input {
+  background: #1a202c;
+  border: 3px solid #4a5568;
+  color: #f7fafc;
+  box-shadow: 4px 4px 0px #4a5568;
 }
 
 .input::placeholder {
@@ -42,9 +55,18 @@
   font-weight: 500;
 }
 
+:global(.dark) .input::placeholder {
+  color: #718096;
+}
+
 .input:focus {
   box-shadow: 2px 2px 0px #000;
   transform: translate(2px, 2px);
+}
+
+:global(.dark) .input:focus {
+  box-shadow: 2px 2px 0px #4a5568;
+  border-color: #4ecdc4;
 }
 
 .addButton {
@@ -65,6 +87,13 @@
   z-index: 2;
 }
 
+:global(.dark) .addButton {
+  background: #4a5568;
+  border: 2px solid #718096;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0px #2d3748;
+}
+
 .addButton:hover {
   background: #000;
   color: #fff;
@@ -72,9 +101,20 @@
   transform: translateY(-50%) translate(1px, 1px);
 }
 
+:global(.dark) .addButton:hover {
+  background: #4ecdc4;
+  color: #000;
+  box-shadow: 1px 1px 0px #2d3748;
+}
+
 .addButton.active {
   background: #000;
   color: #fff;
+}
+
+:global(.dark) .addButton.active {
+  background: #4ecdc4;
+  color: #000;
 }
 
 .addButton:active {
@@ -82,14 +122,18 @@
   transform: translateY(-50%) translate(2px, 2px);
 }
 
+:global(.dark) .addButton:active {
+  box-shadow: 0px 0px 0px #2d3748;
+}
+
 /* List container - MAKE IT SCROLLABLE */
 .listContainer {
-  flex: 1; /* Take remaining space */
-  overflow-y: auto; /* Enable vertical scrolling */
+  flex: 1;
+  overflow-y: auto;
   margin-top: 0.5rem;
-  margin-bottom: 1rem; /* Reduced margin since button is fixed */
-  min-height: 0; /* Important for flex children */
-  padding-bottom: 6rem; /* Add padding at bottom to prevent content from being hidden behind fixed button */
+  margin-bottom: 1rem;
+  min-height: 0;
+  padding-bottom: 6rem;
 }
 
 .list {
@@ -102,6 +146,7 @@
 }
 
 .listItem {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -112,7 +157,13 @@
   transition: all 0.2s ease;
   box-shadow: 4px 4px 0px #000;
   min-height: 3.5rem;
-  flex-shrink: 0; /* Prevent items from shrinking */
+  flex-shrink: 0;
+}
+
+:global(.dark) .listItem {
+  background: #1a202c;
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0px #2d3748;
 }
 
 .listItem:hover {
@@ -121,18 +172,60 @@
   box-shadow: 2px 2px 0px #000;
 }
 
+:global(.dark) .listItem:hover {
+  background: #4a5568;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0px #2d3748;
+}
+
 .questionText {
   flex: 1;
-  cursor: pointer;
   font-weight: 600;
   padding-right: 0.5rem;
   transition: color 0.2s ease;
   word-break: break-word;
   line-height: 1.4;
+  color: #000;
+}
+
+:global(.dark) .questionText {
+  color: #f7fafc;
 }
 
 .listItem:hover .questionText {
   color: #fffaf7;
+}
+
+:global(.dark) .listItem:hover .questionText {
+  color: #f7fafc;
+}
+
+.questionContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.timeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.3rem 0.6rem;
+  background: #4ecdc4;
+  color: #000;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 2px solid #000;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #000;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+:global(.dark) .timeBadge {
+  border: 2px solid #4a5568;
+  box-shadow: 2px 2px 0 #2d3748;
 }
 
 .deleteButton {
@@ -153,14 +246,31 @@
   margin-left: 0.5rem;
 }
 
+:global(.dark) .deleteButton {
+  background: #2d3748;
+  border: 2px solid #4a5568;
+  color: #fc8181;
+  box-shadow: 2px 2px 0px #1a202c;
+}
+
 .deleteButton:hover {
   background: #e63946;
   color: #fff;
   box-shadow: 1px 1px 0px #000;
 }
 
+:global(.dark) .deleteButton:hover {
+  background: #fc8181;
+  color: #000;
+  box-shadow: 1px 1px 0px #1a202c;
+}
+
 .deleteButton:active {
   box-shadow: 0px 0px 0px #000;
+}
+
+:global(.dark) .deleteButton:active {
+  box-shadow: 0px 0px 0px #1a202c;
 }
 
 /* Empty state */
@@ -177,6 +287,13 @@
   flex-shrink: 0;
 }
 
+:global(.dark) .empty {
+  color: #a0aec0;
+  border: 3px dashed #4a5568;
+  background: #1a202c;
+  box-shadow: 4px 4px 0px #2d3748;
+}
+
 /* Publish section - FIXED POSITION */
 .publishSection {
   position: fixed;
@@ -187,6 +304,11 @@
   padding: 1rem 0 0 0;
   border-top: 3px solid #000;
   z-index: 1000;
+}
+
+:global(.dark) .publishSection {
+  background: #1a202c;
+  border-top: 3px solid #4a5568;
 }
 
 .publishButton {
@@ -206,6 +328,12 @@
   margin: 0;
 }
 
+:global(.dark) .publishButton {
+  background: #4a5568;
+  border: 3px solid #718096;
+  box-shadow: 4px 4px 0px #2d3748;
+}
+
 .publishButton:hover:not(:disabled) {
   background: #fff;
   color: #000;
@@ -213,9 +341,19 @@
   margin: 2px 0 0 2px;
 }
 
+:global(.dark) .publishButton:hover:not(:disabled) {
+  background: #4ecdc4;
+  color: #000;
+  box-shadow: 2px 2px 0px #2d3748;
+}
+
 .publishButton:active:not(:disabled) {
   box-shadow: 0px 0px 0px #000;
   margin: 4px 0 0 4px;
+}
+
+:global(.dark) .publishButton:active:not(:disabled) {
+  box-shadow: 0px 0px 0px #2d3748;
 }
 
 .publishButton:disabled {
@@ -227,9 +365,32 @@
   margin: 0;
 }
 
+:global(.dark) .publishButton:disabled {
+  background: #2d3748;
+  border-color: #4a5568;
+  color: #718096;
+  box-shadow: 4px 4px 0px #1a202c;
+}
+
 .publishButton:disabled:hover {
   margin: 0;
   box-shadow: 4px 4px 0px #666;
+}
+
+:global(.dark) .publishButton:disabled:hover {
+  box-shadow: 4px 4px 0px #1a202c;
+}
+
+.publishInfo {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 600;
+}
+
+:global(.dark) .publishInfo {
+  color: #a0aec0;
 }
 
 /* Custom scrollbar styling */
@@ -242,17 +403,37 @@
   border: 2px solid #000;
 }
 
+:global(.dark) .listContainer::-webkit-scrollbar-track {
+  background: #1a202c;
+  border: 2px solid #4a5568;
+}
+
 .listContainer::-webkit-scrollbar-thumb {
   background: #000;
   border: 1px solid #000;
 }
 
+:global(.dark) .listContainer::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border: 1px solid #718096;
+}
+
 .listContainer::-webkit-scrollbar-thumb:hover {
   background: #333;
 }
+
+:global(.dark) .listContainer::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
 .incomplete {
   border-color: #ff6b6b !important;
   background: #fff0f0 !important;
+}
+
+:global(.dark) .incomplete {
+  border-color: #fc8181 !important;
+  background: #4a2020 !important;
 }
 
 .warningIcon {
@@ -261,7 +442,9 @@
   margin-left: 0.5rem;
 }
 
-/* Add these to your existing CSS */
+:global(.dark) .warningIcon {
+  color: #fc8181;
+}
 
 /* Question Input Section */
 .questionInputSection {
@@ -293,6 +476,12 @@
   box-shadow: 2px 2px 0 #2d3748;
 }
 
+:global(.dark) .timeSelector {
+  background: #2d3748;
+  border: 2px solid #4a5568;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
 .timeSelect {
   padding: 0.4rem 0.6rem;
   border: 2px solid #2d3748;
@@ -304,6 +493,14 @@
   transition: all 0.2s ease;
   box-shadow: 2px 2px 0 #2d3748;
   min-width: 100px;
+  color: #000;
+}
+
+:global(.dark) .timeSelect {
+  background: #4a5568;
+  border: 2px solid #718096;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0 #1a202c;
 }
 
 .timeSelect:focus {
@@ -317,6 +514,10 @@
   box-shadow: 1px 1px 0 #2d3748;
 }
 
+:global(.dark) .timeSelect:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
 .customTimeInput {
   display: flex;
   align-items: center;
@@ -328,6 +529,12 @@
   box-shadow: 2px 2px 0 #2d3748;
 }
 
+:global(.dark) .customTimeInput {
+  background: #4a5568;
+  border: 2px solid #718096;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
 .customInput {
   width: 80px;
   padding: 0.3rem;
@@ -337,6 +544,11 @@
   font-weight: 600;
   background: transparent;
   text-align: center;
+  color: #000;
+}
+
+:global(.dark) .customInput {
+  color: #f7fafc;
 }
 
 .customInput::placeholder {
@@ -348,6 +560,10 @@
   color: #4a5568;
   font-size: 0.75rem;
   white-space: nowrap;
+}
+
+:global(.dark) .timeUnit {
+  color: #cbd5e0;
 }
 
 .selectedTimeDisplay {
@@ -362,6 +578,13 @@
   white-space: nowrap;
 }
 
+:global(.dark) .selectedTimeDisplay {
+  background: #234e52;
+  border: 2px solid #4ecdc4;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0 #2d3748;
+}
+
 /* Animation */
 @keyframes slideDown {
   from {
@@ -374,44 +597,7 @@
   }
 }
 
-/* Responsive Design */
-/* @media (max-width: 768px) {
-  .timeSelector {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-  
-  .timeSelect {
-    min-width: auto;
-  }
-  
-  .customTimeInput {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .timeSelector {
-    padding: 0.4rem;
-  }
-  
-  .timeSelect {
-    padding: 0.35rem 0.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .customInput {
-    width: 70px;
-    font-size: 0.8rem;
-  }
-  
-  .selectedTimeDisplay {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.5rem;
-  }
-} */
- /* Mobile Adjustments */
+/* Mobile Adjustments */
 @media (max-width: 1024px) {
   .publishSection {
     position: static;
@@ -419,6 +605,10 @@
     border-top: 3px solid #000;
     margin-top: 1rem;
     padding: 1rem 0;
+  }
+
+  :global(.dark) .publishSection {
+    border-top: 3px solid #4a5568;
   }
 
   .listContainer {
@@ -499,6 +689,10 @@
     box-shadow: 3px 3px 0px #000;
   }
 
+  :global(.dark) .input {
+    box-shadow: 3px 3px 0px #4a5568;
+  }
+
   .addButton {
     font-size: 0.8rem;
     padding: 0.3rem 0.6rem;
@@ -506,11 +700,19 @@
     box-shadow: 2px 2px 0px #000;
   }
 
+  :global(.dark) .addButton {
+    box-shadow: 2px 2px 0px #2d3748;
+  }
+
   .listItem {
     padding: 0.75rem;
     min-height: 2.75rem;
     border-width: 2px;
     box-shadow: 3px 3px 0px #000;
+  }
+
+  :global(.dark) .listItem {
+    box-shadow: 3px 3px 0px #2d3748;
   }
 
   .questionText {
@@ -534,11 +736,19 @@
     box-shadow: 2px 2px 0px #000;
   }
 
+  :global(.dark) .deleteButton {
+    box-shadow: 2px 2px 0px #1a202c;
+  }
+
   .publishButton {
     font-size: 0.95rem;
     padding: 0.75rem 1.5rem;
     border-width: 2px;
     box-shadow: 3px 3px 0px #000;
+  }
+
+  :global(.dark) .publishButton {
+    box-shadow: 3px 3px 0px #2d3748;
   }
 
   .publishInfo {
@@ -550,6 +760,10 @@
     padding: 1.5rem 0;
     border-width: 2px;
     box-shadow: 3px 3px 0px #000;
+  }
+
+  :global(.dark) .empty {
+    box-shadow: 3px 3px 0px #2d3748;
   }
 
   .timeSelector {
@@ -570,30 +784,4 @@
     font-size: 0.75rem;
     padding: 0.35rem 0.5rem;
   }
-}
-/* Make entire list item clickable */
-.listItem {
-  cursor: pointer; /* Add this line */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 3px solid #000;
-  border-radius: 0;
-  background: #fffaf4;
-  padding: 1rem;
-  transition: all 0.2s ease;
-  box-shadow: 4px 4px 0px #000;
-  min-height: 3.5rem;
-  flex-shrink: 0;
-}
-
-/* Remove the cursor pointer from just the text */
-.questionText {
-  flex: 1;
-  /* Remove cursor: pointer from here */
-  font-weight: 600;
-  padding-right: 0.5rem;
-  transition: color 0.2s ease;
-  word-break: break-word;
-  line-height: 1.4;
 }
