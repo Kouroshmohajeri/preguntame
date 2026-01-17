@@ -48,6 +48,7 @@ export const getGameResult = async (gameCode: string) => {
   const response = await API.get(`/gameResults/${gameCode}`);
   return response.data as GameResult;
 };
+
 export const assignPlayer = async (gameCode: string, uuid: string) => {
   const res = await API.post(`/gameResults/assign`, { gameCode, uuid });
   return res.data;
@@ -67,5 +68,11 @@ export const checkGameCode = async (gameCode: string) => {
 // Deleting game result
 export const deleteGameResult = async (gameCode: string) => {
   const response = await API.delete(`/gameResults/${gameCode}`);
+  return response.data;
+};
+
+// Get all game results
+export const getAllGameResults = async (limit: number = 100) => {
+  const response = await API.get(`/gameResults/all?limit=${limit}`);
   return response.data;
 };

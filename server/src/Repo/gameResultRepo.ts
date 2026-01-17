@@ -72,3 +72,8 @@ export const deleteGameResultByCode = async (gameCode: string) => {
 export const getGameResultByCode = async (gameCode: string) => {
   return await GameResult.findOne({ gameCode });
 };
+
+// Get all game results
+export const getAllGameResults = async (limit: number = 100) => {
+  return await GameResult.find().sort({ createdAt: -1 }).limit(limit);
+};

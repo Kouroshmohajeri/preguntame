@@ -1,0 +1,66 @@
+.bulkActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: rgba(78, 205, 196, 0.1);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.15);
+}
+
+:global(.dark) .bulkActions {
+  background: rgba(78, 205, 196, 0.15);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.bulkCount {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 1.1rem;
+}
+
+:global(.dark) .bulkCount {
+  color: #f1f5f9;
+}
+
+.bulkDeleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 12px;
+  color: #dc2626;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+}
+
+.bulkDeleteBtn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+:global(.dark) .bulkDeleteBtn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+@media (max-width: 768px) {
+  .bulkActions {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    padding: 1.5rem;
+  }
+
+  .bulkDeleteBtn {
+    justify-content: center;
+  }
+}

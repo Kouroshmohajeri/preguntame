@@ -5,11 +5,13 @@ import {
   createGameResult,
   deleteGameResult,
   getGameResult,
+  listAllGameResults,
 } from "../controller/gameResultController.js";
 
 const router = Router();
 
 router.post("/", createGameResult);
+router.get("/all", listAllGameResults);
 router.get("/check/:gameCode", checkGameResult);
 router.get("/:gameCode", getGameResult);
 router.post("/assign", assignPlayerStats);

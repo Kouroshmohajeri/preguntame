@@ -1,6 +1,9 @@
+// src/controller/userController.ts
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
 import { UserRepository } from "../Repo/userRepo.js";
 import User from "../models/User.js";
+import { enhancedEmailService } from "../services/enhancedEmailService.js";
 
 export const UserController = {
   // Register or login via Google (if user exists → return; if not → create)
@@ -13,8 +16,10 @@ export const UserController = {
       }
 
       let user = await UserRepository.findByEmail(email);
+      let isNewUser = false;
 
       if (!user) {
+        // ✅ NEW USER - Create account
         user = await UserRepository.createUser({
           name,
           lastname,
@@ -29,24 +34,71 @@ export const UserController = {
           rank: 0,
           topCategory: "",
         });
+        isNewUser = true;
+        console.log("✅ New user created:", user._id);
+
+        // 🎉 Send welcome email for new users
+        try {
+          await enhancedEmailService.sendWelcomeEmail(email, name);
+          console.log(`📧 Welcome email sent to ${email}`);
+        } catch (emailError) {
+          console.error("⚠️ Failed to send welcome email:", emailError);
+          // Don't block registration if email fails
+        }
+      } else {
+        // ✅ EXISTING USER - Login
+        console.log("✅ Existing user logged in:", user._id);
+
+        // 👋 Send login notification
+        try {
+          const ip = req.ip || req.headers["x-forwarded-for"] || "Unknown";
+          const userAgent = req.headers["user-agent"] || "Unknown device";
+
+          await enhancedEmailService.sendLoginNotification(
+            email,
+            ip as string,
+            userAgent,
+          );
+          console.log(`📧 Login notification sent to ${email}`);
+        } catch (emailError) {
+          console.error("⚠️ Failed to send login notification:", emailError);
+          // Don't block login if email fails
+        }
       }
 
-      return res.status(200).json({ success: true, user });
+      // Generate JWT token
+      const token = jwt.sign(
+        {
+          userId: user._id,
+          email: user.email,
+        },
+        process.env.JWT_SECRET!,
+        { expiresIn: "30d" },
+      );
+
+      return res.status(200).json({
+        success: true,
+        user,
+        token,
+        isNewUser, // ✅ Frontend can show different UI for new users
+      });
     } catch (error) {
       console.error("❌ googleAuth error:", error);
       return res.status(500).json({ error: "Server error" });
     }
   },
+
+  // Rest of your controller methods stay the same...
   async searchUsers(req: Request, res: Response) {
     try {
       const query = req.query.q as string;
-      const exclude = req.query.exclude as string; // <--- accepted from client
+      const exclude = req.query.exclude as string;
 
       if (!query) return res.status(400).json([]);
 
       const users = await UserRepository.searchUsersForAutocomplete(
         query,
-        exclude
+        exclude,
       );
 
       return res.status(200).json(users);
@@ -55,24 +107,23 @@ export const UserController = {
       return res.status(500).json([]);
     }
   },
-  // Add this to your userController.ts
+
   async incrementGameGotCloned(req: Request, res: Response) {
     try {
       const { userId } = req.params;
-      const { increment = 1 } = req.body; // Default to increment by 1
+      const { increment = 1 } = req.body;
 
       if (!userId) {
         return res.status(400).json({ error: "User ID is required" });
       }
 
-      // Find the user by ID and increment gameGotCloned
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
           $inc: { gameGotCloned: increment },
           $set: { updatedAt: new Date() },
         },
-        { new: true } // Return the updated document
+        { new: true },
       );
 
       if (!updatedUser) {
@@ -89,6 +140,7 @@ export const UserController = {
       return res.status(500).json({ error: "Server error" });
     }
   },
+
   async decrementGamesCreated(req: Request, res: Response) {
     try {
       const { userId } = req.params;
@@ -113,6 +165,7 @@ export const UserController = {
       return res.status(500).json({ error: "Server error" });
     }
   },
+
   async getUser(req: Request, res: Response) {
     try {
       const { email } = req.params;
@@ -145,7 +198,7 @@ export const UserController = {
       return res.status(500).json({ error: "Failed to delete user" });
     }
   },
-  // userController.ts
+
   async updateStats(req: Request, res: Response) {
     try {
       const { email, score, correct, wrong } = req.body;
@@ -162,7 +215,7 @@ export const UserController = {
             wrongAnswers: wrong,
           },
         },
-        { new: true }
+        { new: true },
       );
 
       if (!updatedUser)

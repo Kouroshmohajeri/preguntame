@@ -109,7 +109,7 @@ export default function CelebrationModal({
             Create Another
           </button>
           <a
-            href={gameUrl}
+            href={`https://preguntame.eu/play/host/${gameUrl.split("/").pop()}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.primaryButton}

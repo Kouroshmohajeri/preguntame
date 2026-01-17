@@ -1,181 +1,110 @@
 "use client";
-import { useState, useEffect } from "react";
-import styles from "./analytics.module.css";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import {
-  Lock,
-  ChartBar,
-  Users,
-  GameController,
-  TrendUp,
-  Calendar,
-  CalendarCheck,
-  Globe,
-  ArrowLeft,
-} from "@phosphor-icons/react";
-
-interface AnalyticsData {
-  totalUsers: number;
-  totalGames: number;
-  totalGameResults: number;
-  usersThisWeek: number;
-  usersToday: number;
-}
-
-interface VercelAnalytics {
-  activeUsers: number;
-  topCountry: string;
-}
+import React from "react";
+import { useAnalytics } from "./components/hooks/useAnalytics";
+import { useUserData } from "./components/hooks/useUserData";
+import { useGameData } from "./components/hooks/useGameData";
+import AuthBox from "./components/AuthBox/AuthBox";
+import DashboardStats from "./components/DashboardStats/DashboardStats";
+import UserModal from "./components/UserModal/UserModal";
+import GamesCreatedModal from "./components/GamesCreatedModal/GamesCreatedModal";
+import GameResultsModal from "./components/GameResultsModal/GameResultsModal";
+import EmailCommunications from "./components/EmailCommunications/EmailCommunications";
 
 export default function AnalyticsPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const {
+    isAuthenticated,
+    token,
+    setToken,
+    error,
+    loading,
+    mongoData,
+    vercelData,
+    handleVerify,
+    refreshData,
+  } = useAnalytics();
 
-  const [mongoData, setMongoData] = useState<AnalyticsData | null>(null);
-  const [vercelData, setVercelData] = useState<VercelAnalytics | null>(null);
+  const { users, loading: usersLoading, fetchUsers } = useUserData();
+  const {
+    games,
+    gameResults,
+    hostNames,
+    loading: gamesLoading,
+    fetchGames,
+    fetchGameResults,
+  } = useGameData();
 
-  // Verify 2FA token
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  const [showUserModal, setShowUserModal] = React.useState(false);
+  const [showGameModal, setShowGameModal] = React.useState(false);
+  const [showGamesCreatedModal, setShowGamesCreatedModal] = React.useState(false);
+  const [showEmailModal, setShowEmailModal] = React.useState(false);
 
-    try {
-      const response = await fetch(`/api/analytics`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Invalid token");
-      }
-
-      const data = await response.json();
-      setMongoData(data);
-      setIsAuthenticated(true);
-
-      // Fetch Vercel analytics (client-side)
-      fetchVercelAnalytics();
-    } catch (err) {
-      setError("Invalid authentication code. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  const handleUsersClick = async () => {
+    setShowUserModal(true);
+    await fetchUsers();
   };
 
-  // Fetch Vercel Analytics (if you have the bearer token)
-  const fetchVercelAnalytics = async () => {
-    setVercelData({
-      activeUsers: 0,
-      topCountry: "N/A",
-    });
+  const handleGamesCreatedClick = async () => {
+    setShowGamesCreatedModal(true);
+    await fetchGames();
+  };
+
+  const handleGamesClick = async () => {
+    setShowGameModal(true);
+    await fetchGameResults();
+  };
+
+  const handleEmailClick = () => {
+    setShowEmailModal(true);
   };
 
   if (!isAuthenticated) {
     return (
-      <div className={styles.container}>
-        <div className={styles.authBox}>
-          <div className={styles.lockIconWrapper}>
-            <Lock size={64} weight="fill" className={styles.lockIcon} />
-          </div>
-          <h1 className={styles.title}>Analytics Access</h1>
-          <p className={styles.subtitle}>Enter your Google Authenticator code</p>
-
-          <form onSubmit={handleVerify} className={styles.form}>
-            <input
-              type="text"
-              value={token}
-              onChange={(e) => setToken(e.target.value.replace(/\D/g, "").slice(0, 6))}
-              placeholder="000000"
-              className={styles.input}
-              maxLength={6}
-              autoFocus
-            />
-
-            {error && <p className={styles.error}>{error}</p>}
-
-            <button
-              type="submit"
-              disabled={loading || token.length !== 6}
-              className={styles.submitButton}
-            >
-              {loading ? "Verifying..." : "Verify"}
-            </button>
-          </form>
-        </div>
-      </div>
+      <AuthBox
+        token={token}
+        setToken={setToken}
+        error={error}
+        loading={loading}
+        onSubmit={handleVerify}
+      />
     );
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.title}>
-          <ChartBar size={32} weight="fill" /> Analytics Dashboard
-        </h1>
-        <button onClick={() => router.push("/")} className={styles.backButton}>
-          <ArrowLeft size={20} weight="bold" /> Back to Home
-        </button>
-      </div>
+    <>
+      <DashboardStats
+        mongoData={mongoData}
+        vercelData={vercelData}
+        onUsersClick={handleUsersClick}
+        onGamesCreatedClick={handleGamesCreatedClick}
+        onGamesClick={handleGamesClick}
+        onEmailClick={handleEmailClick}
+        onRefresh={refreshData}
+      />
 
-      <div className={styles.grid}>
-        {/* MongoDB Stats */}
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <Users size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Total Members</h3>
-          <p className={styles.cardValue}>{mongoData?.totalUsers.toLocaleString()}</p>
-        </div>
+      <UserModal
+        show={showUserModal}
+        onClose={() => setShowUserModal(false)}
+        users={users}
+        loading={usersLoading}
+      />
 
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <GameController size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Games Created</h3>
-          <p className={styles.cardValue}>{mongoData?.totalGames.toLocaleString()}</p>
-        </div>
+      <GamesCreatedModal
+        show={showGamesCreatedModal}
+        onClose={() => setShowGamesCreatedModal(false)}
+        games={games}
+        hostNames={hostNames}
+        loading={gamesLoading}
+      />
 
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <TrendUp size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Game Results</h3>
-          <p className={styles.cardValue}>{mongoData?.totalGameResults.toLocaleString()}</p>
-        </div>
+      <GameResultsModal
+        show={showGameModal}
+        onClose={() => setShowGameModal(false)}
+        gameResults={gameResults}
+        hostNames={hostNames}
+        loading={gamesLoading}
+      />
 
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <Calendar size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Users Today</h3>
-          <p className={styles.cardValue}>{mongoData?.usersToday.toLocaleString()}</p>
-        </div>
-
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <CalendarCheck size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Users This Week</h3>
-          <p className={styles.cardValue}>{mongoData?.usersThisWeek.toLocaleString()}</p>
-        </div>
-
-        {/* Vercel Analytics - Placeholder */}
-        <div className={styles.card}>
-          <div className={styles.cardIcon}>
-            <Globe size={48} weight="fill" />
-          </div>
-          <h3 className={styles.cardTitle}>Top Country</h3>
-          <p className={styles.cardValue}>{vercelData?.topCountry || "N/A"}</p>
-          <p className={styles.cardNote}>Requires Vercel API setup</p>
-        </div>
-      </div>
-    </div>
+      <EmailCommunications show={showEmailModal} onClose={() => setShowEmailModal(false)} />
+    </>
   );
 }
