@@ -5,6 +5,7 @@ import {
   markPlayerAsAssigned,
   deleteGameResultByCode,
   checkGameCodeExists,
+  getAllGameResults, // Add this import
 } from "../Repo/gameResultRepo.js";
 
 export const createGameResult = async (req: Request, res: Response) => {
@@ -16,6 +17,7 @@ export const createGameResult = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Failed to save game result" });
   }
 };
+
 export const deleteGameResult = async (req: Request, res: Response) => {
   try {
     const { gameCode } = req.params;
@@ -36,6 +38,7 @@ export const deleteGameResult = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete GameResult" });
   }
 };
+
 export const checkGameResult = async (req: Request, res: Response) => {
   try {
     const { gameCode } = req.params;
@@ -91,5 +94,18 @@ export const getGameResult = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("❌ Failed to fetch game result", err);
     return res.status(500).json({ error: "Failed to fetch game result" });
+  }
+};
+
+// NEW: Get all game results
+export const listAllGameResults = async (req: Request, res: Response) => {
+  try {
+    const limit = req.query.limit ? parseInt(req.query.limit as string) : 100;
+    const gameResults = await getAllGameResults(limit);
+
+    return res.status(200).json({ gameResults });
+  } catch (err) {
+    console.error("❌ Failed to fetch all game results", err);
+    return res.status(500).json({ error: "Failed to fetch game results" });
   }
 };
