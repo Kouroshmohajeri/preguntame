@@ -17,6 +17,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 // import subscribeRoutes from "./routes/subscriptionRoutes.js";
 // import stripeWebhook from "./routes/stripeWebhook.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import emailRoutes from "./routes/emailRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -44,7 +45,8 @@ app.use("/api/notifications", notificationRoutes);
 // app.use("/api/ai", aiRoutes);
 // app.use("/api/subscribe", subscribeRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/email", emailRoutes);
 
 server.listen(PORT, "0.0.0.0", () =>
-  console.log(`✅ Server running on :${PORT}`)
+  console.log(`✅ Server running on :${PORT}`),
 );
