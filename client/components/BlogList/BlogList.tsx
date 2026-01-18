@@ -11,6 +11,10 @@ import {
   MagnifyingGlass,
   Sparkle,
   Lightning,
+  Notebook,
+  GraduationCap,
+  BookOpen,
+  GameController,
 } from "@phosphor-icons/react";
 import styles from "./BlogList.module.css";
 
@@ -31,9 +35,9 @@ const blogPosts: BlogPost[] = [
   {
     id: "1",
     slug: "what-is-preguntame",
-    title: "What is Preguntame? The Ultimate Free Real-Time Quiz Platform",
+    title: "What is Pregúntame? The Ultimate Free Real-Time Quiz Platform",
     excerpt:
-      "Discover how Preguntame revolutionizes interactive learning with free real-time multiplayer quizzes. Perfect for classrooms, events, and team building activities.",
+      "Discover how Pregúntame revolutionizes interactive learning with free real-time multiplayer quizzes. Perfect for classrooms, events, and team building activities.",
     category: "About",
     date: "2024-12-20",
     readTime: "8 min read",
@@ -42,9 +46,9 @@ const blogPosts: BlogPost[] = [
   {
     id: "2",
     slug: "kahoot-alternative",
-    title: "The Best Free Kahoot Alternative: Why Preguntame Stands Out",
+    title: "The Best Free Kahoot Alternative: Why Pregúntame Stands Out",
     excerpt:
-      "Looking for a Kahoot alternative? Discover why Preguntame offers a completely free, feature-rich experience for interactive quizzes without subscription limits.",
+      "Looking for a Kahoot alternative? Discover why Pregúntame offers a completely free, feature-rich experience for interactive quizzes without subscription limits.",
     category: "Comparisons",
     date: "2025-01-06",
     readTime: "10 min read",
@@ -53,17 +57,50 @@ const blogPosts: BlogPost[] = [
   {
     id: "3",
     slug: "real-time-quiz-platform",
-    title: "Real-Time Quiz Platform: How Preguntame Powers Interactive Learning",
+    title: "Real-Time Quiz Platform: How Pregúntame Powers Interactive Learning",
     excerpt:
-      "Explore how Preguntame's real-time technology creates engaging, synchronous quiz experiences for classrooms, training sessions, and live events.",
+      "Explore how Pregúntame's real-time technology creates engaging, synchronous quiz experiences for classrooms, training sessions, and live events.",
     category: "Features",
     date: "2025-01-06",
     readTime: "9 min read",
     icon: <Lightning size={32} weight="fill" />,
   },
+  {
+    id: "4",
+    slug: "free-live-quiz-generator",
+    title: "Free Live Quiz Generator - Create Real-Time Multiplayer Quizzes",
+    excerpt:
+      "Learn how Pregúntame's free live quiz generator lets you create engaging real-time multiplayer quizzes with unlimited players and instant scoring.",
+    category: "Features",
+    date: "2025-01-18",
+    readTime: "7 min read",
+    icon: <GameController size={32} weight="fill" />,
+  },
+  {
+    id: "5",
+    slug: "how-to-create-an-online-quiz",
+    title: "How to Create an Online Quiz: Complete Step-by-Step Guide",
+    excerpt:
+      "Complete guide to creating interactive online quizzes. Learn best practices, question writing tips, and how to engage your audience effectively.",
+    category: "Guides",
+    date: "2025-01-18",
+    readTime: "12 min read",
+    icon: <BookOpen size={32} weight="fill" />,
+  },
+  {
+    id: "6",
+    slug: "how-to-create-a-preguntame-quiz",
+    title: "How to Create a Pregúntame Quiz - Step-by-Step Tutorial",
+    excerpt:
+      "Learn how to create your first Pregúntame quiz in 5 minutes. Complete tutorial covering all features from question creation to launching live games.",
+    category: "Guides",
+    date: "2025-01-18",
+    readTime: "6 min read",
+    icon: <GraduationCap size={32} weight="fill" />,
+  },
 ];
 
-const categories = ["All", "About", "Comparisons", "Features"];
+const categories = ["All", "About", "Comparisons", "Features", "Guides"];
 
 export default function BlogList() {
   const router = useRouter();
