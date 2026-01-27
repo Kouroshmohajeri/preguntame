@@ -3,9 +3,13 @@ import Dashboard from "@/components/Dashboard/Dashboard";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useToast } from "@/context/ToastContext/ToastContext";
 
 const Page = () => {
   const { data: session, status } = useSession();
+  const searchParams = useSearchParams();
+  const { showToast } = useToast();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
@@ -28,7 +32,60 @@ const Page = () => {
         }, 5000);
       }
     }
-  }, [session, status]);
+
+    // ✅ CHECK FOR LICENSE VALIDATION ERRORS
+    const error = searchParams.get("error");
+    if (error) {
+      const errorMessages: Record<string, { message: string; type: "error" | "warning" }> = {
+        invalid_license: {
+          message: "Invalid license key. Please check your beta access.",
+          type: "error",
+        },
+        unauthorized_license: {
+          message: "This license does not belong to your account.",
+          type: "error",
+        },
+        not_approved: {
+          message: "Your beta access is not approved yet. Please wait for approval.",
+          type: "warning",
+        },
+        license_inactive: {
+          message: "Your license has been revoked or expired.",
+          type: "error",
+        },
+        no_credits: {
+          message: "You have no AI credits remaining. Please purchase more credits.",
+          type: "warning",
+        },
+        validation_failed: {
+          message: "Failed to validate license. Please try again.",
+          type: "error",
+        },
+        unauthorized: {
+          message: "Please log in to access the AI Wizard.",
+          type: "warning",
+        },
+      };
+
+      const errorInfo = errorMessages[error] || {
+        message: "An error occurred. Please try again.",
+        type: "error" as const,
+      };
+
+      showToast(errorInfo.message, errorInfo.type);
+
+      // ✅ Scroll to AI access section after a short delay
+      setTimeout(() => {
+        const aiAccessSection = document.getElementById("ai-access");
+        if (aiAccessSection) {
+          aiAccessSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 500);
+
+      // Clean up URL by removing error parameter
+      window.history.replaceState({}, "", "/dashboard");
+    }
+  }, [session, status, searchParams, showToast]);
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);

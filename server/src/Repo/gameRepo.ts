@@ -5,7 +5,8 @@ export const GameRepository = {
   async createGame(
     title: string,
     questions: IQuestion[],
-    hostId: string
+    hostId: string,
+    isAi: boolean = false,
   ): Promise<IGame> {
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     const generateCode = customAlphabet(alphabet, 6);
@@ -25,6 +26,7 @@ export const GameRepository = {
       gameCode,
       questions: orderedQuestions,
       hostId,
+      isAi,
     });
 
     await game.save();
@@ -48,21 +50,28 @@ export const GameRepository = {
     gameCode: string,
     title: string,
     questions: IQuestion[],
-    hostId: string
+    hostId: string,
+    isAi?: boolean,
   ): Promise<IGame | null> {
     const orderedQuestions = questions.map((q, index) => ({
       ...q,
       order: index + 1,
     }));
 
+    const updateData: any = {
+      title,
+      questions: orderedQuestions,
+      updatedAt: new Date(),
+    };
+
+    if (isAi !== undefined) {
+      updateData.isAi = isAi;
+    }
+
     const updatedGame = await Game.findOneAndUpdate(
       { gameCode, hostId },
-      {
-        title,
-        questions: orderedQuestions,
-        updatedAt: new Date(),
-      },
-      { new: true, runValidators: true }
+      updateData,
+      { new: true, runValidators: true },
     );
 
     return updatedGame;

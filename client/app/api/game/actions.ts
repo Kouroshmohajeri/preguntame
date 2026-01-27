@@ -1,8 +1,18 @@
 import { API } from "../Server";
 
 // Create a new game
-export const createGame = async (title: string, questions: any[], hostId: string) => {
-  const response = await API.post("/games", { title, questions, hostId });
+export const createGame = async (
+  title: string,
+  questions: any[],
+  hostId: string,
+  isAi: boolean = false
+) => {
+  const response = await API.post("/games", {
+    title,
+    questions,
+    hostId,
+    isAi,
+  });
   return response.data;
 };
 
@@ -11,6 +21,7 @@ export const getGame = async (code: string) => {
   const response = await API.get(`/games/${code}`);
   return response.data;
 };
+
 // Get games by host ID
 export const getGamesByHost = async (hostId: string) => {
   const response = await API.get(`/games/host/${hostId}`);
@@ -18,8 +29,19 @@ export const getGamesByHost = async (hostId: string) => {
 };
 
 // Clone a game
-export const cloneGame = async (gameCode: string, hostId: string) => {
-  const response = await API.post(`/games/clone/${gameCode}`, { hostId });
+export const cloneGame = async (
+  gameCode: string,
+  hostId: string,
+  isAi?: boolean // ✅ NEW OPTIONAL PARAMETER
+) => {
+  const payload: any = { hostId };
+
+  // ✅ Include isAi if provided
+  if (isAi !== undefined) {
+    payload.isAi = isAi;
+  }
+
+  const response = await API.post(`/games/clone/${gameCode}`, payload);
   return response.data;
 };
 
@@ -28,14 +50,20 @@ export const updateGame = async (
   gameCode: string,
   title: string,
   questions: any[],
-  hostId: string
+  hostId: string,
+  isAi?: boolean
 ) => {
-  const response = await API.put(`/games/${gameCode}`, {
+  const payload: any = {
     title,
     questions,
     hostId,
-  });
+  };
 
+  if (isAi !== undefined) {
+    payload.isAi = isAi;
+  }
+
+  const response = await API.put(`/games/${gameCode}`, payload);
   return response.data;
 };
 
@@ -57,7 +85,7 @@ export const checkGameCode = async (code: string) => {
   return response.data; // { exists: true | false }
 };
 
-// HostId indetifier
+// HostId identifier
 export const getHostIdShort = async (gameCode: string) => {
   const response = await API.get(`/games/hostid/${gameCode}`);
   return response.data;

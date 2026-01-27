@@ -19,6 +19,8 @@ export interface IGame extends Document {
   questions: IQuestion[];
   createdAt: Date;
   hostId: mongoose.Types.ObjectId;
+  isAi: boolean;
+  hasPlayed?: boolean;
 }
 
 const AnswerSchema = new Schema<IAnswer>(
@@ -26,7 +28,7 @@ const AnswerSchema = new Schema<IAnswer>(
     text: { type: String, required: true },
     correct: { type: Boolean, default: false },
   },
-  { _id: true }
+  { _id: true },
 ); // Explicitly enable _id for subdocuments
 
 const QuestionSchema = new Schema<IQuestion>({
@@ -42,6 +44,8 @@ const GameSchema = new Schema<IGame>({
   hostId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   questions: { type: [QuestionSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
+  isAi: { type: Boolean, default: false },
+  hasPlayed: { type: Boolean, default: false },
 });
 
 export default mongoose.models.Game ||

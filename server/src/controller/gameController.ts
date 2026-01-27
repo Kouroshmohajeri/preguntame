@@ -6,7 +6,7 @@ import { UserRepository } from "../Repo/userRepo.js";
 export const GameController = {
   async createGame(req: Request, res: Response) {
     try {
-      const { title, questions, hostId } = req.body;
+      const { title, questions, hostId, isAi } = req.body;
 
       if (!hostId) {
         return res.status(400).json({ error: "hostId is required" });
@@ -25,13 +25,18 @@ export const GameController = {
           (q: any) =>
             typeof q !== "object" ||
             typeof q.text !== "string" ||
-            !Array.isArray(q.answers)
+            !Array.isArray(q.answers),
         )
       ) {
         return res.status(400).json({ error: "Invalid payload" });
       }
 
-      const game = await GameRepository.createGame(title, questions, hostId);
+      const game = await GameRepository.createGame(
+        title,
+        questions,
+        hostId,
+        isAi,
+      );
       await UserRepository.incrementGamesCreated(hostId);
 
       const gameUrl = `https://preguntame.eu/play/guest/${game.gameCode}`;
@@ -46,7 +51,7 @@ export const GameController = {
   async updateGame(req: Request, res: Response) {
     try {
       const { code } = req.params;
-      const { title, questions, hostId } = req.body;
+      const { title, questions, hostId, isAi } = req.body;
 
       if (!hostId) {
         return res.status(400).json({ error: "hostId is required" });
@@ -65,7 +70,7 @@ export const GameController = {
           (q: any) =>
             typeof q !== "object" ||
             typeof q.text !== "string" ||
-            !Array.isArray(q.answers)
+            !Array.isArray(q.answers),
         )
       ) {
         return res.status(400).json({ error: "Invalid payload" });
@@ -87,7 +92,8 @@ export const GameController = {
         code,
         title,
         questions,
-        hostId
+        hostId,
+        isAi,
       );
 
       if (!updatedGame) {
@@ -108,7 +114,7 @@ export const GameController = {
   async cloneGame(req: Request, res: Response) {
     try {
       const { code } = req.params;
-      const { hostId } = req.body;
+      const { hostId, isAi } = req.body; // ✅ Extract isAi from request body
 
       if (!hostId) {
         return res.status(400).json({ error: "hostId is required" });
@@ -125,13 +131,6 @@ export const GameController = {
         return res.status(404).json({ error: "Game not found" });
       }
 
-      // Ensure host owns original game
-      // if (originalGame.hostId.toString() !== hostId) {
-      //   return res
-      //     .status(403)
-      //     .json({ error: "Not authorized to clone this game" });
-      // }
-
       // Deep clone questions & answers
       const clonedQuestions = originalGame.questions.map((q: any) => ({
         text: q.text,
@@ -143,11 +142,15 @@ export const GameController = {
         })),
       }));
 
+      // ✅ Use provided isAi value, fallback to original game's isAi if not provided
+      const clonedIsAi = isAi !== undefined ? isAi : originalGame.isAi;
+
       // Create new game
       const clonedGame = await GameRepository.createGame(
         `${originalGame.title} (Copy)`,
         clonedQuestions,
-        hostId
+        hostId,
+        clonedIsAi, // ✅ Use the determined isAi value
       );
 
       await UserRepository.incrementGamesCreated(hostId);

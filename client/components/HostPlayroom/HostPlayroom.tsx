@@ -243,6 +243,10 @@ export default function HostPlayroom() {
     if (!socket || !session || !playerUUID) return;
 
     const handleConnect = (code: string) => {
+      socket.emit("hostInitializeRoom", {
+        gameCode: code,
+        hostId: session.user.id,
+      });
       socket.emit("joinGame", {
         gameCode,
         playerName: session?.user?.name || "Host",
@@ -447,6 +451,9 @@ export default function HostPlayroom() {
     socket!.emit("toggleReady", { gameCode, isReady: true });
     socket!.emit("startGame", { gameCode });
 
+    // ✅ ADDED: Trigger guest countdown immediately
+    socket!.emit("triggerCountdown", { gameCode });
+
     setShowPreparation(true);
     setPreparationTime(3);
 
@@ -465,7 +472,6 @@ export default function HostPlayroom() {
           startQuestionAnimation(currentQuestionIndex);
           return 0;
         }
-
         return prev - 1;
       });
     }, 1000);
@@ -487,6 +493,9 @@ export default function HostPlayroom() {
       setShowAnswersButton(true);
     }
 
+    // ✅ ADDED: Trigger guest countdown immediately
+    socket!.emit("triggerCountdown", { gameCode });
+
     setShowPreparation(true);
     setPreparationTime(3);
 
@@ -499,12 +508,10 @@ export default function HostPlayroom() {
           startQuestionAnimation(newIndex);
           return 0;
         }
-
         return prev - 1;
       });
     }, 1000);
   };
-
   // ✅ Updated showResults - uses ref with better debugging
   const showResults = async () => {
     if (!session) {

@@ -1,0 +1,102 @@
+.tabContainer {
+  display: flex;
+  background: #fffaf4;
+  border: 3px solid #000;
+  margin-bottom: 2rem;
+  box-shadow: 4px 4px 0 #000;
+}
+
+:global(.dark) .tabContainer {
+  background: #2d3748;
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0 #1a202c;
+}
+
+.tab {
+  flex: 1;
+  background: #fffaf4;
+  border: none;
+  padding: 1rem 1.5rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-right: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #000;
+}
+
+:global(.dark) .tab {
+  background: #2d3748;
+  border-right: 3px solid #4a5568;
+  color: #f7fafc;
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab:hover {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+:global(.dark) .tab:hover {
+  background: #fc8181;
+}
+
+.tabActive {
+  background: #000;
+  color: #fff;
+}
+
+:global(.dark) .tabActive {
+  background: #4a5568;
+  color: #f7fafc;
+}
+
+.notificationBadge {
+  background: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.15rem 0.4rem;
+  border-radius: 10px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  animation: pulse 2s infinite;
+}
+
+:global(.dark) .notificationBadge {
+  background: #fc8181;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .tabContainer {
+    flex-direction: column;
+  }
+
+  .tab {
+    border-right: none;
+    border-bottom: 3px solid #000;
+  }
+  
+  :global(.dark) .tab {
+    border-bottom: 3px solid #4a5568;
+  }
+
+  .tab:last-child {
+    border-bottom: none;
+  }
+}

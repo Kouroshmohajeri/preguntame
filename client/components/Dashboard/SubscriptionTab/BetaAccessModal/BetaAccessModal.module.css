@@ -1,0 +1,489 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modalContent {
+  background: #fff;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 #000;
+  max-width: 450px;
+  width: 100%;
+  position: relative;
+  padding: 0;
+  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+:global(.dark) .modalContent {
+  background: #2d3748;
+  border: 4px solid #4a5568;
+  box-shadow: 8px 8px 0 #1a202c;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ff6b6b;
+  border: 2px solid #000;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #fff;
+  z-index: 10;
+}
+
+:global(.dark) .closeButton {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.closeButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .closeButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.closeButton:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 #000;
+}
+
+.modalHeader {
+  text-align: center;
+  padding: 32px 24px 20px;
+}
+
+.iconContainer {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%);
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #fff;
+  box-shadow: 4px 4px 0 #000;
+  animation: iconPop 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+:global(.dark) .iconContainer {
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0 #1a202c;
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.modalTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .modalTitle {
+  color: #f7fafc;
+}
+
+.modalSubtitle {
+  font-size: 0.95rem;
+  color: #666;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+:global(.dark) .modalSubtitle {
+  color: #cbd5e0;
+}
+
+/* Review Preview - Retro + Telegram Style */
+.reviewPreview {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 3px solid #000;
+  padding: 20px;
+  margin: 0 24px 20px;
+  box-shadow: 3px 3px 0 #000;
+}
+
+:global(.dark) .reviewPreview {
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  border: 3px solid #4a5568;
+  box-shadow: 3px 3px 0 #0d1117;
+}
+
+.trustpilotHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.trustpilotIcon {
+  color: #00b67a;
+}
+
+.trustpilotText {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #00b67a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.starsRow {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.star {
+  color: #ddd;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.1));
+}
+
+:global(.dark) .star {
+  color: #4a5568;
+}
+
+.starFilled {
+  color: #ffd700;
+  animation: starFill 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.2));
+}
+
+@keyframes starFill {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.reviewBubble {
+  background: #fff;
+  border: 2px solid #000;
+  padding: 14px 16px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .reviewBubble {
+  background: #4a5568;
+  border: 2px solid #718096;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.reviewText {
+  font-size: 0.95rem;
+  color: #000;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+:global(.dark) .reviewText {
+  color: #f7fafc;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 18px;
+  background: #9d4edd;
+  margin-left: 3px;
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Info Box */
+.infoBox {
+  background: #fff9e6;
+  border: 2px solid #ffd166;
+  border-left: 4px solid #ffd166;
+  padding: 14px 16px;
+  margin: 0 24px 24px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .infoBox {
+  background: rgba(255, 209, 102, 0.15);
+  border: 2px solid #ffd166;
+  border-left: 4px solid #ffd166;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.infoText {
+  font-size: 0.85rem;
+  color: #000;
+  margin: 0;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+:global(.dark) .infoText {
+  color: #f7fafc;
+}
+
+/* Primary Button */
+.primaryButton {
+  width: calc(100% - 48px);
+  background: #9d4edd;
+  border: 3px solid #000;
+  color: #fff;
+  padding: 14px 24px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: "Nunito", sans-serif;
+  margin: 0 24px 24px;
+  box-shadow: 4px 4px 0 #000;
+}
+
+:global(.dark) .primaryButton {
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0 #1a202c;
+}
+
+.primaryButton:hover:not(:disabled) {
+  background: #7b2cbf;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .primaryButton:hover:not(:disabled) {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.primaryButton:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+
+:global(.dark) .primaryButton:active:not(:disabled) {
+  box-shadow: 0 0 0 #1a202c;
+}
+
+.primaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Success State */
+.successState {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.checkmark {
+  margin: 0 auto 24px;
+  width: 80px;
+  height: 80px;
+  background: #4ecdc4;
+  border: 4px solid #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 #000;
+  animation: checkmarkPop 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+:global(.dark) .checkmark {
+  border: 4px solid #4a5568;
+  box-shadow: 4px 4px 0 #1a202c;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.checkmarkSvg {
+  width: 48px;
+  height: 48px;
+  stroke-width: 4;
+  stroke: #fff;
+  stroke-miterlimit: 10;
+  animation: checkmarkDraw 0.4s ease-in-out 0.2s forwards;
+}
+
+.checkmarkCircle {
+  display: none;
+}
+
+.checkmarkCheck {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  stroke: #fff;
+  stroke-width: 4;
+  animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.2s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.successTitle {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #000;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .successTitle {
+  color: #f7fafc;
+}
+
+.successText {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 600;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+:global(.dark) .successText {
+  color: #cbd5e0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 480px) {
+  .modalContent {
+    max-width: calc(100vw - 32px);
+    box-shadow: 6px 6px 0 #000;
+  }
+
+  :global(.dark) .modalContent {
+    box-shadow: 6px 6px 0 #1a202c;
+  }
+
+  .modalTitle {
+    font-size: 1.4rem;
+  }
+
+  .iconContainer {
+    width: 64px;
+    height: 64px;
+  }
+
+  .starsRow {
+    gap: 6px;
+  }
+
+  .star {
+    width: 26px;
+    height: 26px;
+  }
+
+  .reviewText {
+    font-size: 0.9rem;
+  }
+
+  .infoText {
+    font-size: 0.8rem;
+  }
+
+  .primaryButton {
+    font-size: 0.9rem;
+  }
+
+  .checkmark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .checkmarkSvg {
+    width: 40px;
+    height: 40px;
+  }
+}

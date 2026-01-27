@@ -1,6 +1,7 @@
 // gameResultRepo.ts
 import mongoose from "mongoose";
 import GameResult from "../models/GameResult.js";
+import Game from "../models/Game.js"; // ✅ ADD THIS IMPORT
 
 export const saveGameResult = async (resultData: any) => {
   const { hostId, gameCode } = resultData;
@@ -17,14 +18,17 @@ export const saveGameResult = async (resultData: any) => {
   resultData.hostId = new mongoose.Types.ObjectId(hostId);
 
   // Use findOneAndUpdate with upsert: true to replace if exists
-  const result = await GameResult.findOneAndUpdate(
-    { gameCode }, // Filter by gameCode
-    resultData, // Replace with new data
-    {
-      upsert: true, // Insert if doesn't exist
-      new: true, // Return the updated document
-      setDefaultsOnInsert: true, // Apply schema defaults on insert
-    }
+  const result = await GameResult.findOneAndUpdate({ gameCode }, resultData, {
+    upsert: true,
+    new: true,
+    setDefaultsOnInsert: true,
+  });
+
+  // ✅ UPDATE hasPlayed in Game model
+  await Game.findOneAndUpdate(
+    { gameCode },
+    { $set: { hasPlayed: true } },
+    { new: true },
   );
 
   return result;
@@ -33,13 +37,13 @@ export const saveGameResult = async (resultData: any) => {
 export async function saveTheGameResult(
   gameCode: any,
   leaderboard: any,
-  hostId: any
+  hostId: any,
 ) {
   const hostObjectId = new mongoose.Types.ObjectId(hostId);
 
   // Use upsert instead of create
-  return await GameResult.findOneAndUpdate(
-    { gameCode }, // Find by gameCode
+  const result = await GameResult.findOneAndUpdate(
+    { gameCode },
     {
       gameCode,
       hostId: hostObjectId,
@@ -47,10 +51,19 @@ export async function saveTheGameResult(
       createdAt: new Date(),
     },
     {
-      upsert: true, // Insert if doesn't exist
-      new: true, // Return the updated document
-    }
+      upsert: true,
+      new: true,
+    },
   );
+
+  // ✅ UPDATE hasPlayed in Game model
+  await Game.findOneAndUpdate(
+    { gameCode },
+    { $set: { hasPlayed: true } },
+    { new: true },
+  );
+
+  return result;
 }
 
 export const checkGameCodeExists = async (gameCode: string) => {
@@ -61,7 +74,7 @@ export const markPlayerAsAssigned = async (gameCode: string, uuid: string) => {
   return await GameResult.findOneAndUpdate(
     { gameCode, "players.uuid": uuid },
     { $set: { "players.$.isAssigned": true } },
-    { new: true }
+    { new: true },
   );
 };
 

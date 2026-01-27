@@ -1,0 +1,407 @@
+.sectionActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.searchContainer {
+  position: relative;
+  flex: 1;
+  max-width: 300px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border: 2px solid #000;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  color: #000;
+}
+
+:global(.dark) .searchInput {
+  background: #1a202c;
+  border: 2px solid #4a5568;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0 #0d1117;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  box-shadow: 2px 2px 0 #4ecdc4;
+}
+
+.searchInput::placeholder {
+  color: #999;
+  font-weight: 600;
+}
+
+:global(.dark) .searchInput::placeholder {
+  color: #718096;
+}
+
+.clearSearchButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+:global(.dark) .clearSearchButton {
+  color: #a0aec0;
+}
+
+.clearSearchButton:hover {
+  color: #ff6b6b;
+  background: #f0f0f0;
+}
+
+:global(.dark) .clearSearchButton:hover {
+  color: #fc8181;
+  background: #2d3748;
+}
+
+.filterSortContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  position: relative;
+}
+
+.filterSortGroup {
+  position: relative;
+}
+
+.filterButton,
+.sortButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  border: 2px solid #000;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  min-width: 160px;
+  justify-content: space-between;
+  color: #000;
+}
+
+:global(.dark) .filterButton,
+:global(.dark) .sortButton {
+  background: #4a5568;
+  border: 2px solid #718096;
+  color: #f7fafc;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.filterButton:hover,
+.sortButton:hover {
+  background: #4ecdc4;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+  color: #000;
+}
+
+:global(.dark) .filterButton:hover,
+:global(.dark) .sortButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.filterDropdown,
+.sortDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+  background: #fff;
+  border: 2px solid #000;
+  box-shadow: 3px 3px 0 #000;
+  z-index: 100;
+  min-width: 200px;
+  animation: dropdownAppear 0.2s ease;
+}
+
+:global(.dark) .filterDropdown,
+:global(.dark) .sortDropdown {
+  background: #2d3748;
+  border: 2px solid #4a5568;
+  box-shadow: 3px 3px 0 #1a202c;
+}
+
+@keyframes dropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filterOption,
+.sortOption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  text-align: left;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #eee;
+  color: #000;
+}
+
+:global(.dark) .filterOption,
+:global(.dark) .sortOption {
+  border-bottom: 1px solid #4a5568;
+  color: #f7fafc;
+}
+
+.filterOption:last-child,
+.sortOption:last-child {
+  border-bottom: none;
+}
+
+.filterOption:hover,
+.sortOption:hover {
+  background: #f8f9fa;
+  color: #000;
+}
+
+:global(.dark) .filterOption:hover,
+:global(.dark) .sortOption:hover {
+  background: #4a5568;
+  color: #f7fafc;
+}
+
+.filterOptionActive,
+.sortOptionActive {
+  background: #4ecdc4 !important;
+  color: #000 !important;
+  font-weight: 800;
+}
+
+.clearFiltersButton {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #ff6b6b;
+  color: #fff;
+  border: 2px solid #000;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+:global(.dark) .clearFiltersButton {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.clearFiltersButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .clearFiltersButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.activeFilters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.activeFiltersLabel {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .activeFiltersLabel {
+  color: #f7fafc;
+}
+
+.activeFilterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #4ecdc4;
+  color: #000;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 2px solid #000;
+  border-radius: 20px;
+  box-shadow: 1px 1px 0 #000;
+  text-transform: uppercase;
+}
+
+:global(.dark) .activeFilterTag {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.removeFilterButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.removeFilterButton:hover {
+  background: #000;
+  color: #fff;
+}
+
+.gamesCount {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .gamesCount {
+  color: #a0aec0;
+}
+
+@media (max-width: 768px) {
+  .sectionActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .searchContainer {
+    max-width: 100%;
+  }
+
+  .filterSortContainer {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filterButton,
+  .sortButton {
+    min-width: 140px;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .filterDropdown,
+  .sortDropdown {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 300px;
+  }
+
+  .activeFilters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .gamesCount {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+}
+
+/* ✅ AI Filter Option Styling - PROPERLY ALIGNED */
+.aiFilterOption {
+  /* Base layout - same as .filterOption */
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border: none !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid #eee !important;
+  color: #000 !important;
+  
+  /* Icon spacing */
+  gap: 0.5rem !important;
+  
+  /* AI-specific gradient */
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%) !important;
+}
+
+:global(.dark) .aiFilterOption {
+  border-bottom: 1px solid #4a5568 !important;
+  color: #f7fafc !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%) !important;
+}
+
+.aiFilterOption:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%) !important;
+  color: #000 !important;
+}
+
+:global(.dark) .aiFilterOption:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%) !important;
+  color: #f7fafc !important;
+}
+
+.aiFilterOption.filterOptionActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+:global(.dark) .aiFilterOption.filterOptionActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff !important;
+}

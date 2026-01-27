@@ -1,6 +1,6 @@
 {
   "name": "server",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -8,18 +8,21 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "test:leaderboard-email": "node --loader ts-node/esm src/types/testLeaderboardAnnouncement.ts",
-    "send:leaderboard:all": "node --loader ts-node/esm src/tests/sendLeaderboardFixToAll.ts"
+    "send:leaderboard:all": "node --loader ts-node/esm src/tests/sendLeaderboardFixToAll.ts",
+    "make-admin": "node --loader ts-node/esm src/tests/makeAdmin.ts"
   },
   "dependencies": {
     "@azure/identity": "^4.13.0",
     "@azure/msal-node": "^3.8.6",
     "@google/generative-ai": "^0.24.1",
     "@microsoft/microsoft-graph-client": "^3.0.7",
+    "@socket.io/redis-adapter": "^8.3.0",
     "@stripe/stripe-js": "^8.6.1",
     "axios": "^1.13.2",
     "body-parser": "^2.2.0",
     "bottleneck": "^2.19.5",
     "bull": "^4.16.5",
+    "bullmq": "^5.66.5",
     "canvas": "^3.2.0",
     "cheerio": "^1.1.2",
     "cors": "^2.8.5",
@@ -41,7 +44,6 @@
     "redis": "^5.9.0",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1",
     "stripe": "^20.1.2",
     "youtube-caption-extractor": "^1.9.1"
   },
@@ -54,6 +56,8 @@
     "@types/nodemailer": "^7.0.5",
     "@types/qrcode": "^1.5.6",
     "@types/stripe": "^8.0.416",
+    "artillery": "^2.0.21",
+    "socket.io-client": "^4.8.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.21.0",

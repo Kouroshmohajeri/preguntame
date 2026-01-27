@@ -187,6 +187,35 @@ export const UserController = {
       return res.status(500).json({ error: "Failed to load users" });
     }
   },
+  async updateSettings(req: Request, res: Response) {
+    try {
+      const { userId } = req.params;
+      const { emailNotifications } = req.body;
+
+      if (!userId) {
+        return res.status(400).json({ error: "User ID is required" });
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { emailNotifications, updatedAt: new Date() },
+        { new: true },
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Settings updated successfully",
+        user: updatedUser,
+      });
+    } catch (error) {
+      console.error("❌ updateSettings error:", error);
+      return res.status(500).json({ error: "Server error" });
+    }
+  },
 
   async deleteUser(req: Request, res: Response) {
     try {

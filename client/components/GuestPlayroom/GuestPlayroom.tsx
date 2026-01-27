@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getGame } from "@/app/api/game/actions";
 import { useSocket } from "@/context/SocketContext/SocketContext";
@@ -49,6 +49,10 @@ export default function GuestPlayroom() {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [waitingForQuestion, setWaitingForQuestion] = useState(true);
 
+  // ✅ NEW: State for countdown/preparation
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [prepCount, setPrepCount] = useState(3);
+
   const hasJoinedRef = useRef(false);
 
   const currentQuestion = game?.questions[currentQuestionIndex];
@@ -95,8 +99,37 @@ export default function GuestPlayroom() {
         ? JSON.parse(storedPlayer).name
         : "Guest_" + Math.floor(Math.random() * 1000);
 
-      socket.emit("joinGame", { gameCode, playerName, playerUUID });
+      // nclude avatar from localStorage
+      const avatar = storedPlayer ? JSON.parse(storedPlayer).avatar : undefined;
+
+      socket.emit("joinGame", {
+        gameCode,
+        playerName,
+        playerUUID,
+        avatar,
+      });
+
       hasJoinedRef.current = true;
+    };
+
+    // ✅ UPDATED: Handle countdown signal with "Read Question" phase
+    const handleShowPreparation = () => {
+      setWaitingForQuestion(false);
+      setIsPreparing(true);
+      setPrepCount(3);
+
+      let count = 3;
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          setPrepCount(count);
+        } else {
+          // When we reach 0, we don't stop showing the screen
+          // We just set it to 0 to trigger the "Read Question" message
+          setPrepCount(0);
+          clearInterval(interval);
+        }
+      }, 1000);
     };
 
     const handleStartQuestion = ({
@@ -106,6 +139,7 @@ export default function GuestPlayroom() {
       questionIndex: number;
       timeLeft?: number;
     }) => {
+      setIsPreparing(false); // Stop countdown screen immediately
       setWaitingForQuestion(false);
       setCurrentQuestionIndex(questionIndex);
       setShowCorrectAnswer(false);
@@ -123,33 +157,31 @@ export default function GuestPlayroom() {
       setTimerActive(false);
     };
 
-    // ✅ NEW: Listen for game ended event
     const handleGameEnded = ({ leaderboard }: { leaderboard: any[] }) => {
-      // Clear all game-related localStorage
       localStorage.removeItem("playerInfo");
       localStorage.removeItem(`draft_${gameCode}`);
-      // Keep playerUUID for future games
 
-      // Redirect to leaderboard page
       setTimeout(() => {
         router.push(`/leaderboard/${gameCode}`);
       }, 500);
     };
 
     socket.on("connect", handleConnect);
+    socket.on("showPreparation", handleShowPreparation);
     socket.on("startQuestion", handleStartQuestion);
     socket.on("updateTimer", handleUpdateTimer);
     socket.on("showCorrectAnswer", handleShowCorrectAnswer);
-    socket.on("gameEnded", handleGameEnded); // ✅ NEW
+    socket.on("gameEnded", handleGameEnded);
 
     if (socket.connected) handleConnect();
 
     return () => {
       socket.off("connect", handleConnect);
+      socket.off("showPreparation", handleShowPreparation);
       socket.off("startQuestion", handleStartQuestion);
       socket.off("updateTimer", handleUpdateTimer);
       socket.off("showCorrectAnswer", handleShowCorrectAnswer);
-      socket.off("gameEnded", handleGameEnded); // ✅ NEW
+      socket.off("gameEnded", handleGameEnded);
     };
   }, [socket, gameCode, playerUUID, router]);
 
@@ -191,6 +223,46 @@ export default function GuestPlayroom() {
     return (
       <div className={styles.container}>
         <div className={styles.error}>Game not found</div>
+      </div>
+    );
+  }
+
+  // ✅ UPDATED: Countdown Display Logic
+  if (isPreparing) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.waitingScreen}>
+          {prepCount > 0 ? (
+            // 3... 2... 1...
+            <>
+              <div className={styles.waitingTitle} style={{ fontSize: "5rem", color: "#FF6B6B" }}>
+                {prepCount}
+              </div>
+              <div className={styles.waitingMessage}>GET READY!</div>
+            </>
+          ) : (
+            // After 1, show this until the answers appear
+            <>
+              <div className={styles.waitingTitle} style={{ fontSize: "3rem", color: "#4ECDC4" }}>
+                👀
+              </div>
+              <div
+                className={styles.waitingMessage}
+                style={{
+                  fontSize: "1.5rem",
+                  marginTop: "1rem",
+                  maxWidth: "80%",
+                  textAlign: "center",
+                  lineHeight: "1.4",
+                }}
+              >
+                READ THE QUESTION
+                <br />
+                ON HOST SCREEN
+              </div>
+            </>
+          )}
+        </div>
       </div>
     );
   }
