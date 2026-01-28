@@ -16,6 +16,8 @@ export interface NotificationData {
   message: string;
   icon?: string;
   color?: string;
+  link?: string;
+  read?: boolean;
   data?: {
     gameCode?: string;
     gameTitle?: string;

@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 import Dashboard from "@/components/Dashboard/Dashboard";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import { useSession } from "next-auth/react";
@@ -6,7 +7,8 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/context/ToastContext/ToastContext";
 
-const Page = () => {
+// Dashboard content component that uses useSearchParams
+function DashboardContent() {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
@@ -183,6 +185,51 @@ const Page = () => {
       <Dashboard />
     </div>
   );
-};
+}
 
-export default Page;
+// Loading fallback component
+function DashboardLoading() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        flexDirection: "column",
+        gap: "1rem",
+      }}
+    >
+      <div
+        style={{
+          width: "60px",
+          height: "60px",
+          border: "4px solid #4ECDC4",
+          borderTop: "4px solid transparent",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+        }}
+      />
+      <p style={{ fontSize: "1.2rem", fontWeight: 700, color: "#2D3748" }}>Loading dashboard...</p>
+      <style jsx>{`
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// Main page export with Suspense boundary
+export default function Page() {
+  return (
+    <Suspense fallback={<DashboardLoading />}>
+      <DashboardContent />
+    </Suspense>
+  );
+}
