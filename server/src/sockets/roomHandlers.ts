@@ -1,47 +1,62 @@
-import {
-  addPlayer,
-  addViewer,
-  getRoom,
-  removePlayer,
-  toggleReady,
-} from "../services/roomService.js";
 import { Server, Socket } from "socket.io";
+import { addPlayer, toggleReady } from "../services/roomService.js";
 
 export function registerRoomHandlers(io: Server, socket: Socket) {
   console.log("🟢 Connected:", socket.id);
 
-  socket.on("visitRoom", async ({ gameCode }) => {
-    socket.join(gameCode);
-    const room = await addViewer(gameCode, socket.id);
-    io.to(gameCode).emit("viewerCountUpdate", { count: room.viewers.length });
-  });
+  socket.on(
+    "joinGame",
+    async ({ gameCode, playerName, avatar, playerUUID, isHost, hostId }) => {
+      socket.join(gameCode);
 
-  socket.on("joinGame", async ({ gameCode, playerName, avatar, playerUUID }) => {
-    const player = {
-      id: socket.id,
-      name: playerName,
-      avatar,
-      isReady: false,
-      score: 0,
-      isHost: false,
-      uuid: playerUUID,
-    };
+      const safeAvatar =
+        avatar && avatar.length > 0
+          ? avatar
+          : `https://api.dicebear.com/7.x/pixel-art/svg?seed=${playerName || "guest"}&backgroundColor=4ecdc4`;
 
-    const room = await addPlayer(gameCode, player);
-    io.to(gameCode).emit("playersUpdate", {
-      players: Object.values(room.players),
-      hostId: room.hostId,
-    });
-  });
+      const player = {
+        id: socket.id,
+        name: playerName,
+        avatar: safeAvatar,
+        isReady: false,
+        score: 0,
+        isHost: Boolean(isHost),
+        uuid: playerUUID,
+        userId: isHost && hostId ? hostId : "",
+        currentQuestion: 0,
+        answers: [],
+      };
 
-  socket.on("toggleReady", async ({ gameCode, isReady }) => {
-    const room = await toggleReady(gameCode, socket.id, isReady);
-    if (room)
+      const room = await addPlayer(gameCode, player);
+
+      socket.emit("joinConfirmed", { playerUUID, gameCode });
+
+      const nonHostPlayers = Object.values(room.players).filter(
+        (p) => !p.isHost,
+      );
+
       io.to(gameCode).emit("playersUpdate", {
-        players: Object.values(room.players),
+        players: nonHostPlayers,
+        hostId: room.hostId,
+        playerCount: nonHostPlayers.length,
+      });
+
+      io.to(gameCode).emit("viewerCountUpdate", {
+        count: room.viewers.length,
+      });
+    },
+  );
+
+  socket.on("toggleReady", async ({ gameCode, playerUUID, isReady }) => {
+    const room = await toggleReady(gameCode, playerUUID, isReady);
+    if (room) {
+      const nonHostPlayers = Object.values(room.players).filter(
+        (p) => !p.isHost,
+      );
+      io.to(gameCode).emit("playersUpdate", {
+        players: nonHostPlayers,
         hostId: room.hostId,
       });
+    }
   });
-
-  // Note: disconnect handlers are handled in registerGameSocket to avoid duplicate listeners
 }
