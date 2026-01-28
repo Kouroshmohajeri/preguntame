@@ -15,6 +15,7 @@ import {
   sendEmail,
 } from "../services/microsoftGraphService.js";
 import { enhancedEmailService } from "../services/enhancedEmailService.js";
+import { emailTemplateBuilder } from "../services/emailTemplateBuilder.js";
 
 // ============= EMAIL TEMPLATES =============
 
@@ -79,6 +80,162 @@ export const deleteTemplate = async (req: Request, res: Response) => {
 };
 
 // ============= EMAIL CAMPAIGNS =============
+// TEST EMAIL - Send to one email only
+// TEST EMAIL - Send to one email only
+export const sendTestCampaign = async (req: Request, res: Response) => {
+  try {
+    const { templateType, subject, title, content, testEmail } = req.body;
+
+    if (!templateType || !subject || !title || !content || !testEmail) {
+      return res.status(400).json({
+        error: "Missing required fields for test email",
+      });
+    }
+
+    // Try to find the user by email to get their name
+    const user = await User.findOne({ email: testEmail }).select("name");
+    const recipientName = user?.name || testEmail.split("@")[0] || "Test User";
+
+    // Generate HTML based on template type
+    let htmlContent;
+
+    if (templateType === "announcement") {
+      htmlContent = emailTemplateBuilder.announcementEmail({
+        recipientName,
+        title,
+        content,
+      });
+    } else if (templateType === "product_launch") {
+      htmlContent = emailTemplateBuilder.productLaunchEmail({
+        recipientName,
+        productName: title,
+        content,
+        features: [],
+      });
+    } else if (templateType === "update") {
+      htmlContent = emailTemplateBuilder.updateEmail({
+        recipientName,
+        subject: title,
+        content,
+      });
+    }
+
+    // Send single test email
+    await enhancedEmailService.sendMail({
+      to: testEmail,
+      subject,
+      html: htmlContent,
+      trackOpens: false,
+      trackClicks: false,
+    });
+
+    res.json({
+      success: true,
+      message: `Test email sent to ${testEmail}`,
+    });
+  } catch (error: any) {
+    console.error("Error sending test email:", error);
+    res
+      .status(500)
+      .json({ error: error.message || "Failed to send test email" });
+  }
+};
+
+// BULK CAMPAIGN - Send to all users
+export const sendCustomCampaign = async (req: Request, res: Response) => {
+  try {
+    const { templateType, subject, title, content, targetAudience } = req.body;
+
+    if (!templateType || !subject || !title || !content) {
+      return res.status(400).json({
+        error: "Missing required fields: templateType, subject, title, content",
+      });
+    }
+
+    // Get recipients based on targetAudience
+    let query: any = { emailVerified: true };
+
+    if (targetAudience === "premium") {
+      query.isPremium = true;
+    } else if (targetAudience === "verified") {
+      query.emailVerified = true;
+    }
+
+    const users = await User.find(query).select("email name");
+
+    if (users.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No users found matching criteria" });
+    }
+
+    const BATCH_SIZE = 50;
+    let sentCount = 0;
+    let failedCount = 0;
+
+    // Send in batches
+    for (let i = 0; i < users.length; i += BATCH_SIZE) {
+      const batch = users.slice(i, i + BATCH_SIZE);
+
+      await Promise.allSettled(
+        batch.map(async (user: any) => {
+          try {
+            let htmlContent;
+
+            if (templateType === "announcement") {
+              htmlContent = emailTemplateBuilder.announcementEmail({
+                recipientName: user.name || "Usuario",
+                title,
+                content,
+              });
+            } else if (templateType === "product_launch") {
+              htmlContent = emailTemplateBuilder.productLaunchEmail({
+                recipientName: user.name || "Usuario",
+                productName: title,
+                content,
+                features: [],
+              });
+            } else if (templateType === "update") {
+              htmlContent = emailTemplateBuilder.updateEmail({
+                recipientName: user.name || "Usuario",
+                subject: title,
+                content,
+              });
+            }
+
+            await enhancedEmailService.sendMail({
+              to: user.email,
+              subject,
+              html: htmlContent,
+              trackOpens: true,
+              trackClicks: true,
+            });
+
+            sentCount++;
+          } catch (error) {
+            console.error(`Failed to send to ${user.email}:`, error);
+            failedCount++;
+          }
+        }),
+      );
+
+      // Small delay between batches
+      if (i + BATCH_SIZE < users.length) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    }
+
+    res.json({
+      success: true,
+      sentCount,
+      failedCount,
+      totalRecipients: users.length,
+    });
+  } catch (error: any) {
+    console.error("Error sending bulk campaign:", error);
+    res.status(500).json({ error: error.message || "Failed to send campaign" });
+  }
+};
 
 export const createCampaign = async (req: Request, res: Response) => {
   try {

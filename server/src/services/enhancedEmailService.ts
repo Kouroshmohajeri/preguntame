@@ -519,11 +519,11 @@ class EnhancedEmailService {
     title: string,
     content: string,
   ) {
-    const htmlContent = emailTemplateBuilder.announcementEmail(
-      name,
-      title,
-      content,
-    );
+    const htmlContent = emailTemplateBuilder.announcementEmail({
+      recipientName: name,
+      title: title,
+      content: content,
+    });
 
     return this.sendMail({
       to: email,
@@ -533,6 +533,7 @@ class EnhancedEmailService {
       trackClicks: true,
     });
   }
+
   async sendLoginNotification(email: string, ip: string, userAgent: string) {
     const user = await User.findOne({ email });
     const name = user?.name || "Usuario";

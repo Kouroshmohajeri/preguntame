@@ -4,7 +4,7 @@ import { API } from "../Server";
 // Get user credits
 export const getUserCredits = async (email: string) => {
   try {
-    const response = await API.get(`/credits/${email}`);
+    const response = await API.get(`/beta-access/credits/${email}`);
     return response.data;
   } catch (error: any) {
     if (error?.response?.status === 404) {

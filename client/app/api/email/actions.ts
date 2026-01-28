@@ -20,6 +20,30 @@ export const createEmailTemplate = async (templateData: {
   return response.data;
 };
 
+// Send test email
+export const sendTestCampaign = async (campaignData: {
+  templateType: "announcement" | "product_launch" | "update";
+  subject: string;
+  title: string;
+  content: string;
+  testEmail: string;
+}) => {
+  const response = await API.post("/email/campaigns/send-test", campaignData);
+  return response.data;
+};
+
+// Send bulk campaign
+export const sendCustomCampaign = async (campaignData: {
+  templateType: "announcement" | "product_launch" | "update";
+  subject: string;
+  title: string;
+  content: string;
+  targetAudience: "all" | "verified" | "premium";
+}) => {
+  const response = await API.post("/email/campaigns/send", campaignData);
+  return response.data;
+};
+
 export const updateEmailTemplate = async (
   id: string,
   templateData: {

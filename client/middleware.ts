@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
     // 2. Validate license against backend
     try {
       const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-      const validationUrl = `${apiBaseUrl}/api/beta-access/validate-license/${licenseKey}`;
+      const validationUrl = `${apiBaseUrl}/beta-access/validate-license/${licenseKey}`;
 
       console.log("📡 Middleware: Calling validation API:", validationUrl);
 

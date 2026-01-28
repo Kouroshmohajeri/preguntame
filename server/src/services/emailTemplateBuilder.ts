@@ -434,6 +434,7 @@ class EmailTemplateBuilder {
       },
     });
   }
+
   betaAccessRequestEmail(name: string, trustpilotUrl: string): string {
     return this.buildTemplate({
       recipientName: name,
@@ -613,15 +614,73 @@ class EmailTemplateBuilder {
     });
   }
 
-  announcementEmail(name: string, title: string, content: string): string {
+  announcementEmail(options: {
+    recipientName: string;
+    title: string;
+    content: string; // HTML content you write
+    ctaText?: string;
+    ctaUrl?: string;
+  }): string {
     return this.buildTemplate({
-      recipientName: name,
-      preheaderText: title,
-      bodyContent: content,
-      ctaButton: {
-        text: "Learn More",
-        url: this.baseUrl,
-      },
+      recipientName: options.recipientName,
+      preheaderText: options.title,
+      bodyContent: `
+        <h2 style="color: #0ea5e9; font-size: 28px; margin-bottom: 20px; font-weight: 900;">
+          ${options.title}
+        </h2>
+        ${options.content}
+      `,
+      ctaButton:
+        options.ctaText && options.ctaUrl
+          ? { text: options.ctaText, url: options.ctaUrl }
+          : undefined,
+    });
+  }
+
+  // Product launch template
+  productLaunchEmail(options: {
+    recipientName: string;
+    productName: string;
+    content: string;
+    features?: string[];
+    ctaText?: string;
+    ctaUrl?: string;
+  }): string {
+    const featuresHtml = options.features
+      ? `
+        <ul style="font-size: 16px; line-height: 2; color: #334155; margin: 15px 0 25px 20px; font-weight: 600;">
+          ${options.features.map((f) => `<li>${f}</li>`).join("")}
+        </ul>
+      `
+      : "";
+
+    return this.buildTemplate({
+      recipientName: options.recipientName,
+      preheaderText: `${options.productName} is now available!`,
+      bodyContent: `
+        <h2 style="color: #9d4edd; font-size: 28px; margin-bottom: 20px; font-weight: 900;">
+          🚀 ${options.productName} is now live!
+        </h2>
+        ${options.content}
+        ${featuresHtml}
+      `,
+      ctaButton:
+        options.ctaText && options.ctaUrl
+          ? { text: options.ctaText, url: options.ctaUrl }
+          : undefined,
+    });
+  }
+
+  // Simple update/newsletter template
+  updateEmail(options: {
+    recipientName: string;
+    subject: string;
+    content: string;
+  }): string {
+    return this.buildTemplate({
+      recipientName: options.recipientName,
+      preheaderText: options.subject,
+      bodyContent: options.content,
     });
   }
 

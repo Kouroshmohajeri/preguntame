@@ -48,7 +48,7 @@ export async function generateQuestions(
   numberOfQuestions: number,
   difficulty: string,
   questionTypes: string[],
-  language: string = "en"
+  language: string = "en",
 ): Promise<any[]> {
   try {
     const apiKey = process.env.GEMINI_API_KEY;
@@ -60,7 +60,7 @@ export async function generateQuestions(
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // ✅ Use Gemini 2.0 Flash (current free tier model as of 2026)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // ✅ Get language name for better context
     const languageName = LANGUAGE_NAMES[language] || language;
@@ -121,7 +121,7 @@ Make sure:
     // ✅ Validate that we got the requested number of questions
     if (questions.length < numberOfQuestions) {
       console.warn(
-        `Requested ${numberOfQuestions} questions but got ${questions.length}`
+        `Requested ${numberOfQuestions} questions but got ${questions.length}`,
       );
     }
 
@@ -132,22 +132,22 @@ Make sure:
     // More detailed error message
     if (error.message?.includes("API key")) {
       throw new Error(
-        "Invalid API key. Please check your GEMINI_API_KEY in .env file"
+        "Invalid API key. Please check your GEMINI_API_KEY in .env file",
       );
     }
     if (error.status === 404) {
       throw new Error(
-        "Model not found. Please try using a different model version."
+        "Model not found. Please try using a different model version.",
       );
     }
     if (error.name === "SyntaxError") {
       throw new Error(
-        "Failed to parse AI response. The model may have returned invalid JSON."
+        "Failed to parse AI response. The model may have returned invalid JSON.",
       );
     }
 
     throw new Error(
-      error.message || "Failed to generate questions. Please try again."
+      error.message || "Failed to generate questions. Please try again.",
     );
   }
 }
