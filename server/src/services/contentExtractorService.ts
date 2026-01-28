@@ -3,12 +3,21 @@ import axios from "axios";
 import * as cheerio from "cheerio";
 import mammoth from "mammoth";
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
+import ytdl from "@distube/ytdl-core";
+import fs from "fs";
+import path from "path";
+import os from "os";
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
 
 export async function extractFromYoutube(url: string): Promise<string> {
   try {
     // Extract video ID from URL
     const videoIdMatch = url.match(
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/,
     );
     if (!videoIdMatch) {
       throw new Error("Invalid YouTube URL");
@@ -16,32 +25,104 @@ export async function extractFromYoutube(url: string): Promise<string> {
 
     const videoID = videoIdMatch[1];
 
-    // Try to get subtitles in English, fallback to auto-generated
-    let captions;
+    // Try to get captions first (fast and free)
     try {
-      captions = await getSubtitles({ videoID, lang: "en" });
-    } catch (err) {
-      // Try without language specification (gets default/auto-generated)
-      captions = await getSubtitles({ videoID });
+      let captions;
+      try {
+        captions = await getSubtitles({ videoID, lang: "en" });
+      } catch (err) {
+        captions = await getSubtitles({ videoID });
+      }
+
+      if (captions && captions.length > 0) {
+        const fullText = captions.map((caption: any) => caption.text).join(" ");
+
+        if (fullText.length >= 50) {
+          console.log("✅ Extracted captions from YouTube video");
+          return fullText;
+        }
+      }
+    } catch (captionError) {
+      console.log("⚠️ No captions found, analyzing video with Gemini AI...");
     }
 
-    if (!captions || captions.length === 0) {
-      throw new Error("No captions found for this video");
+    // Fallback: Download video and analyze with Gemini
+    console.log("🎥 Downloading video for AI analysis...");
+
+    const tempDir = os.tmpdir();
+    const tempVideoPath = path.join(tempDir, `video_${videoID}.mp4`);
+
+    // Download video
+    await new Promise<void>((resolve, reject) => {
+      ytdl(url, { quality: "lowest", filter: "videoandaudio" })
+        .pipe(fs.createWriteStream(tempVideoPath))
+        .on("finish", () => {
+          console.log("✅ Video downloaded");
+          resolve();
+        })
+        .on("error", (err) => {
+          console.error("Video download error:", err);
+          reject(new Error("Failed to download video"));
+        });
+    });
+
+    console.log("📤 Uploading video to Gemini...");
+
+    // Upload to Gemini
+    const uploadResponse = await fileManager.uploadFile(tempVideoPath, {
+      mimeType: "video/mp4",
+      displayName: `YouTube_${videoID}`,
+    });
+
+    console.log(`✅ Uploaded: ${uploadResponse.file.uri}`);
+
+    // Wait for processing
+    let file = await fileManager.getFile(uploadResponse.file.name);
+    while (file.state === "PROCESSING") {
+      console.log("⏳ Processing video...");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      file = await fileManager.getFile(uploadResponse.file.name);
     }
 
-    // Combine all caption text
-    const fullText = captions.map((caption: any) => caption.text).join(" ");
-
-    if (fullText.length < 50) {
-      throw new Error("Insufficient content in video captions");
+    if (file.state === "FAILED") {
+      throw new Error("Video processing failed");
     }
 
-    return fullText;
+    console.log("🤖 Analyzing video with Gemini AI...");
+
+    // Generate content from video
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const result = await model.generateContent([
+      {
+        fileData: {
+          mimeType: uploadResponse.file.mimeType,
+          fileUri: uploadResponse.file.uri,
+        },
+      },
+      {
+        text: "Please provide a detailed transcript and summary of this video. Include all spoken dialogue, key topics discussed, main points, and important information. Format it as a comprehensive text transcript that captures the video's content.",
+      },
+    ]);
+
+    const videoTranscript = result.response.text();
+
+    // Clean up
+    console.log("🗑️ Cleaning up...");
+    fs.unlinkSync(tempVideoPath); // Delete temp video
+    await fileManager.deleteFile(uploadResponse.file.name); // Delete from Gemini
+
+    console.log("✅ Video analyzed successfully!");
+
+    if (videoTranscript.length < 50) {
+      throw new Error("Unable to extract sufficient content from video");
+    }
+
+    return videoTranscript.slice(0, 10000);
   } catch (error: any) {
     console.error("YouTube extraction error:", error);
     throw new Error(
-      error.message ||
-        "Failed to extract YouTube transcript. Make sure the video has captions available."
+      error.message || "Failed to extract content from YouTube video",
     );
   }
 }
@@ -74,7 +155,7 @@ export async function extractFromWebsite(url: string): Promise<string> {
   } catch (error) {
     console.error("Website extraction error:", error);
     throw new Error(
-      "Failed to extract content from website. Please check the URL."
+      "Failed to extract content from website. Please check the URL.",
     );
   }
 }

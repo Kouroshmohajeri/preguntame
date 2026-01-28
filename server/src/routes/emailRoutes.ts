@@ -26,6 +26,8 @@ import {
   getDraftEmailsIMAP,
   sendSingleEmail,
   getSentEmailsFromLogs,
+  sendCustomCampaign,
+  sendTestCampaign,
 } from "../controller/emailController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import {
@@ -76,6 +78,11 @@ router.get("/message/:id", authMiddleware, getEmailByIdMicrosoft);
 
 // Send individual email via Microsoft 365
 router.post("/send", authMiddleware, sendEmailMicrosoft);
+//Test campaign route
+router.post("/campaigns/send-test", authMiddleware, sendTestCampaign);
+
+// Bulk campaign route
+//router.post("/campaigns/send", authMiddleware, sendCustomCampaign);
 
 // Mark email as read in Microsoft 365
 router.patch("/message/:id/read", authMiddleware, markEmailAsReadMicrosoft);
@@ -93,5 +100,7 @@ router.get("/track/click/:trackingId", authMiddleware, trackEmailClick);
 
 // Stats route (protected if needed)
 router.get("/stats", authMiddleware, getEmailStats);
+
+router.post("/campaigns/send-bulk", authMiddleware, sendCustomCampaign);
 
 export default router;

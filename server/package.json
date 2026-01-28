@@ -14,6 +14,7 @@
   "dependencies": {
     "@azure/identity": "^4.13.0",
     "@azure/msal-node": "^3.8.6",
+    "@distube/ytdl-core": "^4.16.12",
     "@google/generative-ai": "^0.24.1",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@socket.io/redis-adapter": "^8.3.0",
