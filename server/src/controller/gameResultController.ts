@@ -5,7 +5,7 @@ import {
   markPlayerAsAssigned,
   deleteGameResultByCode,
   checkGameCodeExists,
-  getAllGameResults, // Add this import
+  getAllGameResults,
 } from "../Repo/gameResultRepo.js";
 
 export const createGameResult = async (req: Request, res: Response) => {

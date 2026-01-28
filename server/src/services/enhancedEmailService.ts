@@ -367,7 +367,86 @@ class EnhancedEmailService {
 
     return { sent, failed, skipped };
   }
-  // For sending custom composed emails from the UI with full template
+  async sendBetaAccessRequest(email: string, name: string) {
+    const trustpilotUrl =
+      "https://www.trustpilot.com/review/preguntame.eu?_gl=1*14e9x1h*_gcl_au*MzAxOTgyNDEwLjE3NjI4MDk1ODIuMzIyOTA2MzkuMTc2ODc4Njc2NC4xNzY4Nzg2NzYz*_ga*MTYzMjk0NzU2MC4xNzYyODA5NTgy*_ga_11HBWMC274*czE3Njg4NDEyMjkkbzYkZzAkdDE3Njg4NDEyMjkkajYwJGwwJGgw";
+
+    const htmlContent = emailTemplateBuilder.betaAccessRequestEmail(
+      name,
+      trustpilotUrl,
+    );
+
+    return this.sendMail({
+      to: email,
+      subject:
+        "🚀 Pregúntame Wizard Beta - Leave a Review & Get 50 AI Credits!",
+      html: htmlContent,
+      trackOpens: true,
+      trackClicks: true,
+      priority: "high",
+    });
+  }
+
+  // Send admin notification when user requests beta access
+  async sendAdminBetaNotification(userEmail: string, userName: string) {
+    const adminEmail = process.env.EMAIL_USER;
+
+    if (!adminEmail) {
+      console.error("Admin email not configured");
+      return;
+    }
+
+    const requestTime = new Date().toLocaleString("es-ES", {
+      timeZone: "Europe/Madrid",
+      dateStyle: "full",
+      timeStyle: "medium",
+    });
+
+    const htmlContent = emailTemplateBuilder.adminBetaAccessNotification(
+      userEmail,
+      userName,
+      requestTime,
+    );
+
+    return this.sendMail({
+      to: adminEmail,
+      subject: `🔔 New Beta Access Request - ${userName}`,
+      html: htmlContent,
+      trackOpens: false,
+      trackClicks: false,
+      priority: "high",
+    });
+  }
+
+  // Send admin reminder after 2 hours
+  async sendAdminBetaReminder(
+    userEmail: string,
+    userName: string,
+    requestTime: string,
+  ) {
+    const adminEmail = process.env.EMAIL_USER;
+
+    if (!adminEmail) {
+      console.error("Admin email not configured");
+      return;
+    }
+
+    const htmlContent = emailTemplateBuilder.adminBetaAccessReminder(
+      userEmail,
+      userName,
+      requestTime,
+    );
+
+    return this.sendMail({
+      to: adminEmail,
+      subject: `⏰ REMINDER: Beta Access Request - ${userName}`,
+      html: htmlContent,
+      trackOpens: false,
+      trackClicks: false,
+      priority: "high",
+    });
+  }
+
   // For sending custom composed emails from the UI with full template
   async sendComposedEmail(
     to: string,

@@ -118,26 +118,33 @@ export default function ShareModal({
       if (selectedUsers.length === 0) return;
 
       // Send notifications to each selected user
-      for (const user of selectedUsers) {
-        await sendNotification({
+      const notificationPromises = selectedUsers.map((user) =>
+        sendNotification({
           userId: user._id,
           senderId: userId,
           type: "game",
           title: "Game Invitation",
           message: `${email} shared the game "${gameTitle}" with you.`,
+          from: email,
+          to: user.email,
           data: {
             gameCode,
             gameTitle,
           },
-        });
-      }
+        })
+      );
+
+      // Wait for all notifications to be sent
+      await Promise.all(notificationPromises);
 
       showToast(`Game shared with ${selectedUsers.length} player(s)!`, "success");
 
+      // Clear selected users after successful share
+      setSelectedUsers([]);
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error sharing game:", err);
-      showToast("Failed to share game.", "error");
+      showToast(err.message || "Failed to share game.", "error");
     }
   };
 
@@ -224,7 +231,7 @@ export default function ShareModal({
           {/* Right Column - User Search */}
           <div className={styles.rightColumn}>
             <div className={styles.searchSection}>
-              <h3 className={styles.sectionTitle}>INVITE PLAYERS</h3>
+              <h3 className={styles.sectionTitle}>SHARE WITH OTHERS</h3>
 
               {/* Search Input */}
               <div className={styles.searchContainer}>

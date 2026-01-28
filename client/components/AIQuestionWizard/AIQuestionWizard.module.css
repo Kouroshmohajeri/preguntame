@@ -1,0 +1,1165 @@
+/* ========================================
+   CONTAINER & LAYOUT
+   ======================================== */
+
+.container {
+  min-height: 100vh;
+  background: #fffaf4;
+  padding-bottom: 4rem;
+}
+
+.content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 2rem;
+}
+
+.step {
+  width: 100%;
+}
+
+/* ========================================
+   HEADER
+   ======================================== */
+
+.header {
+  background: #fff;
+  border-bottom: 4px solid #000;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.backBtn {
+  background: #fff;
+  border: 3px solid #000;
+  color: #2d3748;
+  padding: 0.75rem 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.backBtn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.backBtn:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.titleIcon {
+  color: #4ecdc4;
+}
+
+
+/* ========================================
+   PROGRESS BAR
+   ======================================== */
+
+.progressBar {
+  background: #fff;
+  border-bottom: 3px solid #e0e0e0;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: #999;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.stepNumber {
+  width: 48px;
+  height: 48px;
+  border: 3px solid #ccc;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.progressStep.active {
+  color: #4ecdc4;
+}
+
+.progressStep.active .stepNumber {
+  background: #4ecdc4;
+  border-color: #000;
+  color: #fff;
+  box-shadow: 3px 3px 0px #000;
+}
+
+.progressLine {
+  width: 60px;
+  height: 3px;
+  background: #e0e0e0;
+  margin-bottom: 1.75rem;
+}
+
+/* ========================================
+   STEP TITLE & ERROR
+   ======================================== */
+
+.stepTitle {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.error {
+  background: #fff;
+  border: 3px solid #ff6b6b;
+  color: #d32f2f;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+  box-shadow: 4px 4px 0px #ff6b6b;
+}
+
+/* ========================================
+   STEP 1: TITLE INPUT
+   ======================================== */
+
+.titleHero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.heroIcon {
+  margin: auto;
+  color: #4ecdc4;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.titleInputLarge {
+  width: 100%;
+  background: #fff;
+  border: 4px solid #000;
+  color: #2d3748;
+  padding: 1.5rem;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  box-shadow: 6px 6px 0px #000;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.titleInputLarge:focus {
+  outline: none;
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0px #000;
+  border-color: #4ecdc4;
+}
+
+.titleInputLarge::placeholder {
+  color: #cbd5e0;
+  font-weight: 600;
+}
+
+/* ========================================
+   STEP 2: INPUT METHODS
+   ======================================== */
+
+.inputMethods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.methodBtn {
+  background: #fff;
+  border: 4px solid #000;
+  color: #2d3748;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.15s ease;
+  box-shadow: 5px 5px 0px #000;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.methodBtn:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.methodBtn:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+.methodBtn.selected {
+  background: #4ecdc4;
+  color: #fff;
+}
+
+.inputArea {
+  margin-bottom: 2rem;
+}
+
+.inputArea label {
+  display: block;
+  color: #000;
+  margin-bottom: 1rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+.textarea,
+.textInput {
+  width: 100%;
+  background: #fff;
+  border: 4px solid #000;
+  color: #2d3748;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  box-shadow: 5px 5px 0px #000;
+  transition: all 0.15s ease;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.textarea:focus,
+.textInput:focus {
+  outline: none;
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.fileInput {
+  width: 100%;
+  padding: 1rem;
+  background: #fff;
+  border: 4px dashed #000;
+  color: #2d3748;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 5px 5px 0px #000;
+}
+
+.fileName {
+  color: #4ecdc4;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* ========================================
+   STEP 3: CONFIGURATION
+   ======================================== */
+
+.configContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.configColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.configCard {
+  background: #fff;
+  border: 4px solid #000;
+  padding: 2rem;
+  box-shadow: 5px 5px 0px #000;
+  height: 100%;
+}
+
+.configCardTitle {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid #4ecdc4;
+}
+
+.configRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.configRow:last-child {
+  margin-bottom: 0;
+}
+
+.configGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.configGroup label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.numberInput {
+  width: 100%;
+  background: #fff;
+  border: 4px solid #000;
+  color: #2d3748;
+  padding: 0.875rem;
+  font-size: 1.2rem;
+  font-weight: 900;
+  box-shadow: 4px 4px 0px #000;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.numberInput:focus {
+  outline: none;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+  border-color: #4ecdc4;
+}
+
+.selectInput {
+  width: 100%;
+  background: #fff;
+  border: 4px solid #000;
+  color: #2d3748;
+  padding: 0.875rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: inherit;
+  box-shadow: 4px 4px 0px #000;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.selectInput:focus {
+  outline: none;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+  border-color: #4ecdc4;
+}
+
+.selectInput:hover {
+  border-color: #4ecdc4;
+}
+
+.radioGroup,
+.checkboxGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.radioLabel,
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: #2d3748;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.75rem;
+  background: #f7fafc;
+  border: 3px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.radioLabel:hover,
+.checkboxLabel:hover {
+  background: #fff;
+  border-color: #4ecdc4;
+}
+
+.radioLabel input,
+.checkboxLabel input {
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  accent-color: #4ecdc4;
+}
+
+/* ========================================
+   STEP 4: REVIEW HEADER
+   ======================================== */
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.reviewSubtitle {
+  color: #718096;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.reviewActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.selectAllBtn {
+  background: #fff;
+  border: 3px solid #000;
+  color: #2d3748;
+  padding: 0.75rem 1.5rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #000;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.selectAllBtn:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+/* ========================================
+   BULK ACTIONS BAR
+   ======================================== */
+
+.bulkActionsBar {
+  background: #4ecdc4;
+  border: 4px solid #000;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 5px 5px 0px #000;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.bulkInfo {
+  font-weight: 900;
+  color: #fff;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+}
+
+.bulkControls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bulkTimeControl {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000;
+}
+
+.bulkTimeInput {
+  width: 70px;
+  border: 2px solid #000;
+  padding: 0.375rem;
+  font-weight: 900;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.bulkApplyBtn {
+  background: #4ecdc4;
+  border: 2px solid #000;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+.bulkApplyBtn:hover {
+  background: #38b2ac;
+}
+
+.bulkDeleteBtn {
+  background: #ff6b6b;
+  border: 3px solid #000;
+  color: #fff;
+  padding: 0.625rem 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 3px 3px 0px #000;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.bulkDeleteBtn:hover {
+  background: #e05555;
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+.bulkCancelBtn {
+  background: #fff;
+  border: 3px solid #000;
+  color: #2d3748;
+  padding: 0.625rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  box-shadow: 3px 3px 0px #000;
+}
+
+.bulkCancelBtn:hover {
+  background: #f0f0f0;
+}
+
+/* ========================================
+   QUESTIONS GRID (2 PER ROW) - FULL WIDTH
+   ======================================== */
+
+.questionsList {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 6rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+/* ========================================
+   QUESTION CARD
+   ======================================== */
+
+.questionCard {
+  background: #fff;
+  border: 4px solid #000;
+  padding: 1.25rem;
+  box-shadow: 5px 5px 0px #000;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.questionCard.selected {
+  border-color: #4ecdc4;
+  background: rgba(78, 205, 196, 0.05);
+}
+
+.questionCard.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid #e0e0e0;
+}
+
+.questionHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.questionHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.questionNumber {
+  background: #4ecdc4;
+  color: #fff;
+  padding: 0.375rem 0.75rem;
+  font-weight: 900;
+  border: 3px solid #000;
+  box-shadow: 2px 2px 0px #000;
+  font-size: 0.85rem;
+}
+
+.questionCheckbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #4ecdc4;
+}
+
+.dragHandle {
+  background: transparent;
+  border: none;
+  color: #999;
+  cursor: grab;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle:hover {
+  color: #4ecdc4;
+}
+
+.timeControl {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: #f7fafc;
+  padding: 0.375rem 0.625rem;
+  border: 2px solid #000;
+  font-size: 0.85rem;
+}
+
+.timeInput {
+  width: 50px;
+  border: 2px solid #000;
+  padding: 0.25rem;
+  font-weight: 900;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.deleteBtn {
+  background: #fff;
+  border: 3px solid #000;
+  color: #ff6b6b;
+  cursor: pointer;
+  padding: 0.375rem 0.5rem;
+  transition: all 0.15s ease;
+  box-shadow: 2px 2px 0px #000;
+  display: flex;
+  align-items: center;
+}
+
+.deleteBtn:hover {
+  background: #ff6b6b;
+  color: #fff;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #000;
+}
+
+/* ========================================
+   QUESTION CONTENT
+   ======================================== */
+
+.questionContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+}
+
+.questionTextarea {
+  width: 100%;
+  background: #f7fafc;
+  border: 3px solid #000;
+  color: #2d3748;
+  padding: 0.875rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: all 0.15s ease;
+}
+
+.questionTextarea:focus {
+  outline: none;
+  border-color: #4ecdc4;
+  background: #fff;
+}
+
+/* ========================================
+   ANSWERS SECTION
+   ======================================== */
+
+.answersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.sectionLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.answersList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.answerRow {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.625rem;
+  background: #f7fafc;
+  border: 2px solid #e0e0e0;
+  transition: all 0.15s ease;
+}
+
+.answerRow:hover {
+  border-color: #4ecdc4;
+  background: #fff;
+}
+
+.answerRow.correctAnswer {
+  background: rgba(78, 205, 196, 0.15);
+  border-color: #4ecdc4;
+  border-left-width: 4px;
+}
+
+.answerRadio {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #4ecdc4;
+  flex-shrink: 0;
+}
+
+.answerInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #2d3748;
+  padding: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: inherit;
+}
+
+.answerInput:focus {
+  outline: none;
+}
+
+.answerInput::placeholder {
+  color: #cbd5e0;
+}
+
+/* ========================================
+   EXPLANATION SECTION (READ-ONLY)
+   ======================================== */
+
+.explanationSection {
+  padding-top: 0.75rem;
+  border-top: 2px dashed #e0e0e0;
+}
+
+.explanationDisplay {
+  background: rgba(78, 205, 196, 0.08);
+  border: 2px solid #4ecdc4;
+  border-left: 4px solid #4ecdc4;
+  padding: 0.875rem;
+  color: #2d3748;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  border-radius: 4px;
+  font-style: italic;
+}
+
+.explanationDisplay:empty::before {
+  content: "No explanation provided";
+  color: #a0aec0;
+  font-style: italic;
+}
+
+.explanationNote {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #718096;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.explanationNote svg {
+  color: #4ecdc4;
+}
+
+/* ========================================
+   ADD QUESTION BOX
+   ======================================== */
+
+.addQuestionBox {
+  background: #fff;
+  border: 4px dashed #4ecdc4;
+  padding: 3rem 2rem;
+  box-shadow: 5px 5px 0px rgba(78, 205, 196, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #4ecdc4;
+  font-weight: 800;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: 200px;
+}
+
+.addQuestionBox:hover {
+  background: rgba(78, 205, 196, 0.05);
+  border-color: #38b2ac;
+  color: #38b2ac;
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px rgba(78, 205, 196, 0.3);
+}
+
+.addQuestionBox:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0px 0px 0px rgba(78, 205, 196, 0.3);
+}
+
+.addQuestionBox svg {
+  opacity: 0.7;
+}
+
+/* ========================================
+   ACTION BUTTONS
+   ======================================== */
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.btnPrimary,
+.btnSecondary {
+  padding: 1.125rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 4px solid #000;
+  transition: all 0.15s ease;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  box-shadow: 5px 5px 0px #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btnPrimary {
+  background: #4ecdc4;
+  color: #fff;
+  flex: 1;
+  justify-content: center;
+}
+
+.btnPrimary:hover:not(:disabled) {
+  background: #38b2ac;
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.btnPrimary:active:not(:disabled) {
+  transform: translate(5px, 5px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+.btnPrimary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #cbd5e0;
+}
+
+.btnSecondary {
+  background: #fff;
+  color: #2d3748;
+}
+
+.btnSecondary:hover {
+  transform: translate(3px, 3px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.btnSecondary:active {
+  transform: translate(5px, 5px);
+  box-shadow: 0px 0px 0px #000;
+}
+
+/* ========================================
+   STICKY FOOTER
+   ======================================== */
+
+.stickyFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 4px solid #000;
+  padding: 1.5rem 2rem;
+  z-index: 50;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stickyFooterContent {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* ========================================
+   MOBILE RESPONSIVE
+   ======================================== */
+
+@media (max-width: 968px) {
+  .content {
+    padding: 2rem 1rem;
+  }
+
+  .questionsList {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+  }
+
+  .configContainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .configRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .configCard {
+    padding: 1.5rem;
+  }
+
+  .reviewActions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .selectAllBtn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .inputMethods {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .methodBtn {
+    padding: 1.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .progressBar {
+    padding: 1.5rem 1rem;
+  }
+
+  .stepNumber {
+    width: 40px;
+    height: 40px;
+  }
+
+  .progressLine {
+    width: 40px;
+  }
+
+  .reviewHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bulkActionsBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bulkControls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .bulkTimeControl {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .bulkDeleteBtn,
+  .bulkCancelBtn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .radioGroup,
+  .checkboxGroup {
+    gap: 0.75rem;
+  }
+
+  .radioLabel,
+  .checkboxLabel {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .stickyFooter {
+    padding: 1rem;
+  }
+
+  .stickyFooterContent {
+    flex-direction: column;
+  }
+
+  .stickyFooterContent .btnPrimary,
+  .stickyFooterContent .btnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .inputMethods {
+    grid-template-columns: 1fr;
+  }
+
+  .radioGroup,
+  .checkboxGroup {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

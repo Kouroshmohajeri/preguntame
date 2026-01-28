@@ -434,6 +434,167 @@ class EmailTemplateBuilder {
       },
     });
   }
+  betaAccessRequestEmail(name: string, trustpilotUrl: string): string {
+    return this.buildTemplate({
+      recipientName: name,
+      preheaderText: "🚀 One step away from getting 500 free AI credits!",
+      bodyContent: `
+      <h2 style="color: #9d4edd; font-size: 28px; margin-bottom: 20px; font-weight: 900;">
+        🎉 Welcome to Pregúntame Wizard Beta!
+      </h2>
+      
+      <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+        Thank you for your interest in our <strong>AI-powered quiz generator</strong>! You're just one step away from getting:
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(123, 44, 191, 0.1) 100%); border: 3px solid #9d4edd; border-left: 6px solid #9d4edd; padding: 24px; margin: 25px 0; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);">
+        <p style="margin: 0 0 15px 0; color: #0f172a; font-weight: 700; font-size: 18px;">
+          🎁 <strong>What You'll Get:</strong>
+        </p>
+        <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 16px; line-height: 2;">
+          <li><strong>500 Free AI Credits</strong> for Pregúntame Wizard</li>
+          <li><strong>Full Beta Access</strong> to AI quiz generation</li>
+          <li><strong>OG Status</strong> for future early access features</li>
+          <li><strong>Exclusive Discounts</strong> when we launch premium plans</li>
+        </ul>
+      </div>
+
+      <h3 style="color: #0f172a; font-size: 20px; margin: 30px 0 15px 0; font-weight: 800;">
+        📝 How to Activate Your Beta Access:
+      </h3>
+      
+      <ol style="font-size: 16px; line-height: 2; color: #334155; margin: 15px 0 25px 20px; font-weight: 600;">
+        <li>Click the button below to visit our Trustpilot page</li>
+        <li>Leave an honest review about your Pregúntame experience</li>
+        <li>Your beta access will be activated within <strong>2 hours</strong></li>
+        <li>Check your email for confirmation and instructions</li>
+      </ol>
+
+      <div style="text-align: center; margin: 35px 0;">
+        <a href="${trustpilotUrl}" 
+           style="display: inline-block; padding: 18px 40px; background: linear-gradient(135deg, #00b67a 0%, #00a868 100%); color: white; text-decoration: none; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; border: 3px solid #000; box-shadow: 5px 5px 0 #000; transition: all 0.2s;">
+          ⭐ Leave Your Review on Trustpilot
+        </a>
+      </div>
+
+      <p style="font-size: 14px; line-height: 1.7; color: #64748b; margin-top: 30px; padding: 20px; background: #f8fafc; border-left: 4px solid #4ECDC4;">
+        💡 <strong>Tip:</strong> Your honest feedback helps us improve Pregúntame and helps other educators discover our platform. We truly appreciate your support!
+      </p>
+
+      <p style="font-size: 16px; line-height: 1.7; color: #334155; margin-top: 25px;">
+        Once your review is submitted, our team will verify it and grant you access. You'll receive a confirmation email with your AI credits activated.
+      </p>
+
+      <p style="font-size: 16px; line-height: 1.7; color: #334155; margin-top: 20px;">
+        Thank you for being an early supporter! 🚀
+      </p>
+    `,
+    });
+  }
+
+  // Admin notification when user requests beta access
+  adminBetaAccessNotification(
+    userEmail: string,
+    userName: string,
+    requestTime: string,
+  ): string {
+    return this.buildTemplate({
+      recipientName: "Admin",
+      preheaderText: `New Beta Access Request from ${userName}`,
+      bodyContent: `
+      <h2 style="color: #9d4edd; font-size: 28px; margin-bottom: 20px; font-weight: 900;">
+        🔔 New Beta Access Request
+      </h2>
+      
+      <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+        A user has requested beta access for <strong>Pregúntame Wizard (AI)</strong>.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(157, 78, 221, 0.1) 0%, rgba(123, 44, 191, 0.1) 100%); border: 3px solid #9d4edd; border-left: 6px solid #9d4edd; padding: 24px; margin: 25px 0; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);">
+        <p style="margin: 0 0 15px 0; color: #0f172a; font-weight: 700; font-size: 18px;">
+          📋 <strong>Request Details:</strong>
+        </p>
+        <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 16px; line-height: 2; list-style: none;">
+          <li><strong>👤 User Name:</strong> ${userName}</li>
+          <li><strong>📧 Email:</strong> ${userEmail}</li>
+          <li><strong>🕐 Request Time:</strong> ${requestTime}</li>
+          <li><strong>⏰ Deadline:</strong> Approve within 2 hours</li>
+        </ul>
+      </div>
+
+      <h3 style="color: #0f172a; font-size: 20px; margin: 30px 0 15px 0; font-weight: 800;">
+        ⚡ Next Steps:
+      </h3>
+      
+      <ol style="font-size: 16px; line-height: 2; color: #334155; margin: 15px 0 25px 20px; font-weight: 600;">
+        <li>Wait for user to submit their Trustpilot review</li>
+        <li>Verify the review on Trustpilot</li>
+        <li>Approve beta access within 2 hours</li>
+        <li>User will automatically receive 500 AI credits</li>
+      </ol>
+
+      <div style="background: #fff9e6; border-left: 4px solid #ffd166; padding: 16px 20px; margin: 25px 0; border-radius: 4px;">
+        <p style="margin: 0; color: #666; font-size: 14px; line-height: 1.7;">
+          💡 <strong>Quick Tip:</strong> You can approve this request by calling the API endpoint or checking your admin dashboard.
+        </p>
+      </div>
+
+      <p style="font-size: 16px; line-height: 1.7; color: #334155; margin-top: 25px;">
+        The user has been sent an email with instructions to leave a review on Trustpilot.
+      </p>
+    `,
+    });
+  }
+
+  // Admin reminder email (sent after 2 hours)
+  adminBetaAccessReminder(
+    userEmail: string,
+    userName: string,
+    requestTime: string,
+  ): string {
+    return this.buildTemplate({
+      recipientName: "Admin",
+      preheaderText: `⏰ Reminder: Beta Access Request from ${userName}`,
+      bodyContent: `
+      <h2 style="color: #ff6b6b; font-size: 28px; margin-bottom: 20px; font-weight: 900;">
+        ⏰ REMINDER: Beta Access Request Pending
+      </h2>
+      
+      <p style="font-size: 16px; line-height: 1.7; color: #334155;">
+        This is a reminder that a beta access request is still pending approval.
+      </p>
+
+      <div style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 82, 82, 0.1) 100%); border: 3px solid #ff6b6b; border-left: 6px solid #ff6b6b; padding: 24px; margin: 25px 0; box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);">
+        <p style="margin: 0 0 15px 0; color: #0f172a; font-weight: 700; font-size: 18px;">
+          ⚠️ <strong>Pending Request:</strong>
+        </p>
+        <ul style="margin: 0; padding-left: 20px; color: #334155; font-size: 16px; line-height: 2; list-style: none;">
+          <li><strong>👤 User Name:</strong> ${userName}</li>
+          <li><strong>📧 Email:</strong> ${userEmail}</li>
+          <li><strong>🕐 Request Time:</strong> ${requestTime}</li>
+          <li><strong>⏰ Time Elapsed:</strong> 2 hours</li>
+        </ul>
+      </div>
+
+      <div style="text-align: center; margin: 35px 0;">
+        <a href="https://preguntame.eu/admin/beta-requests" 
+           style="display: inline-block; padding: 18px 40px; background: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%); color: white; text-decoration: none; font-weight: 900; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; border: 3px solid #000; box-shadow: 5px 5px 0 #000; transition: all 0.2s;">
+          🔍 Review Beta Requests
+        </a>
+      </div>
+
+      <p style="font-size: 16px; line-height: 1.7; color: #334155; margin-top: 25px;">
+        Please verify the user's Trustpilot review and approve their beta access as soon as possible.
+      </p>
+
+      <div style="background: #ffe6e6; border-left: 4px solid #ff6b6b; padding: 16px 20px; margin: 25px 0; border-radius: 4px;">
+        <p style="margin: 0; color: #cc0000; font-size: 14px; line-height: 1.7; font-weight: 600;">
+          ⚠️ <strong>Action Required:</strong> User is expecting approval within 2 hours of their review submission.
+        </p>
+      </div>
+    `,
+    });
+  }
 
   leaderboardUpdateEmail(name: string, position: number): string {
     return this.buildTemplate({

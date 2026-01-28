@@ -1,0 +1,336 @@
+.notificationCard {
+  background: #fff;
+  border: 3px solid #000;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+:global(.dark) .notificationCard {
+  background: #1a202c;
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0 #0d1117;
+}
+
+.notificationCard:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .notificationCard:hover {
+  box-shadow: 2px 2px 0 #0d1117;
+}
+
+.notificationCard.unread {
+  background: #f8f9ff;
+  border-left: 6px solid #4ecdc4;
+  animation: pulseUnread 2s infinite;
+}
+
+:global(.dark) .notificationCard.unread {
+  background: #2d3748;
+  border-left: 6px solid #4ecdc4;
+}
+
+@keyframes pulseUnread {
+  0% { border-left-color: #4ecdc4; }
+  50% { border-left-color: #38c2b7; }
+  100% { border-left-color: #4ecdc4; }
+}
+
+.notificationIcon {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .notificationIcon {
+  background: #2d3748;
+  border: 2px solid #4a5568;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.notificationContent {
+  flex: 1;
+}
+
+.notificationHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.notificationTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+}
+
+:global(.dark) .notificationTitle {
+  color: #f7fafc;
+}
+
+.notificationTime {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 600;
+  background: #f0f0f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+:global(.dark) .notificationTime {
+  color: #a0aec0;
+  background: #4a5568;
+  border: 1px solid #718096;
+}
+
+.notificationMessage {
+  color: #333;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.4;
+}
+
+:global(.dark) .notificationMessage {
+  color: #cbd5e0;
+}
+
+.notificationType {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.typeBadge {
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: white;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #000;
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .typeBadge {
+  border: 1px solid #4a5568;
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.gameCodeBadge {
+  background: #000;
+  color: #fff;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 12px;
+  border: 1px solid #000;
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .gameCodeBadge {
+  background: #4a5568;
+  color: #f7fafc;
+  border: 1px solid #718096;
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.invitationStatus {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: #e6f7f5;
+  border: 2px solid #4ecdc4;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .invitationStatus {
+  background: #234e52;
+  border: 2px solid #4ecdc4;
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.acceptedStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0f7a9c;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+:global(.dark) .acceptedStatus {
+  color: #4ecdc4;
+}
+
+.gameInvitationActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.acceptButton,
+.declineButton {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+}
+
+:global(.dark) .acceptButton,
+:global(.dark) .declineButton {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.acceptButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.acceptButton:hover {
+  background: #38c2b7;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .acceptButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.declineButton {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.declineButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .declineButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.notificationActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.markReadButton,
+.deleteNotificationButton {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #000;
+  transition: all 0.2s ease;
+}
+
+:global(.dark) .markReadButton,
+:global(.dark) .deleteNotificationButton {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+.markReadButton {
+  background: #4ecdc4;
+  color: #000;
+}
+
+.markReadButton:hover {
+  background: #38c2b7;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .markReadButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+.deleteNotificationButton {
+  background: #ff6b6b;
+  color: #fff;
+}
+
+.deleteNotificationButton:hover {
+  background: #ff5252;
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+:global(.dark) .deleteNotificationButton:hover {
+  box-shadow: 1px 1px 0 #1a202c;
+}
+
+@media (max-width: 768px) {
+  .notificationCard {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  .notificationHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .notificationActions {
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+
+  .notificationIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .notificationTitle {
+    font-size: 1rem;
+  }
+
+  .gameInvitationActions {
+    flex-direction: column;
+  }
+
+  .acceptButton,
+  .declineButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

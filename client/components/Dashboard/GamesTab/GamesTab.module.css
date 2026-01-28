@@ -1,0 +1,114 @@
+.gamesSection {
+  padding: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 3px solid #000;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+:global(.dark) .sectionHeader {
+  border-bottom: 3px solid #4a5568;
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #000;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+:global(.dark) .sectionTitle {
+  color: #f7fafc;
+}
+
+.gamesList {
+  padding: 1.5rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  color: #ddd;
+}
+
+:global(.dark) .emptyIcon {
+  color: #4a5568;
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+:global(.dark) .emptyTitle {
+  color: #f7fafc;
+}
+
+.emptyText {
+  color: #666;
+  margin-bottom: 2rem;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:global(.dark) .emptyText {
+  color: #a0aec0;
+}
+
+.emptyButton {
+  background: #000;
+  border: 3px solid #000;
+  color: #fff;
+  padding: 1rem 2rem;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+:global(.dark) .emptyButton {
+  background: #4a5568;
+  border: 3px solid #4a5568;
+  box-shadow: 4px 4px 0 #1a202c;
+}
+
+.emptyButton:hover {
+  background: #4ecdc4;
+  border-color: #4ecdc4;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+:global(.dark) .emptyButton:hover {
+  box-shadow: 2px 2px 0 #1a202c;
+}
+
+@media (max-width: 768px) {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .gamesList {
+    padding: 1rem;
+  }
+}

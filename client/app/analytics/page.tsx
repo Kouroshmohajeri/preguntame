@@ -9,6 +9,7 @@ import UserModal from "./components/UserModal/UserModal";
 import GamesCreatedModal from "./components/GamesCreatedModal/GamesCreatedModal";
 import GameResultsModal from "./components/GameResultsModal/GameResultsModal";
 import EmailCommunications from "./components/EmailCommunications/EmailCommunications";
+import BetaAccessRequests from "./components/BetaAccessRequests/BetaAccessRequests"; // NEW IMPORT
 
 export default function AnalyticsPage() {
   const {
@@ -37,6 +38,7 @@ export default function AnalyticsPage() {
   const [showGameModal, setShowGameModal] = React.useState(false);
   const [showGamesCreatedModal, setShowGamesCreatedModal] = React.useState(false);
   const [showEmailModal, setShowEmailModal] = React.useState(false);
+  const [showBetaAccessModal, setShowBetaAccessModal] = React.useState(false);
 
   const handleUsersClick = async () => {
     setShowUserModal(true);
@@ -55,6 +57,10 @@ export default function AnalyticsPage() {
 
   const handleEmailClick = () => {
     setShowEmailModal(true);
+  };
+
+  const handleBetaAccessClick = () => {
+    setShowBetaAccessModal(true);
   };
 
   if (!isAuthenticated) {
@@ -78,6 +84,7 @@ export default function AnalyticsPage() {
         onGamesCreatedClick={handleGamesCreatedClick}
         onGamesClick={handleGamesClick}
         onEmailClick={handleEmailClick}
+        onBetaAccessClick={handleBetaAccessClick}
         onRefresh={refreshData}
       />
 
@@ -105,6 +112,11 @@ export default function AnalyticsPage() {
       />
 
       <EmailCommunications show={showEmailModal} onClose={() => setShowEmailModal(false)} />
+
+      <BetaAccessRequests
+        show={showBetaAccessModal}
+        onClose={() => setShowBetaAccessModal(false)}
+      />
     </>
   );
 }

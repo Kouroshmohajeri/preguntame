@@ -18,6 +18,15 @@ export const getUser = async (email: string) => {
   return response.data;
 };
 
+// Update user settings (email notifications, etc.)
+export const updateUserSettings = async (
+  userId: string,
+  settings: { emailNotifications: boolean }
+) => {
+  const response = await API.put(`/users/${userId}/settings`, settings);
+  return response.data;
+};
+
 // Search users by query (autocomplete)
 export const searchUsers = async (query: string, excludeEmail: string) => {
   const response = await API.get(

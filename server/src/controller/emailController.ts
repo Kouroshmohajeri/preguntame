@@ -16,6 +16,8 @@ import {
 } from "../services/microsoftGraphService.js";
 import { enhancedEmailService } from "../services/enhancedEmailService.js";
 
+// ============= EMAIL TEMPLATES =============
+
 export const createTemplate = async (req: Request, res: Response) => {
   try {
     const {
@@ -75,6 +77,8 @@ export const deleteTemplate = async (req: Request, res: Response) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// ============= EMAIL CAMPAIGNS =============
 
 export const createCampaign = async (req: Request, res: Response) => {
   try {
@@ -183,6 +187,8 @@ export const getCampaignStats = async (req: Request, res: Response) => {
   }
 };
 
+// ============= EMAIL BLACKLIST =============
+
 export const getBlacklist = async (req: Request, res: Response) => {
   try {
     const blacklist = await EmailBlacklist.find().sort({ addedAt: -1 });
@@ -217,6 +223,8 @@ export const removeFromBlacklist = async (req: Request, res: Response) => {
   }
 };
 
+// ============= EMAIL TRACKING =============
+
 export const trackOpen = async (req: Request, res: Response) => {
   try {
     const { trackingId } = req.params;
@@ -250,6 +258,8 @@ export const trackClick = async (req: Request, res: Response) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// ============= EMAIL LOGS & OVERVIEW =============
 
 export const getEmailLogs = async (req: Request, res: Response) => {
   try {
@@ -429,6 +439,7 @@ export const getDraftEmailsIMAP = async (req: Request, res: Response) => {
       .json({ error: error.message || "Failed to fetch draft emails" });
   }
 };
+
 // Get sent emails from EmailLog (our database)
 export const getSentEmailsFromLogs = async (req: Request, res: Response) => {
   try {
@@ -470,7 +481,7 @@ export const getSentEmailsFromLogs = async (req: Request, res: Response) => {
       },
       isRead: true,
       status: log.status,
-      trackingId: log.metadata.trackingId,
+      trackingId: log.metadata?.trackingId,
     }));
 
     res.json(emails);

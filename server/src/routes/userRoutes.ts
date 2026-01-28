@@ -11,11 +11,12 @@ router.get("/credentials/:email", UserController.getUser);
 router.delete("/:email", UserController.deleteUser);
 router.put(
   "/:userId/increment-game-cloned",
-  UserController.incrementGameGotCloned
+  UserController.incrementGameGotCloned,
 );
 router.put(
   "/:userId/decrement-games-created",
-  UserController.decrementGamesCreated
+  UserController.decrementGamesCreated,
 );
+router.put("/:userId/settings", UserController.updateSettings);
 
 export default router;

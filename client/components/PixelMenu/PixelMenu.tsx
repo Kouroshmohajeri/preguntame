@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import styles from "./PixelMenu.module.css";
@@ -17,6 +17,9 @@ import {
   Info,
   EnvelopeSimple,
   Article,
+  CaretDown,
+  PencilLine,
+  Sparkle,
 } from "@phosphor-icons/react";
 import GameCodeModal from "../JoinRoom/GameCodeModal";
 import PixelLogo from "../PixelLogo/PixelLogo";
@@ -33,7 +36,8 @@ interface PixelMenuProps {
     | "auth"
     | "about"
     | "contact"
-    | "blog";
+    | "blog"
+    | "wizard";
   alwaysHamburger?: boolean;
 }
 
@@ -43,10 +47,11 @@ interface MenuItem {
   icon: React.ComponentType<any>;
   path?: string;
   action?: () => void;
-  showAlways: boolean;
+  showAlways?: boolean;
   isLogout?: boolean;
   isModal?: boolean;
   modalType?: "join" | "leaderboard";
+  hasSubmenu?: boolean;
 }
 
 const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHamburger = true }) => {
@@ -54,6 +59,10 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
   const [isAnimating, setIsAnimating] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showLeaderboardModal, setShowLeaderboardModal] = useState(false);
+  const [showCreateSubmenu, setShowCreateSubmenu] = useState(false);
+  const [showDesktopCreateSubmenu, setShowDesktopCreateSubmenu] = useState(false);
+  const desktopDropdownRef = useRef<HTMLDivElement>(null);
+
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -69,7 +78,24 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        desktopDropdownRef.current &&
+        !desktopDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDesktopCreateSubmenu(false);
+      }
+    };
 
+    if (showDesktopCreateSubmenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDesktopCreateSubmenu]);
   const handleMenuToggle = () => {
     if (!isOpen) {
       setIsOpen(true);
@@ -81,7 +107,13 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
   };
 
   const handleMenuItemClick = (item: MenuItem) => {
-    // Close hamburger menu if open
+    // If has submenu, just toggle it - DON'T close menu
+    if (item.hasSubmenu) {
+      setShowCreateSubmenu(!showCreateSubmenu);
+      return; // Stop here, don't close menu
+    }
+
+    // For other items, close menu after delay
     if (isOpen) {
       setIsAnimating(false);
       setTimeout(() => {
@@ -91,6 +123,14 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
     } else {
       executeAction(item);
     }
+  };
+
+  const handleDesktopMenuItemClick = (item: MenuItem) => {
+    if (item.hasSubmenu) {
+      setShowDesktopCreateSubmenu(!showDesktopCreateSubmenu);
+      return;
+    }
+    executeAction(item);
   };
 
   const executeAction = (item: MenuItem) => {
@@ -133,7 +173,7 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
       id: 3,
       label: "Create Game",
       icon: PlusCircle,
-      path: "/create",
+      hasSubmenu: true,
       showAlways: true,
     },
     {
@@ -174,6 +214,23 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
     },
   ];
 
+  const createSubmenuItems = [
+    {
+      id: 301,
+      label: "Manual Creator",
+      description: "Build questions step-by-step",
+      path: "/create",
+      icon: PencilLine,
+    },
+    {
+      id: 302,
+      label: "AI Wizard",
+      description: "Generate with AI instantly",
+      path: "/create/wizard",
+      icon: Sparkle,
+    },
+  ];
+
   // Add logout item if session exists
   if (session) {
     menuItems.push({
@@ -196,7 +253,9 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
       (currentPage === "dashboard" && item.path === "/dashboard") ||
       (currentPage === "about" && item.path === "/what-is-preguntame") ||
       (currentPage === "contact" && item.path === "/contact-us") ||
-      (currentPage === "blog" && item.path === "/blog")
+      (currentPage === "blog" && item.path === "/blog") ||
+      (currentPage === "create" && item.path === "/create") ||
+      (currentPage === "wizard" && item.path === "/create/wizard")
     );
   };
 
@@ -234,23 +293,80 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
                     item.id !== 5 && // Remove Dashboard/Login
                     item.id !== 99 // Remove Logout
                 )
-                .map((item) => (
-                  <button
-                    key={item.id}
-                    className={`${styles.desktopMenuItem} ${isItemActive(item) ? styles.desktopActive : ""}`}
-                    onClick={() => handleMenuItemClick(item)}
-                  >
-                    <item.icon size={18} weight="fill" className={styles.desktopMenuIcon} />
-                    <span>{item.label}</span>
-                  </button>
-                ))}
+                .map((item) =>
+                  item.hasSubmenu ? (
+                    <div
+                      key={item.id}
+                      className={styles.desktopSubmenuWrapper}
+                      ref={desktopDropdownRef}
+                    >
+                      <button
+                        className={`${styles.desktopMenuItem} ${
+                          currentPage === "create" || currentPage === "wizard"
+                            ? styles.desktopActive
+                            : ""
+                        }`}
+                        onClick={() => handleDesktopMenuItemClick(item)}
+                      >
+                        <item.icon size={18} weight="fill" className={styles.desktopMenuIcon} />
+                        <span>{item.label}</span>
+                        <CaretDown
+                          size={14}
+                          weight="bold"
+                          className={`${styles.desktopSubmenuCaret} ${
+                            showDesktopCreateSubmenu ? styles.caretOpen : ""
+                          }`}
+                        />
+                      </button>
+
+                      {/* Desktop Dropdown */}
+                      {showDesktopCreateSubmenu && (
+                        <div className={styles.desktopDropdown}>
+                          {createSubmenuItems.map((subItem) => (
+                            <button
+                              key={subItem.id}
+                              className={`${styles.desktopDropdownItem} ${
+                                isItemActive(subItem) ? styles.desktopDropdownActive : ""
+                              }`}
+                              onClick={() => {
+                                router.push(subItem.path);
+                                setShowDesktopCreateSubmenu(false);
+                              }}
+                            >
+                              <subItem.icon size={16} weight="fill" />
+                              <div>
+                                <div className={styles.desktopDropdownLabel}>{subItem.label}</div>
+                                <div className={styles.desktopDropdownDesc}>
+                                  {subItem.description}
+                                </div>
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      key={item.id}
+                      className={`${styles.desktopMenuItem} ${
+                        isItemActive(item) ? styles.desktopActive : ""
+                      }`}
+                      onClick={() => handleDesktopMenuItemClick(item)}
+                    >
+                      <item.icon size={18} weight="fill" className={styles.desktopMenuIcon} />
+                      <span>{item.label}</span>
+                    </button>
+                  )
+                )}
 
               {/* User Section - Right Side */}
               <div className={styles.desktopUserSection}>
                 {session ? (
                   <>
                     <button
-                      className={`${styles.desktopUserItem} ${currentPage === "dashboard" ? styles.desktopActive : ""}`}
+                      className={`${styles.desktopUserItem} ${
+                        currentPage === "dashboard" ? styles.desktopActive : ""
+                      }`}
                       onClick={() => router.push("/dashboard")}
                       title={session.user?.name || session.user?.email || "Dashboard"}
                     >
@@ -267,7 +383,9 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
                   </>
                 ) : (
                   <button
-                    className={`${styles.desktopUserItem} ${currentPage === "auth" ? styles.desktopActive : ""}`}
+                    className={`${styles.desktopUserItem} ${
+                      currentPage === "auth" ? styles.desktopActive : ""
+                    }`}
                     onClick={() => router.push("/auth")}
                   >
                     <SignIn size={18} weight="fill" className={styles.desktopMenuIcon} />
@@ -282,7 +400,9 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
 
       {/* Hamburger Menu (always on mobile/tablet, optional on desktop) */}
       <div
-        className={`${styles.pixelMenuContainer} ${alwaysHamburger ? styles.alwaysHamburger : styles.hamburgerOnly}`}
+        className={`${styles.pixelMenuContainer} ${
+          alwaysHamburger ? styles.alwaysHamburger : styles.hamburgerOnly
+        }`}
       >
         {/* Hamburger Button */}
         <div className={styles.hamburger}>
@@ -326,7 +446,9 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
           >
             {/* Menu Content */}
             <div
-              className={`${styles.menuContent} ${isAnimating ? styles.contentAnimating : styles.contentClosing}`}
+              className={`${styles.menuContent} ${
+                isAnimating ? styles.contentAnimating : styles.contentClosing
+              }`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Pixel Grid Animation */}
@@ -360,22 +482,72 @@ const PixelMenu: React.FC<PixelMenuProps> = ({ currentPage = "home", alwaysHambu
               <div className={styles.menuItemsWrapper}>
                 <div className={styles.menuItems}>
                   {menuItems.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className={`${styles.menuItem} ${isItemActive(item) ? styles.active : ""} ${item.isLogout ? styles.logout : ""}`}
-                      style={{
-                        animationDelay: `${0.3 + index * 0.05}s`,
-                      }}
-                      onClick={() => handleMenuItemClick(item)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyPress={(e) => e.key === "Enter" && handleMenuItemClick(item)}
-                    >
-                      <div className={styles.menuItemInner}>
-                        <item.icon size={24} weight="fill" className={styles.menuItemIcon} />
-                        <span className={styles.menuItemText}>{item.label}</span>
+                    <React.Fragment key={item.id}>
+                      <div
+                        className={`${styles.menuItem} ${
+                          isItemActive(item) ||
+                          (item.hasSubmenu &&
+                            (currentPage === "create" || currentPage === "wizard"))
+                            ? styles.active
+                            : ""
+                        } ${item.isLogout ? styles.logout : ""}`}
+                        style={{
+                          animationDelay: `${0.3 + index * 0.05}s`,
+                        }}
+                        onClick={() => handleMenuItemClick(item)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyPress={(e) => e.key === "Enter" && handleMenuItemClick(item)}
+                      >
+                        <div className={styles.menuItemInner}>
+                          <item.icon size={24} weight="fill" className={styles.menuItemIcon} />
+                          <span className={styles.menuItemText}>{item.label}</span>
+                          {item.hasSubmenu && (
+                            <CaretDown
+                              size={16}
+                              weight="bold"
+                              className={`${styles.submenuCaret} ${
+                                showCreateSubmenu ? styles.caretOpen : ""
+                              }`}
+                            />
+                          )}
+                        </div>
                       </div>
-                    </div>
+
+                      {/* Submenu */}
+                      {item.hasSubmenu && showCreateSubmenu && (
+                        <div className={styles.submenuContainer}>
+                          {createSubmenuItems.map((subItem) => (
+                            <div
+                              key={subItem.id}
+                              className={`${styles.submenuItem} ${
+                                isItemActive(subItem) ? styles.active : ""
+                              }`}
+                              onClick={() => {
+                                router.push(subItem.path);
+                                setShowCreateSubmenu(false);
+                                setIsAnimating(false);
+                                setTimeout(() => setIsOpen(false), 150);
+                              }}
+                            >
+                              <div className={styles.submenuItemInner}>
+                                <subItem.icon
+                                  size={16}
+                                  weight="fill"
+                                  className={styles.submenuIcon}
+                                />
+                                <div className={styles.submenuContent}>
+                                  <div className={styles.submenuLabel}>{subItem.label}</div>
+                                  <div className={styles.submenuDescription}>
+                                    {subItem.description}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </React.Fragment>
                   ))}
                 </div>
               </div>

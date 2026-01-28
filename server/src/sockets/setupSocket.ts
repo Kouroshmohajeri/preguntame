@@ -4,14 +4,17 @@ import { registerGameSocket } from "./gameSocket.js";
 import { registerNotificationSocket } from "./notificationSocket.js";
 
 export function setupSocket(server: any) {
-  const io = new Server(server, { cors: { origin: "*" } });
+  const io = new Server(server, {
+    cors: { origin: "*" },
+    pingTimeout: 60000,
+    pingInterval: 25000,
+    maxHttpBufferSize: 1e6, // 1MB
+    transports: ["websocket", "polling"],
+  });
 
   io.on("connection", (socket) => {
-    // Handles general room joins, ready toggles, etc.
     registerRoomHandlers(io, socket);
-    // Handles host/guest sync, Redis persistence, etc.
     registerGameSocket(io, socket);
-    // Handle notifications
     registerNotificationSocket(io, socket);
   });
 

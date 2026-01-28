@@ -21,12 +21,12 @@ interface Player {
 
 const avatarStyles = [
   "adventurer",
-  "adventurer-neutral",
+  "thumbs",
   "big-ears",
-  "big-ears-neutral",
-  "bottts",
-  "pixel-art",
-  "shapes",
+  "croodles",
+  "micah",
+  "personas",
+  "miniavs",
   "lorelei",
 ];
 
@@ -63,6 +63,13 @@ export default function StylingRoom() {
 
   const hasJoinedRef = useRef(false);
 
+  const generateAvatarUrl = (name: string, style: string, color: string) => {
+    const safeName = name?.trim() || "guest";
+    const safeStyle = style || "pixel-art";
+    const safeColor = (color || "4ecdc4").replace("#", "");
+    return `https://api.dicebear.com/7.x/${safeStyle}/svg?seed=${safeName}&backgroundColor=${safeColor}`;
+  };
+
   const joinSound = typeof window !== "undefined" ? new Audio("/sounds/joinroom.mp3") : null;
 
   let playerUUID: string;
@@ -77,9 +84,7 @@ export default function StylingRoom() {
 
   const [checkingHostStatus, setCheckingHostStatus] = useState(true);
 
-  const avatarUrl = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${
-    playerName || "guest"
-  }&backgroundColor=${selectedColor.replace("#", "")}`;
+  const avatarUrl = generateAvatarUrl(playerName, selectedStyle, selectedColor);
 
   const getDefaultHostAvatar = () => {
     return `https://api.dicebear.com/7.x/pixel-art/svg?seed=host&backgroundColor=4ecdc4`;
@@ -152,12 +157,7 @@ export default function StylingRoom() {
     };
 
     const handleGameStarted = ({ started }: { started: boolean }) => {
-      // if (started) {
-      //   // Small delay to ensure everything is synced
-      //   setTimeout(() => {
-      //     router.push(`/play/guest/${gameCode}`);
-      //   }, 500);
-      // }
+      // Logic handled in Page.tsx (GuestPlayroom switch)
     };
 
     const autoJoinIfPossible = async () => {
@@ -188,22 +188,36 @@ export default function StylingRoom() {
           if (hostIdShort === userShort) {
             isHost = true;
             hostIdToSend = session.user.id;
-            router.push(`/play/host/${gameCode}`);
-            return;
           }
         } catch (err) {
           // Failed to check host
         }
       }
 
-      const avatar = `https://api.dicebear.com/7.x/${playerData.style || selectedStyle}/svg?seed=${
-        playerData.name
-      }&backgroundColor=${(playerData.color || selectedColor).replace("#", "")}`;
+      const avatarToSend =
+        playerData.avatar ||
+        generateAvatarUrl(
+          playerData.name,
+          playerData.style || "pixel-art",
+          playerData.color || colors[0]
+        );
 
+      // ✅ CRITICAL FIX: Wait for joinConfirmed before redirecting host
+      if (isHost && hostIdToSend) {
+        const handleJoinConfirmed = () => {
+          socket.off("joinConfirmed", handleJoinConfirmed);
+          console.log("✅ Host join confirmed, redirecting...");
+          router.push(`/play/host/${gameCode}`);
+        };
+
+        socket.once("joinConfirmed", handleJoinConfirmed);
+      }
+
+      // Emit joinGame
       socket.emit("joinGame", {
         gameCode,
         playerName: playerData.name,
-        avatar,
+        avatar: avatarToSend,
         playerUUID,
         isHost,
         hostId: hostIdToSend,
@@ -235,7 +249,7 @@ export default function StylingRoom() {
       socket.off("gameStarted", handleGameStarted);
       socket.off("connect", autoJoinIfPossible);
     };
-  }, [socket, gameCode, playerUUID, session]);
+  }, [socket, gameCode, playerUUID, session, router]);
 
   const handleJoinGame = () => {
     if (!playerName.trim() || !socket) {
@@ -247,14 +261,12 @@ export default function StylingRoom() {
       return;
     }
 
-    const avatar = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${playerName}&backgroundColor=${selectedColor.replace(
-      "#",
-      ""
-    )}`;
-
+    const avatarToSend = generateAvatarUrl(playerName, selectedStyle, selectedColor);
+    console.log("🎨 User avatar data:", { playerName, selectedStyle, selectedColor, avatarToSend });
+    console.log("avatar to send:", avatarToSend);
     const playerInfo = {
       name: playerName,
-      avatar,
+      avatar: avatarToSend,
       style: selectedStyle,
       color: selectedColor,
     };
@@ -264,7 +276,7 @@ export default function StylingRoom() {
     socket.emit("joinGame", {
       gameCode,
       playerName: playerName.trim(),
-      avatar,
+      avatar: avatarToSend,
       playerUUID,
     });
 
@@ -277,10 +289,7 @@ export default function StylingRoom() {
   const handleUpdateAvatar = () => {
     if (!socket || !joined) return;
 
-    const newAvatar = `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${playerName}&backgroundColor=${selectedColor.replace(
-      "#",
-      ""
-    )}`;
+    const newAvatar = generateAvatarUrl(playerName, selectedStyle, selectedColor);
 
     const playerInfo = {
       name: playerName,
@@ -294,6 +303,7 @@ export default function StylingRoom() {
     socket.emit("updateAvatar", {
       gameCode,
       avatar: newAvatar,
+      playerName: playerName.trim(),
       playerUUID,
     });
   };
@@ -412,7 +422,6 @@ export default function StylingRoom() {
               placeholder="ENTER YOUR NAME"
               className={styles.nameInput}
               maxLength={12}
-              disabled={joined}
             />
           </div>
 
@@ -477,7 +486,7 @@ export default function StylingRoom() {
                 className={`${styles.playerCard} ${player.isHost ? styles.playerHost : ""}`}
               >
                 <div className={styles.playerAvatar}>
-                  <img src={player.avatar} alt={player.name} />
+                  {player.avatar ? <img src={player.avatar} alt={player.name} /> : null}
                 </div>
                 <div className={styles.playerInfo}>
                   <div className={styles.playerName}>

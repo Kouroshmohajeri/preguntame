@@ -152,13 +152,15 @@ export const sendSingleEmail = async (emailData: {
   const response = await API.post("/email/send-single", emailData);
   return response.data;
 };
+
 // Get email statistics
 export const getEmailStats = async (campaignId?: string) => {
   const url = campaignId ? `/email/stats?campaignId=${campaignId}` : "/email/stats";
   const response = await API.get(url);
   return response.data;
 };
-// ============= MICROSOFT 365 ACTIONS (if you need them) =============
+
+// ============= MICROSOFT 365 ACTIONS =============
 
 // Get sent emails from Microsoft 365 (Graph API)
 export const getSentEmailsMicrosoft = async (limit: number = 50) => {

@@ -8,6 +8,7 @@ import {
   CalendarCheck,
   Globe,
   EnvelopeSimple,
+  Robot,
 } from "@phosphor-icons/react";
 import { AnalyticsData, VercelAnalytics } from "../../types/analytics.types";
 import RefreshButton from "../RefreshButton/RefreshButton";
@@ -20,6 +21,7 @@ interface DashboardStatsProps {
   onGamesCreatedClick: () => void;
   onGamesClick: () => void;
   onEmailClick: () => void;
+  onBetaAccessClick: () => void; // ADDED THIS
   onRefresh: () => Promise<void>;
 }
 
@@ -30,6 +32,7 @@ export default function DashboardStats({
   onGamesCreatedClick,
   onGamesClick,
   onEmailClick,
+  onBetaAccessClick, // ADDED THIS
   onRefresh,
 }: DashboardStatsProps) {
   return (
@@ -78,6 +81,18 @@ export default function DashboardStats({
             <EnvelopeSimple size={32} weight="fill" />
           </p>
           <p className={styles.cardNote}>Click to manage emails</p>
+        </div>
+
+        {/* NEW BETA ACCESS CARD */}
+        <div className={styles.card} onClick={onBetaAccessClick}>
+          <div className={styles.cardIcon}>
+            <Robot size={48} weight="fill" />
+          </div>
+          <h3 className={styles.cardTitle}>Beta Access Requests</h3>
+          <p className={styles.cardValue}>
+            <Robot size={32} weight="fill" />
+          </p>
+          <p className={styles.cardNote}>Click to manage requests</p>
         </div>
 
         <div className={styles.card}>
