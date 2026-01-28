@@ -127,6 +127,7 @@ export default function BetaAccessModal({
                 "Your request is being reviewed! We will notify you shortly when your access is approved.",
               link: "/dashboard#ai-access",
               read: false,
+              senderId: "info@preguntame.com",
             });
           } catch (notifError) {
             console.error("Failed to send notification:", notifError);
