@@ -95,7 +95,7 @@ export default function AnnouncementModal({
 
               {/* Message */}
               <p className={styles.message}>
-                Now try the <strong>Pregúntame Wizard</strong>
+                Now try the <strong>Pregúntame Wizard</strong> and generate quizzes instantly!
               </p>
 
               {/* CTA Button */}

@@ -4,6 +4,7 @@ import QuestionList from "@/components/QuestionList/QuestionList";
 import AnswerEditor from "@/components/AnswerEditor/AnswerEditor";
 import PixelMenu from "@/components/PixelMenu/PixelMenu";
 import ConfirmPublishModal from "@/components/ConfirmPublishModal/ConfirmPublishModal";
+import AnnouncementModal from "@/components/AnnouncementModal/AnnouncementModal";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { createGame } from "@/app/api/game/actions";
 import CelebrationModal from "@/components/CelebrationModal/CelebrationModal";
@@ -30,6 +31,7 @@ export default function CreateGameClient() {
   const [gameTitle, setGameTitle] = useState("");
   const [isMobileAnswersOpen, setIsMobileAnswersOpen] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
 
   // Store a snapshot of questions and title when publish is clicked
   const publishDataRef = useRef<{ title: string; questions: Question[] }>({
@@ -59,6 +61,27 @@ export default function CreateGameClient() {
     };
     localStorage.setItem("draftGame", JSON.stringify(data));
   }, [gameTitle, questions, selectedQuestionIndex]);
+
+  // Handle announcement modal
+  useEffect(() => {
+    const hasSeenAnnouncement = localStorage.getItem("hasSeenWizardAnnouncement");
+    if (!hasSeenAnnouncement) {
+      setTimeout(() => setShowAnnouncementModal(true), 500);
+    }
+
+    // Listen for reopen event from floating button
+    const handleReopen = () => {
+      setShowAnnouncementModal(true);
+    };
+
+    window.addEventListener("reopenAnnouncement", handleReopen);
+    return () => window.removeEventListener("reopenAnnouncement", handleReopen);
+  }, []);
+
+  const handleCloseAnnouncement = () => {
+    setShowAnnouncementModal(false);
+    localStorage.setItem("hasSeenWizardAnnouncement", "true");
+  };
 
   const clearAll = () => {
     setQuestions([]);
@@ -265,6 +288,13 @@ export default function CreateGameClient() {
           onClose={() => setShowConfirmModal(false)}
           onConfirm={handleConfirmPublish}
           isLoading={false}
+        />
+
+        {/* Announcement Modal */}
+        <AnnouncementModal
+          isOpen={showAnnouncementModal}
+          onClose={handleCloseAnnouncement}
+          redirectUrl="/create/wizard"
         />
 
         {/* Celebration Modal */}
