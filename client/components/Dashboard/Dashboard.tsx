@@ -29,6 +29,7 @@ import GamesTab from "./GamesTab/GamesTab";
 import DashboardFooter from "./DashboardFooter/DashboardFooter";
 import NotificationsTab from "./NotificationsTab/NotificationsTab";
 import SettingsTab from "./SettingsTab/SettingsTab";
+import AnnouncementModal from "../AnnouncementModal/AnnouncementModal";
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("games");
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const [notificationList, setNotificationList] = useState<Notification[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
 
   const { data: session, status } = useSession();
   const { showToast } = useToast();
@@ -56,37 +58,66 @@ export default function Dashboard() {
     setUnreadCount(count);
   }, [notificationList]);
 
-  // Fetch user data
+  // Fetch user data function (extracted for reuse)
+  const fetchUserData = async () => {
+    if (!session?.user?.email) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const userData = await getUser(session.user.email);
+      setUserData(userData || null);
+
+      if (userData?._id) {
+        const [fetchedGames, notif] = await Promise.all([
+          getGamesByHost(userData._id),
+          getUserNotifications(userData._id),
+        ]);
+        setGames(fetchedGames);
+        setNotificationList(notif || []);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch user data on mount
   useEffect(() => {
     if (status === "loading") return;
-
-    const fetchUserData = async () => {
-      if (!session?.user?.email) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const userData = await getUser(session.user.email);
-        setUserData(userData || null);
-
-        if (userData?._id) {
-          const [fetchedGames, notif] = await Promise.all([
-            getGamesByHost(userData._id),
-            getUserNotifications(userData._id),
-          ]);
-          setGames(fetchedGames);
-          setNotificationList(notif || []);
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserData();
   }, [session, status]);
+
+  // Handle announcement modal
+  useEffect(() => {
+    const hasSeenAnnouncement = localStorage.getItem("hasSeenWizardAnnouncement");
+    if (!hasSeenAnnouncement) {
+      setTimeout(() => setShowAnnouncementModal(true), 500);
+    }
+
+    // Listen for reopen event from floating button
+    const handleReopen = () => {
+      setShowAnnouncementModal(true);
+    };
+
+    window.addEventListener("reopenAnnouncement", handleReopen);
+    return () => window.removeEventListener("reopenAnnouncement", handleReopen);
+  }, []);
+
+  const handleCloseAnnouncement = () => {
+    setShowAnnouncementModal(false);
+    localStorage.setItem("hasSeenWizardAnnouncement", "true");
+  };
+
+  // Refresh dashboard when navigating to AI Access
+  const handleDashboardRefresh = async () => {
+    // Switch to subscription tab to show AI Access
+    setActiveTab("subscription");
+    // Optionally refresh user data
+    await fetchUserData();
+  };
 
   const stats = {
     totalGames: userData?.gamesCreated || 0,
@@ -158,6 +189,14 @@ export default function Dashboard() {
         message={`Are you sure you want to delete "${deleteModal.gameTitle}"?`}
         confirmText="DELETE"
         type="danger"
+      />
+
+      {/* Announcement Modal */}
+      <AnnouncementModal
+        isOpen={showAnnouncementModal}
+        onClose={handleCloseAnnouncement}
+        redirectUrl="/dashboard#ai-access"
+        onDashboardAction={handleDashboardRefresh}
       />
 
       <ShareModal

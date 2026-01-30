@@ -24,10 +24,12 @@ import {
 } from "@phosphor-icons/react";
 import styles from "./page.module.css";
 import FreeIranBanner from "@/components/FreeIranBanner/FreeIranBanner";
+import AnnouncementModal from "@/components/AnnouncementModal/AnnouncementModal";
 
 export default function Home() {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
   const { data: session } = useSession();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const router = useRouter();
@@ -48,6 +50,27 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Handle announcement modal
+  useEffect(() => {
+    const hasSeenAnnouncement = localStorage.getItem("hasSeenWizardAnnouncement");
+    if (!hasSeenAnnouncement) {
+      setTimeout(() => setShowAnnouncementModal(true), 500);
+    }
+
+    // Listen for reopen event from floating button
+    const handleReopen = () => {
+      setShowAnnouncementModal(true);
+    };
+
+    window.addEventListener("reopenAnnouncement", handleReopen);
+    return () => window.removeEventListener("reopenAnnouncement", handleReopen);
+  }, []);
+
+  const handleCloseAnnouncement = () => {
+    setShowAnnouncementModal(false);
+    localStorage.setItem("hasSeenWizardAnnouncement", "true");
+  };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -367,6 +390,14 @@ export default function Home() {
             setShowLoginModal(false);
             router.refresh();
           }}
+        />
+
+        {/* Announcement Modal */}
+        <AnnouncementModal
+          isOpen={showAnnouncementModal}
+          onClose={handleCloseAnnouncement}
+          redirectUrl="/create/wizard"
+          showScrollTop={showScrollTop}
         />
 
         {/* Scroll to Top Button */}
