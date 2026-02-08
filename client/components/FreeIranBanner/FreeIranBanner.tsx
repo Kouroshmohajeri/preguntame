@@ -94,17 +94,21 @@ export default function FreeIranBanner() {
           {isExpanded && (
             <div className={styles.messageBox}>
               <p className={styles.messageText}>
-                The people of Iran have been in a total blackout of internet and electricity for
-                more than{" "}
-                <strong className={styles.hoursHighlight}>{hoursSinceBlackout} hours</strong> now,
-                and they don't have any connection with their families and loved ones outside of
-                Iran.
+                <strong>Support the Iranian people</strong> who are enduring incredibly difficult
+                circumstances.
               </p>
 
               <p className={styles.messageText}>
-                <strong>Be their voice.</strong>
+                The Iranian people deserve freedom, dignity, and human rights. They are fighting for
+                a better future despite overwhelming hardship.{" "}
+                <strong>Don't let their voices be silenced.</strong>
               </p>
-              <p className={styles.hashtag}>#FreeIran</p>
+
+              <p className={styles.messageText}>
+                <strong>Stand with Iran. Share their story. Be their voice.</strong>
+              </p>
+
+              <p className={styles.hashtag}>#FreeIran #StandWithIran #IranianPeople</p>
             </div>
           )}
         </div>

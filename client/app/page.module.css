@@ -54,12 +54,54 @@
   font-size: 1.2rem;
   color: #4A5568;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   font-weight: 500;
   line-height: 1.6;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* AI Teaser */
+.aiTeaser {
+  font-size: 1rem;
+  color: #805AD5;
+  text-align: center;
+  margin: 0 auto 40px;
+  font-weight: 700;
+  max-width: 700px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, #F5F3FF 0%, #E9D8FD 100%);
+  border: 3px solid #805AD5;
+  box-shadow: 4px 4px 0 #553C9A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: pulseGlow 2s infinite;
+}
+
+.aiTeaserIcon {
+  flex-shrink: 0;
+  animation: sparkleRotate 3s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 4px 4px 0 #553C9A;
+  }
+  50% {
+    box-shadow: 6px 6px 0 #553C9A, 0 0 20px rgba(128, 90, 213, 0.3);
+  }
+}
+
+@keyframes sparkleRotate {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
 }
 
 /* Pixel Separator */
@@ -84,14 +126,20 @@
   50% { transform: scale(1.5); opacity: 0.6; }
 }
 
-/* Action Grid */
+/* Action Grid - 4 columns */
 .actionGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  max-width: 900px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  max-width: 1200px;
   margin: 60px auto;
   width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .actionGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -106,7 +154,7 @@
 .actionCard {
   background: #FFFAF7;
   border: 3px solid #2D3748;
-  padding: 40px 30px;
+  padding: 35px 25px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -130,6 +178,39 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, #4ECDC4, #E53E3E, #4ECDC4);
+}
+
+/* AI Action Card */
+.aiActionCard {
+  border-color: #805AD5;
+  box-shadow: 4px 4px 0 #553C9A;
+  background: linear-gradient(135deg, #FFFAF7 0%, #F5F3FF 100%);
+}
+
+.aiActionCard:hover {
+  background: linear-gradient(135deg, #805AD5 0%, #4ECDC4 100%);
+  box-shadow: 6px 6px 0 #553C9A;
+}
+
+.aiActionCard:hover::before {
+  background: linear-gradient(90deg, #805AD5, #FFD166, #805AD5);
+}
+
+.aiActionCard .iconContainer {
+  background: #F5F3FF;
+  border-color: #553C9A;
+}
+
+.aiActionCard .iconContainer svg {
+  color: #805AD5;
+}
+
+.aiActionCard:hover .iconContainer {
+  background: #553C9A;
+}
+
+.aiActionCard:hover .iconContainer svg {
+  color: #FFFAF7 !important;
 }
 
 /* Icon Container */
@@ -160,16 +241,29 @@
 
 /* Card Title */
 .cardTitle {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: #2D3748;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin: 0;
+  margin: 0 0 10px 0;
   transition: color 0.3s ease;
 }
 
 .actionCard:hover .cardTitle {
+  color: #FFFAF7;
+}
+
+/* Card Subtitle */
+.cardSubtitle {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #4A5568;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.actionCard:hover .cardSubtitle {
   color: #FFFAF7;
 }
 
@@ -454,6 +548,15 @@
   border-bottom-color: #2D3748;
 }
 
+.aiInternalLink {
+  border-bottom-color: #805AD5;
+}
+
+.aiInternalLink:hover {
+  background: linear-gradient(135deg, #805AD5, #4ECDC4);
+  border-bottom-color: #553C9A;
+}
+
 /* Footer */
 .footer {
   text-align: center;
@@ -536,11 +639,14 @@
   .step::before {
     left: 20px;
   }
+
+  .aiTeaser {
+    font-size: 0.9rem;
+    padding: 12px 20px;
+  }
 }
 
-
-.pixelMenuContainer{
+.pixelMenuContainer {
   position: relative;
   z-index: 10001;
-  
 }

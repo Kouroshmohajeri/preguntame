@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { ArrowUp } from "@phosphor-icons/react";
+import { ArrowUp, Sparkle } from "@phosphor-icons/react";
 import GameCodeModal from "@/components/JoinRoom/GameCodeModal";
 import LoginModal from "@/components/LoginModal/LoginModal";
 import PixelMenu from "@/components/PixelMenu/PixelMenu";
@@ -36,6 +36,10 @@ export default function Home() {
 
   const handleCreate = () => {
     router.push("/create");
+  };
+
+  const handleCreateWithAI = () => {
+    router.push("/create/wizard");
   };
 
   const handleDashboard = () => {
@@ -109,6 +113,13 @@ export default function Home() {
             Create, host, and play live quizzes with instant results and interactive gameplay.
           </p>
 
+          {/* AI Teaser */}
+          <p className={styles.aiTeaser}>
+            <Sparkle size={20} weight="fill" className={styles.aiTeaserIcon} />
+            NEW: Pregúntame Wizard (AI) lets you generate full quizzes from a prompt, document, URL,
+            or YouTube video free for a limited time!
+          </p>
+
           {/* Pixel Separator */}
           <div className={styles.pixelSeparator}>
             {[...Array(15)].map((_, i) => (
@@ -131,6 +142,21 @@ export default function Home() {
                 <PlusCircle size={48} weight="fill" />
               </div>
               <h2 className={styles.cardTitle}>Create a Quiz</h2>
+            </div>
+
+            {/* Create with AI Card */}
+            <div
+              className={`${styles.actionCard} ${styles.aiActionCard}`}
+              onClick={handleCreateWithAI}
+              role="button"
+              tabIndex={0}
+              aria-label="Create a Quiz with AI"
+              onKeyDown={(e) => e.key === "Enter" && handleCreateWithAI()}
+            >
+              <div className={styles.iconContainer}>
+                <Sparkle size={48} weight="fill" />
+              </div>
+              <h2 className={styles.cardTitle}>Create with AI</h2>
             </div>
 
             {/* Join Card */}
@@ -359,6 +385,16 @@ export default function Home() {
               }}
             >
               Create a free quiz
+            </a>
+            <a
+              href="/create/wizard"
+              className={`${styles.internalLink} ${styles.aiInternalLink}`}
+              onClick={(e) => {
+                e.preventDefault();
+                handleCreateWithAI();
+              }}
+            >
+              Create with AI
             </a>
             <a
               href="#"
