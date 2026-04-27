@@ -60,7 +60,7 @@ export async function generateQuestions(
     const genAI = new GoogleGenerativeAI(apiKey);
 
     // ✅ Use Gemini 2.0 Flash (current free tier model as of 2026)
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
 
     // ✅ Get language name for better context
     const languageName = LANGUAGE_NAMES[language] || language;
